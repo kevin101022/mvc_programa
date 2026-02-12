@@ -1,101 +1,170 @@
 <?php
-/**
- * Vista: Editar Sede (editar.php)
- *
- * Variables esperadas del controlador:
- *   $sede     — Array con datos de la sede ['sede_id' => 1, 'sede_nombre' => '...']
- *   $rol      — 'coordinador' | 'instructor'
- *   $errores  — (Opcional) Array de errores ['sede_nombre' => 'El nombre es requerido']
- */
-
-// --- Datos de prueba (eliminar cuando el controlador los proporcione) ---
-$rol = $rol ?? 'coordinador';
-$sede = $sede ?? ['sede_id' => 1, 'sede_nombre' => 'Centro de Gestión Industrial'];
-$errores = $errores ?? [];
-// --- Fin datos de prueba ---
-
-$title = 'Editar Sede';
-$breadcrumb = [
-    ['label' => 'Inicio', 'url' => '/mvccc/mvc_programa/'],
-    ['label' => 'Sedes', 'url' => 'index.php'],
-    ['label' => 'Editar'],
-];
-
-include __DIR__ . '/../layout/header.php';
+$pageTitle = 'Editar Sede - SENA';
+$activeNavItem = 'sedes';
+require_once '../layouts/head.php';
+require_once '../layouts/sidebar.php';
 ?>
 
-        <!-- Page Header -->
-        <div class="page-header">
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-content">
+            <nav class="breadcrumb">
+                <a href="#">Inicio</a>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <a href="index.php">Sedes</a>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <span>Editar</span>
+            </nav>
             <h1 class="page-title">Editar Sede</h1>
         </div>
 
-        <!-- Form -->
-        <div class="form-container">
-            <div class="form-card">
-                <form id="formEditarSede" method="POST" action="" novalidate>
-                    <input type="hidden" name="action" value="update">
-                    <input type="hidden" name="sede_id" value="<?php echo htmlspecialchars($sede['sede_id']); ?>">
+        <div class="header-actions">
+            <a href="index.php" class="btn-secondary">
+                <ion-icon name="arrow-back-outline"></ion-icon>
+                Volver
+            </a>
+        </div>
+    </header>
 
-                    <div class="form-group">
-                        <label for="sede_nombre" class="form-label">
-                            Nombre de la Sede <span class="required">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="sede_nombre"
-                            name="sede_nombre"
-                            class="form-input <?php echo isset($errores['sede_nombre']) ? 'input-error' : ''; ?>"
-                            placeholder="Ej: Centro de Gestión Industrial"
-                            value="<?php echo htmlspecialchars($sede['sede_nombre']); ?>"
-                            required
-                            maxlength="200"
-                            autocomplete="off"
-                        >
-                        <div class="form-error <?php echo isset($errores['sede_nombre']) ? 'visible' : ''; ?>" id="errorNombre">
-                            <i data-lucide="alert-circle"></i>
-                            <span><?php echo htmlspecialchars($errores['sede_nombre'] ?? 'Este campo es obligatorio.'); ?></span>
+    <div class="content-wrapper">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-card">
+            <div class="loading-spinner"></div>
+            <p>Cargando información de la sede...</p>
+        </div>
+
+        <!-- Form Card -->
+        <div id="formCard" class="form-card" style="display: none;">
+            <div class="form-header">
+                <div class="form-icon">
+                    <ion-icon name="create-outline"></ion-icon>
+                </div>
+                <div>
+                    <h2>Modificar Información</h2>
+                    <p>Actualice los datos de la sede seleccionada</p>
+                </div>
+            </div>
+
+            <form id="sedeEditForm" class="form-content">
+                <input type="hidden" id="sede_id" name="sede_id">
+
+                <div class="form-group">
+                    <label for="sede_nombre" class="form-label required">
+                        Nombre de la Sede
+                    </label>
+                    <input
+                        type="text"
+                        id="sede_nombre"
+                        name="sede_nombre"
+                        class="form-input"
+                        placeholder="Ej: Centro de Tecnologías Avanzadas"
+                        required>
+                    <div class="form-error" id="sede_nombre_error"></div>
+                    <div class="form-help">
+                        Modifique el nombre de la sede. Debe ser único en el sistema.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Foto de la Sede</label>
+                    <div class="flex items-center gap-6 mt-2 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                        <div id="imagePreviewContainer" class="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-sena-green to-emerald-700 text-white shadow-md">
+                            <ion-icon id="placeholderIcon" name="business-outline" class="text-5xl"></ion-icon>
+                            <img id="imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
                         </div>
-                        <div class="form-hint">Modifique el nombre de la sede académica.</div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Cambiar imagen del campus</p>
+                            <p class="text-xs text-slate-500 mb-4">Formatos sugeridos: JPG, PNG o WEBP (Máx. 2MB)</p>
+                            <label for="sede_foto" class="inline-flex items-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-sena-green border border-sena-green/50 px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-all">
+                                <ion-icon name="cloud-upload-outline" class="text-lg"></ion-icon>
+                                Seleccionar Imagen
+                            </label>
+                            <input type="file" id="sede_foto" name="sede_foto" class="hidden" accept="image/*">
+                        </div>
                     </div>
+                </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i data-lucide="save"></i>
-                            Actualizar Sede
-                        </button>
-                        <a href="index.php" class="btn btn-secondary">
-                            Cancelar
-                        </a>
-                    </div>
-                </form>
+                <script>
+                    document.getElementById('sede_foto').addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        const preview = document.getElementById('imagePreview');
+                        const placeholder = document.getElementById('placeholderIcon');
+
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                preview.src = event.target.result;
+                                preview.classList.remove('hidden');
+                                placeholder.classList.add('hidden');
+                            }
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                </script>
+
+                <div class="form-actions">
+                    <a href="index.php" class="btn-secondary">
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn-primary">
+                        <ion-icon name="save-outline"></ion-icon>
+                        Actualizar Sede
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Error Card -->
+        <div id="errorCard" class="error-card" style="display: none;">
+            <div class="error-icon">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+            </div>
+            <div>
+                <h3>Error al Cargar</h3>
+                <p id="errorMessage">No se pudo cargar la información de la sede.</p>
+                <a href="index.php" class="btn-primary mt-4">Volver a Sedes</a>
             </div>
         </div>
 
-<script>
-    // Client-side visual validation (real validation in controller)
-    document.getElementById('formEditarSede').addEventListener('submit', function(e) {
-        var input = document.getElementById('sede_nombre');
-        var errorDiv = document.getElementById('errorNombre');
-        var value = input.value.trim();
+        <!-- Info Card -->
+        <div id="infoCard" class="info-card" style="display: none;">
+            <div class="info-header">
+                <ion-icon name="information-circle-outline"></ion-icon>
+                <h3>Información de Edición</h3>
+            </div>
+            <div class="info-content">
+                <ul>
+                    <li>Los cambios se aplicarán inmediatamente al guardar</li>
+                    <li>El nombre debe ser único en el sistema</li>
+                    <li>Verifique que no existan programas asignados antes de cambios importantes</li>
+                    <li>Puede cancelar en cualquier momento sin guardar cambios</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
 
-        if (!value) {
-            e.preventDefault();
-            input.classList.add('input-error');
-            errorDiv.classList.add('visible');
-            input.focus();
-        } else {
-            input.classList.remove('input-error');
-            errorDiv.classList.remove('visible');
-        }
-    });
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header success">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <h3>Sede Actualizada</h3>
+        </div>
+        <div class="modal-body">
+            <p>La sede <strong id="updatedSedeName"></strong> ha sido actualizada correctamente.</p>
+        </div>
+        <div class="modal-footer">
+            <a href="index.php" class="btn-primary">Ver Sedes</a>
+            <button class="btn-secondary" onclick="closeSuccessModal()">Continuar Editando</button>
+        </div>
+    </div>
+</div>
 
-    // Remove error state on input
-    document.getElementById('sede_nombre').addEventListener('input', function() {
-        if (this.value.trim()) {
-            this.classList.remove('input-error');
-            document.getElementById('errorNombre').classList.remove('visible');
-        }
-    });
-</script>
+<script src="../../assets/js/sede/editar.js"></script>
+</body>
 
-<?php include __DIR__ . '/../layout/footer.php'; ?>
+</html>

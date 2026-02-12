@@ -1,178 +1,113 @@
 <?php
-/**
- * Vista: Listado de Sedes (index.php)
- *
- * Variables esperadas del controlador:
- *   $sedes    — Array de sedes [['sede_id' => 1, 'sede_nombre' => '...'], ...]
- *   $rol      — 'coordinador' | 'instructor'
- *   $mensaje  — (Opcional) Mensaje de éxito
- *   $error    — (Opcional) Mensaje de error
- */
-
-// --- Datos de prueba (eliminar cuando el controlador los proporcione) ---
-$rol = $rol ?? 'coordinador'; // Cambiar a 'instructor' para probar restricciones
-$sedes = $sedes ?? [
-    ['sede_id' => 1, 'sede_nombre' => 'Centro de Gestión Industrial'],
-    ['sede_id' => 2, 'sede_nombre' => 'Centro de Tecnologías del Transporte'],
-    ['sede_id' => 3, 'sede_nombre' => 'Centro de Manufactura en Textil y Cuero'],
-    ['sede_id' => 4, 'sede_nombre' => 'Centro Metalmecánico'],
-    ['sede_id' => 5, 'sede_nombre' => 'Centro de Formación de Talento Humano en Salud'],
-];
-$mensaje = $mensaje ?? null;
-$error = $error ?? null;
-// --- Fin datos de prueba ---
-
-$title = 'Gestión de Sedes';
-$breadcrumb = [
-    ['label' => 'Inicio', 'url' => '/mvccc/mvc_programa/'],
-    ['label' => 'Sedes'],
-];
-
-include __DIR__ . '/../layout/header.php';
+$pageTitle = 'Gestión de Sedes - SENA';
+$activeNavItem = 'sedes';
+require_once '../layouts/head.php';
+require_once '../layouts/sidebar.php';
 ?>
 
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">Gestión de Sedes</h1>
-            <?php if ($rol === 'coordinador'): ?>
-                <a href="crear.php" class="btn btn-primary">
-                    <i data-lucide="plus"></i>
-                    Registrar Sede
-                </a>
-            <?php
-endif; ?>
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-content">
+            <nav class="breadcrumb">
+                <a href="#">Inicio</a>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <span>Sedes</span>
+            </nav>
+            <h1 class="page-title">Administración de Sedes</h1>
         </div>
 
-        <!-- Alerts -->
-        <?php if ($mensaje): ?>
-            <div class="alert alert-success">
-                <i data-lucide="check-circle-2"></i>
-                <?php echo htmlspecialchars($mensaje); ?>
-            </div>
-        <?php
-endif; ?>
+        <!-- Icons removed as per user request -->
+        <div class="header-actions">
+        </div>
+    </header>
 
-        <?php if ($error): ?>
-            <div class="alert alert-error">
-                <i data-lucide="alert-circle"></i>
-                <?php echo htmlspecialchars($error); ?>
+    <div class="content-wrapper">
+        <!-- Stats Card -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-label">TOTAL DE SEDES</span>
+                    <div class="stat-card-icon green">
+                        <ion-icon name="business-outline"></ion-icon>
+                    </div>
+                </div>
+                <div class="stat-card-body">
+                    <span class="stat-card-number" id="totalSedes">0</span>
+                    <span class="stat-card-desc">sedes registradas</span>
+                </div>
             </div>
-        <?php
-endif; ?>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <div class="search-container">
+                <ion-icon name="search-outline" class="search-icon"></ion-icon>
+                <input type="text" id="searchInput" placeholder="Buscar por nombre de sede..." class="search-input">
+            </div>
+
+            <a href="crear.php" class="btn-primary">
+                <ion-icon name="add-outline"></ion-icon>
+                Registrar Sede
+            </a>
+        </div>
 
         <!-- Data Table -->
         <div class="table-container">
-            <?php if (!empty($sedes)): ?>
-            <div class="table-scroll">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre de la Sede</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($sedes as $sede): ?>
-                        <tr>
-                            <td><span class="table-id"><?php echo htmlspecialchars($sede['sede_id']); ?></span></td>
-                            <td><?php echo htmlspecialchars($sede['sede_nombre']); ?></td>
-                            <td>
-                                <div class="table-actions">
-                                    <a href="ver.php?id=<?php echo $sede['sede_id']; ?>" class="action-btn view-btn" title="Ver detalle">
-                                        <i data-lucide="eye"></i>
-                                    </a>
-                                    <?php if ($rol === 'coordinador'): ?>
-                                        <a href="editar.php?id=<?php echo $sede['sede_id']; ?>" class="action-btn edit-btn" title="Editar sede">
-                                            <i data-lucide="pencil-line"></i>
-                                        </a>
-                                        <button type="button" class="action-btn delete-btn" title="Eliminar sede" onclick="confirmDelete(<?php echo $sede['sede_id']; ?>, '<?php echo htmlspecialchars(addslashes($sede['sede_nombre']), ENT_QUOTES); ?>')">
-                                            <i data-lucide="trash-2"></i>
-                                        </button>
-                                    <?php
-        endif; ?>
-                                </div>
-                            </td>
-                        </tr>
-                        <?php
-    endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-            <?php
-else: ?>
-                <div class="table-empty">
-                    <div class="table-empty-icon">
-                        <i data-lucide="building-2"></i>
-                    </div>
-                    <div class="table-empty-title">No hay sedes registradas</div>
-                    <div class="table-empty-text">
-                        <?php if ($rol === 'coordinador'): ?>
-                            Haz clic en "Registrar Sede" para agregar la primera sede.
-                        <?php
-    else: ?>
-                            No se encontraron sedes en el sistema.
-                        <?php
-    endif; ?>
-                    </div>
-                </div>
-            <?php
-endif; ?>
-        </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID Sede</th>
+                        <th>Nombre Sede</th>
+                        <th class="text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="sedesTableBody">
+                    <!-- Data will be loaded here -->
+                </tbody>
+            </table>
 
-<!-- Delete Confirmation Modal -->
-<?php if ($rol === 'coordinador'): ?>
-<div class="modal-overlay" id="deleteModal">
-    <div class="modal">
-        <div class="modal-body">
-            <div class="modal-icon">
-                <i data-lucide="alert-triangle"></i>
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    <p>Mostrando <span id="showingFrom">1</span> a <span id="showingTo">5</span> de <span id="totalRecords">0</span> resultados</p>
+                </div>
+                <nav class="pagination">
+                    <button class="pagination-btn" id="prevBtn">
+                        <ion-icon name="chevron-back-outline"></ion-icon>
+                    </button>
+                    <div id="paginationNumbers"></div>
+                    <button class="pagination-btn" id="nextBtn">
+                        <ion-icon name="chevron-forward-outline"></ion-icon>
+                    </button>
+                </nav>
             </div>
-            <h3 class="modal-title">Eliminar Sede</h3>
-            <p class="modal-text">
-                ¿Estás seguro de que deseas eliminar la sede
-                <strong id="deleteModalName"></strong>?
-                Esta acción no se puede deshacer.
-            </p>
         </div>
-        <div class="modal-actions">
-            <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">
-                Cancelar
+    </div>
+</main>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirmar Eliminación</h3>
+            <button class="modal-close" onclick="closeDeleteModal()">
+                <ion-icon name="close-outline"></ion-icon>
             </button>
-            <form id="deleteForm" method="POST" action="" style="flex:1;">
-                <input type="hidden" name="sede_id" id="deleteModalId">
-                <input type="hidden" name="action" value="delete">
-                <button type="submit" class="btn btn-danger" style="width:100%;justify-content:center;">
-                    <i data-lucide="trash-2"></i>
-                    Eliminar
-                </button>
-            </form>
+        </div>
+        <div class="modal-body">
+            <p>¿Está seguro que desea eliminar la sede <strong id="sedeToDelete"></strong>?</p>
+            <p class="text-sm text-gray-600">Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeDeleteModal()">Cancelar</button>
+            <button class="btn-danger" onclick="confirmDelete()">Eliminar</button>
         </div>
     </div>
 </div>
 
-<script>
-    function confirmDelete(id, nombre) {
-        document.getElementById('deleteModalId').value = id;
-        document.getElementById('deleteModalName').textContent = nombre;
-        document.getElementById('deleteModal').classList.add('active');
-    }
+<script src="../../assets/js/sede/index.js?v=<?php echo time(); ?>"></script>
+</body>
 
-    function closeDeleteModal() {
-        document.getElementById('deleteModal').classList.remove('active');
-    }
-
-    // Close modal on overlay click
-    document.getElementById('deleteModal').addEventListener('click', function(e) {
-        if (e.target === this) closeDeleteModal();
-    });
-
-    // Close modal on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeDeleteModal();
-    });
-</script>
-<?php
-endif; ?>
-
-<?php include __DIR__ . '/../layout/footer.php'; ?>
+</html>
