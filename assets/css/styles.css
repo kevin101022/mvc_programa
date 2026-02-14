@@ -448,16 +448,18 @@ body {
 
 .search-icon {
     position: absolute;
-    left: 12px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--gray-400);
     pointer-events: none;
+    z-index: 10;
+    font-size: 20px;
 }
 
 .search-input {
     width: 100%;
-    padding: 10px 12px 10px 40px;
+    padding: 10px 12px 10px 52px !important;
     border: 1px solid var(--gray-300);
     border-radius: 8px;
     font-size: 14px;

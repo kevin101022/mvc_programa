@@ -14,12 +14,18 @@ class SedeView {
             search: '',
             nivel: ''
         };
+        this.ambientes = [];
+        this.filteredAmbientes = [];
+        this.ambienteFilters = {
+            search: ''
+        };
         this.init();
     }
 
     init() {
         this.bindEvents();
         this.loadSedeData();
+        this.initDeleteModal();
     }
 
     bindEvents() {
@@ -118,6 +124,138 @@ class SedeView {
                 this.clearAllProgramaFilters();
             });
         }
+
+        // Ambientes toggle functionality
+        const verTodosAmbientesBtn = document.getElementById('verTodosAmbientes');
+        const volverAmbientesBtn = document.getElementById('volverAmbientesPreview');
+
+        if (verTodosAmbientesBtn) {
+            verTodosAmbientesBtn.addEventListener('click', () => {
+                this.showFullAmbientesList();
+            });
+        }
+
+        if (volverAmbientesBtn) {
+            volverAmbientesBtn.addEventListener('click', () => {
+                this.showAmbientesPreview();
+            });
+        }
+
+        // Ambiente filter events
+        const searchAmbiente = document.getElementById('searchAmbiente');
+        if (searchAmbiente) {
+            searchAmbiente.addEventListener('input', (e) => {
+                this.ambienteFilters.search = e.target.value;
+                this.applyAmbienteFilters();
+            });
+        }
+
+        // Delete button
+        const deleteSedeBtn = document.getElementById('deleteSedeBtn');
+        if (deleteSedeBtn) {
+            deleteSedeBtn.addEventListener('click', () => {
+                this.openDeleteModal();
+            });
+        }
+    }
+
+    initDeleteModal() {
+        this.modal = document.getElementById('deleteModal');
+        this.modalContent = document.getElementById('modalContent');
+        this.modalOverlay = document.getElementById('modalOverlay');
+        this.cancelBtn = document.getElementById('cancelDeleteBtn');
+        this.confirmBtn = document.getElementById('confirmDeleteBtn');
+        this.sedeNameSpan = document.getElementById('sedeToDeleteName');
+
+        if (this.cancelBtn) {
+            this.cancelBtn.addEventListener('click', () => this.closeDeleteModal());
+        }
+
+        if (this.modalOverlay) {
+            this.modalOverlay.addEventListener('click', () => this.closeDeleteModal());
+        }
+
+        if (this.confirmBtn) {
+            this.confirmBtn.addEventListener('click', () => this.confirmDelete());
+        }
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.modal && !this.modal.classList.contains('hidden')) {
+                this.closeDeleteModal();
+            }
+        });
+    }
+
+    openDeleteModal() {
+        if (!this.modal || !this.sedeData) return;
+
+        if (this.sedeNameSpan) {
+            this.sedeNameSpan.textContent = this.sedeData.sede_nombre;
+        }
+
+        this.modal.classList.remove('hidden');
+        // Small delay for animation
+        setTimeout(() => {
+            if (this.modalContent) {
+                this.modalContent.classList.remove('scale-95', 'opacity-0');
+                this.modalContent.classList.add('scale-100', 'opacity-100');
+            }
+        }, 10);
+    }
+
+    closeDeleteModal() {
+        if (!this.modal || !this.modalContent) return;
+
+        this.modalContent.classList.remove('scale-100', 'opacity-100');
+        this.modalContent.classList.add('scale-95', 'opacity-0');
+
+        setTimeout(() => {
+            this.modal.classList.add('hidden');
+        }, 300);
+    }
+
+    async confirmDelete() {
+        if (!this.sedeId) return;
+
+        try {
+            this.confirmBtn.disabled = true;
+            this.confirmBtn.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>';
+
+            const formData = new FormData();
+            formData.append('action', 'delete');
+            formData.append('sede_id', this.sedeId);
+
+            const response = await fetch('../controller/sedeController.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (!response.ok || data.error) {
+                throw new Error(data.error || 'Error al eliminar la sede');
+            }
+
+            this.showSuccessFeedback();
+
+            setTimeout(() => {
+                window.location.href = 'index.php';
+            }, 2000);
+
+        } catch (error) {
+            console.error('Error deleting sede:', error);
+            alert(error.message || 'Hubo un error al intentar eliminar la sede. Por favor, intente de nuevo.');
+            this.confirmBtn.disabled = false;
+            this.confirmBtn.textContent = 'Sí, eliminar';
+        }
+    }
+
+    showSuccessFeedback() {
+        const overlay = document.getElementById('successOverlay');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+            this.closeDeleteModal();
+        }
     }
 
     getSedeIdFromUrl() {
@@ -149,65 +287,34 @@ class SedeView {
     }
 
     async fetchSede(sedeId) {
-        // Mock data for demo
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const mockSedes = {
-                    1: {
-                        sede_id: 1,
-                        sede_nombre: 'Centro de la Industria, la Empresa y los Servicios (CIES)',
-                        sede_foto: '../../imagenes/CIES.jpg',
-                        fecha_creacion: '2023-01-15',
-                        programas_count: 12,
-                        instructores_count: 45,
-                        aprendices_count: 850
-                    },
-                    2: {
-                        sede_id: 2,
-                        sede_nombre: 'Centro de Formación para el Desarrollo Rural y Minero (CEDRUM)',
-                        fecha_creacion: '2023-02-20',
-                        programas_count: 8,
-                        instructores_count: 32,
-                        aprendices_count: 620
-                    },
-                    3: {
-                        sede_id: 3,
-                        sede_nombre: 'Tecno Parque, Tecno Academia',
-                        fecha_creacion: '2023-03-10',
-                        programas_count: 6,
-                        instructores_count: 24,
-                        aprendices_count: 450
-                    },
-                    4: {
-                        sede_id: 4,
-                        sede_nombre: 'Sena - Calzado y Marroquinería',
-                        fecha_creacion: '2023-04-05',
-                        programas_count: 5,
-                        instructores_count: 18,
-                        aprendices_count: 380
-                    }
-                };
-                resolve(mockSedes[sedeId] || null);
-            }, 800);
-        });
+        const response = await fetch(`../controller/sedeController.php?action=get&id=${sedeId}`);
+        if (!response.ok) {
+            return null;
+        }
+        return await response.json();
     }
 
     async loadRelatedData() {
         try {
-            const [programas, instructores] = await Promise.all([
+            const [programas, instructores, ambientes] = await Promise.all([
                 this.fetchProgramas(this.sedeId),
-                this.fetchInstructores(this.sedeId)
+                this.fetchInstructores(this.sedeId),
+                this.fetchAmbientes(this.sedeId)
             ]);
 
             this.sedeData.programas = programas;
             this.filteredProgramas = [...programas];
             this.instructores = instructores;
             this.filteredInstructores = [...instructores];
+            this.ambientes = ambientes;
+            this.filteredAmbientes = [...ambientes];
         } catch (error) {
             console.error('Error loading related data:', error);
             this.sedeData.programas = [];
             this.instructores = [];
             this.filteredInstructores = [];
+            this.ambientes = [];
+            this.filteredAmbientes = [];
         }
     }
 
@@ -264,6 +371,30 @@ class SedeView {
         });
     }
 
+    async fetchAmbientes(sedeId) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const mockAmbientes = {
+                    1: [
+                        { id_ambiente: 101, amb_nombre: 'Laboratorio de Software 1' },
+                        { id_ambiente: 102, amb_nombre: 'Laboratorio de Redes' },
+                        { id_ambiente: 103, amb_nombre: 'Ambiente de Mantenimiento' },
+                        { id_ambiente: 104, amb_nombre: 'Sala de Conferencias B' },
+                        { id_ambiente: 105, amb_nombre: 'Laboratorio de Software 2' }
+                    ],
+                    2: [
+                        { id_ambiente: 201, amb_nombre: 'Taller de Diseño' },
+                        { id_ambiente: 202, amb_nombre: 'Planta de Producción' }
+                    ],
+                    3: [
+                        { id_ambiente: 301, amb_nombre: 'Sala de Emprendimiento' }
+                    ]
+                };
+                resolve(mockAmbientes[sedeId] || []);
+            }, 350);
+        });
+    }
+
     populateSedeInfo() {
         // Basic info
         const sedeNombreCard = document.getElementById('sedeNombreCard');
@@ -306,6 +437,11 @@ class SedeView {
             totalProgramas.textContent = this.sedeData.programas_count || 0;
         }
 
+        const totalAmbientes = document.getElementById('totalAmbientes');
+        if (totalAmbientes) {
+            totalAmbientes.textContent = this.ambientes.length || 0;
+        }
+
         if (totalInstructores) {
             totalInstructores.textContent = this.sedeData.instructores_count || 0;
         }
@@ -316,8 +452,9 @@ class SedeView {
             editLink.href = `editar.php?id=${this.sedeData.sede_id}`;
         }
 
-        // Populate programs and instructors
+        // Populate programs, instructors and environments
         this.populateProgramas();
+        this.populateAmbientes();
         this.populateInstructores();
         this.setupCompetenciaFilter();
         this.setupNivelFilter();
@@ -355,14 +492,14 @@ class SedeView {
                 programaItem.innerHTML = `
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded bg-white dark:bg-slate-700 flex items-center justify-center text-slate-400 shadow-sm group-hover:text-sena-orange transition-colors">
-                            <ion-icon name="${iconType}"></ion-icon>
+                            <ion-icon src="../../assets/ionicons/${iconType}"></ion-icon>
                         </div>
                         <div>
                             <p class="text-sm font-semibold text-slate-900 dark:text-white">${programa.programa_nombre}</p>
                             <p class="text-xs text-slate-500">Ficha: ${programa.fichas_count}</p>
                         </div>
                     </div>
-                    <ion-icon name="chevron-forward-outline" class="text-slate-400 group-hover:translate-x-1 transition-transform"></ion-icon>
+                    <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg" class="text-slate-400 group-hover:translate-x-1 transition-transform"></ion-icon>
                 `;
                 programasList.appendChild(programaItem);
             });
@@ -382,6 +519,159 @@ class SedeView {
 
         // Populate complete programs list
         this.renderProgramasCompleteList();
+    }
+
+    populateAmbientes() {
+        const ambientesList = document.getElementById('ambientesList');
+        const noAmbientes = document.getElementById('noAmbientes');
+
+        if (!this.ambientes || this.ambientes.length === 0) {
+            if (ambientesList) ambientesList.style.display = 'none';
+            if (noAmbientes) noAmbientes.style.display = 'block';
+            return;
+        }
+
+        if (noAmbientes) noAmbientes.style.display = 'none';
+        if (ambientesList) {
+            ambientesList.style.display = 'block';
+            ambientesList.innerHTML = '';
+
+            // Show first 3 ambientes in preview mode
+            const ambientesToShow = this.ambientes.slice(0, 3);
+
+            ambientesToShow.forEach(ambiente => {
+                const ambienteItem = document.createElement('div');
+                ambienteItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
+
+                ambienteItem.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded bg-white dark:bg-slate-700 flex items-center justify-center text-slate-400 shadow-sm group-hover:text-sena-orange transition-colors">
+                            <ion-icon src="../../assets/ionicons/cube-outline.svg"></ion-icon>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white">${ambiente.amb_nombre}</p>
+                            <p class="text-xs text-slate-500">ID: ${String(ambiente.id_ambiente).padStart(3, '0')}</p>
+                        </div>
+                    </div>
+                    <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg" class="text-slate-400 group-hover:translate-x-1 transition-transform"></ion-icon>
+                `;
+                ambientesList.appendChild(ambienteItem);
+            });
+
+            // Add additional indicator if more than 3
+            if (this.ambientes.length > 3) {
+                const additionalDiv = document.createElement('div');
+                additionalDiv.className = 'mt-4 text-center';
+                additionalDiv.innerHTML = `
+                    <div class="inline-flex items-center justify-center px-4 py-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-500 dark:text-slate-400 w-full bg-slate-50/50 dark:bg-slate-800/30">
+                        + ${this.ambientes.length - 3} ambientes registrados en esta sede
+                    </div>
+                `;
+                ambientesList.appendChild(additionalDiv);
+            }
+        }
+
+        // Populate complete list
+        this.renderAmbientesCompleteList();
+    }
+
+    renderAmbientesCompleteList() {
+        const ambientesListComplete = document.getElementById('ambientesListComplete');
+        const totalAmbientesCount = document.getElementById('totalAmbientesCount');
+        const noAmbienteFilterResults = document.getElementById('noAmbienteFilterResults');
+
+        if (!ambientesListComplete) return;
+
+        if (totalAmbientesCount) {
+            totalAmbientesCount.textContent = this.ambientes.length;
+        }
+
+        this.updateFilteredAmbientesCount();
+
+        // Show/hide no results message
+        if (this.filteredAmbientes.length === 0 && this.ambienteFilters.search) {
+            ambientesListComplete.style.display = 'none';
+            if (noAmbienteFilterResults) noAmbienteFilterResults.style.display = 'block';
+            return;
+        } else {
+            ambientesListComplete.style.display = 'block';
+            if (noAmbienteFilterResults) noAmbienteFilterResults.style.display = 'none';
+        }
+
+        ambientesListComplete.innerHTML = '';
+
+        this.filteredAmbientes.forEach(ambiente => {
+            const ambienteItem = document.createElement('div');
+            ambienteItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
+
+            ambienteItem.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-white dark:bg-slate-700 flex items-center justify-center text-slate-400 shadow-sm group-hover:text-sena-orange transition-colors">
+                        <ion-icon src="../../assets/ionicons/cube-outline.svg"></ion-icon>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900 dark:text-white">${ambiente.amb_nombre}</p>
+                        <p class="text-xs text-slate-500">ID: ${String(ambiente.id_ambiente).padStart(3, '0')}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="text-slate-400 hover:text-sena-green transition-colors" title="Ver detalles">
+                        <ion-icon src="../../assets/ionicons/eye-outline.svg" class="text-sm"></ion-icon>
+                    </button>
+                </div>
+            `;
+
+            ambientesListComplete.appendChild(ambienteItem);
+        });
+    }
+
+    showFullAmbientesList() {
+        const preview = document.getElementById('ambientesPreview');
+        const fullList = document.getElementById('ambientesFullList');
+
+        if (preview) preview.style.display = 'none';
+        if (fullList) fullList.style.display = 'block';
+
+        // Reset filters when opening full list
+        this.filteredAmbientes = [...this.ambientes];
+        this.renderAmbientesCompleteList();
+    }
+
+    showAmbientesPreview() {
+        const preview = document.getElementById('ambientesPreview');
+        const fullList = document.getElementById('ambientesFullList');
+
+        if (preview) preview.style.display = 'block';
+        if (fullList) fullList.style.display = 'none';
+
+        // Clear filters when going back to preview
+        this.clearAllAmbienteFilters();
+    }
+
+    applyAmbienteFilters() {
+        const searchTerm = this.ambienteFilters.search.toLowerCase();
+
+        this.filteredAmbientes = this.ambientes.filter(ambiente => {
+            return !searchTerm ||
+                ambiente.amb_nombre.toLowerCase().includes(searchTerm) ||
+                String(ambiente.id_ambiente).includes(searchTerm);
+        });
+
+        this.renderAmbientesCompleteList();
+    }
+
+    updateFilteredAmbientesCount() {
+        const filteredCount = document.getElementById('filteredAmbientesCount');
+        if (filteredCount) {
+            filteredCount.textContent = this.filteredAmbientes.length;
+        }
+    }
+
+    clearAllAmbienteFilters() {
+        this.ambienteFilters = { search: '' };
+        const searchInput = document.getElementById('searchAmbiente');
+        if (searchInput) searchInput.value = '';
+        this.applyAmbienteFilters();
     }
 
     renderProgramasCompleteList() {
@@ -418,7 +708,7 @@ class SedeView {
             programaItem.innerHTML = `
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded bg-white dark:bg-slate-700 flex items-center justify-center text-slate-400 shadow-sm group-hover:text-sena-orange transition-colors">
-                        <ion-icon name="${iconType}"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/${iconType}"></ion-icon>
                     </div>
                     <div class="flex-1">
                         <p class="text-sm font-medium text-slate-900 dark:text-white">${programa.programa_nombre}</p>
@@ -427,7 +717,7 @@ class SedeView {
                 </div>
                 <div class="flex items-center gap-2">
                     <button class="text-slate-400 hover:text-sena-green transition-colors" title="Ver detalles">
-                        <ion-icon name="eye-outline" class="text-sm"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/eye-outline.svg" class="text-sm"></ion-icon>
                     </button>
                 </div>
             `;
@@ -502,7 +792,7 @@ class SedeView {
                 filterTag.innerHTML = `
                     Nombre: "${this.programaFilters.search}"
                     <button onclick="sedeView.removeProgramaFilter('search')" class="hover:text-green-700">
-                        <ion-icon name="close-outline" class="text-xs"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/close-outline.svg" class="text-xs"></ion-icon>
                     </button>
                 `;
                 activeFiltersList.appendChild(filterTag);
@@ -514,7 +804,7 @@ class SedeView {
                 filterTag.innerHTML = `
                     Nivel: "${this.programaFilters.nivel}"
                     <button onclick="sedeView.removeProgramaFilter('nivel')" class="hover:text-orange-700">
-                        <ion-icon name="close-outline" class="text-xs"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/close-outline.svg" class="text-xs"></ion-icon>
                     </button>
                 `;
                 activeFiltersList.appendChild(filterTag);
@@ -647,7 +937,7 @@ class SedeView {
                 filterTag.innerHTML = `
                     Nombre: "${this.currentFilters.search}"
                     <button onclick="sedeView.removeFilter('search')" class="hover:text-green-700">
-                        <ion-icon name="close-outline" class="text-xs"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/close-outline.svg" class="text-xs"></ion-icon>
                     </button>
                 `;
                 activeFiltersList.appendChild(filterTag);
@@ -659,7 +949,7 @@ class SedeView {
                 filterTag.innerHTML = `
                     Competencia: "${this.currentFilters.competencia}"
                     <button onclick="sedeView.removeFilter('competencia')" class="hover:text-orange-700">
-                        <ion-icon name="close-outline" class="text-xs"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/close-outline.svg" class="text-xs"></ion-icon>
                     </button>
                 `;
                 activeFiltersList.appendChild(filterTag);
@@ -774,7 +1064,7 @@ class SedeView {
                         ${instructor.estado}
                     </span>
                     <button class="text-slate-400 hover:text-sena-green transition-colors" title="Ver detalles">
-                        <ion-icon name="eye-outline" class="text-sm"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/eye-outline.svg" class="text-sm"></ion-icon>
                     </button>
                 </div>
             `;
@@ -818,13 +1108,13 @@ class SedeView {
 
     getProgramIcon(programName) {
         const name = programName.toLowerCase();
-        if (name.includes('software') || name.includes('desarrollo')) return 'code-slash-outline';
-        if (name.includes('redes') || name.includes('network')) return 'wifi-outline';
-        if (name.includes('mantenimiento') || name.includes('equipos')) return 'hardware-chip-outline';
-        if (name.includes('diseño')) return 'color-palette-outline';
-        if (name.includes('manufactura')) return 'construct-outline';
-        if (name.includes('administración')) return 'briefcase-outline';
-        return 'school-outline';
+        if (name.includes('software') || name.includes('desarrollo')) return 'code-slash-outline.svg';
+        if (name.includes('redes') || name.includes('network')) return 'wifi-outline.svg';
+        if (name.includes('mantenimiento') || name.includes('equipos')) return 'hardware-chip-outline.svg';
+        if (name.includes('diseño')) return 'color-palette-outline.svg';
+        if (name.includes('manufactura')) return 'construct-outline.svg';
+        if (name.includes('administración')) return 'briefcase-outline.svg';
+        return 'school-outline.svg';
     }
 
     showDetails() {

@@ -73,18 +73,30 @@ class SedeManager {
             this.updatePagination();
         } catch (error) {
             console.error('Error loading sedes:', error);
-            this.showError('Error al cargar las sedes');
+            // Mostrar el error específico en lugar del genérico
+            this.showError('Error al cargar las sedes: ' + error.message);
         }
     }
 
     async fetchSedes() {
-        // Mock data - replace with actual API call
-        return [
-            { sede_id: 1, sede_nombre: 'Centro de la Industria, la Empresa y los Servicios (CIES)' },
-            { sede_id: 2, sede_nombre: 'Centro de Formación para el Desarrollo Rural y Minero (CEDRUM)' },
-            { sede_id: 3, sede_nombre: 'Tecno Parque, Tecno Academia' },
-            { sede_id: 4, sede_nombre: 'Sena - Calzado y Marroquinería' }
-        ];
+        const response = await fetch('../controller/sedeController.php?action=list&t=' + new Date().getTime());
+        const text = await response.text();
+        console.log('Respuesta del servidor:', text);
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            console.error('Error al parsear JSON:', e);
+            throw new Error('El servidor envió una respuesta inválida. Revisa la consola (F12) para ver el error real.');
+        }
+
+        if (!response.ok) {
+            const errorMessage = data.details || data.error || 'Error desconocido en el servidor';
+            throw new Error(errorMessage);
+        }
+
+        return data;
     }
 
     filterSedes(searchTerm) {
@@ -116,7 +128,7 @@ class SedeManager {
                 <tr>
                     <td colspan="3" class="text-center py-8">
                         <div class="flex flex-col items-center">
-                            <ion-icon name="search-outline" style="font-size:2rem;color:#9ca3af;margin-bottom:0.5rem;"></ion-icon>
+                            <ion-icon src="../../assets/ionicons/search-outline.svg" style="font-size:2rem;color:#9ca3af;margin-bottom:0.5rem;"></ion-icon>
                             <p class="text-gray-500">No se encontraron sedes</p>
                         </div>
                     </td>
@@ -127,37 +139,16 @@ class SedeManager {
 
         pageItems.forEach(sede => {
             const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50 transition-colors group';
+            row.className = 'hover:bg-green-50/50 transition-colors cursor-pointer group';
+            row.setAttribute('onclick', `window.location.href='ver.php?id=${sede.sede_id}'`);
+            row.title = 'Haga clic para ver detalles';
 
             row.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="h-10 w-10 rounded-lg overflow-hidden border border-gray-100 shadow-sm flex-shrink-0">
-                        ${sede.sede_foto ?
-                    `<img src="${sede.sede_foto}" alt="Sede" class="h-full w-full object-cover">` :
-                    `<div class="h-full w-full flex items-center justify-center bg-gradient-to-br from-green-500 to-green-600 text-white">
-                                <ion-icon name="business-outline" style="font-size: 1.25rem;"></ion-icon>
-                            </div>`
-                }
-                    </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-sena-green">
                     ${String(sede.sede_id).padStart(3, '0')}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                    <div class="font-medium">${sede.sede_nombre}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div class="table-actions">
-                        <button class="action-btn" onclick="window.location.href='ver.php?id=${sede.sede_id}'" title="Ver detalles">
-                            <ion-icon name="eye-outline"></ion-icon>
-                        </button>
-                        <button class="action-btn" onclick="window.location.href='editar.php?id=${sede.sede_id}'" title="Editar">
-                            <ion-icon name="create-outline"></ion-icon>
-                        </button>
-                        <button class="action-btn delete" onclick="sedeManager.openDeleteModal(${sede.sede_id}, '${sede.sede_nombre}')" title="Eliminar">
-                            <ion-icon name="trash-outline"></ion-icon>
-                        </button>
-                    </div>
+                    <div class="font-medium group-hover:text-sena-green transition-colors">${sede.sede_nombre}</div>
                 </td>
             `;
 
@@ -274,10 +265,20 @@ class SedeManager {
     }
 
     async deleteSedeFetch(sedeId) {
-        // Mock API call - replace with actual endpoint
-        return new Promise((resolve) => {
-            setTimeout(resolve, 500);
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('sede_id', sedeId);
+
+        const response = await fetch('../controller/sedeController.php', {
+            method: 'POST',
+            body: formData
         });
+
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'Error al eliminar la sede');
+        }
+        return data;
     }
 
     showSuccess(message) {

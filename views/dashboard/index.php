@@ -14,11 +14,11 @@ require_once '../layouts/sidebar.php';
 
             <div class="hero-actions">
                 <a href="../sede/index.php" class="dashboard-btn primary">
-                    <ion-icon name="business-outline"></ion-icon>
+                    <ion-icon src="../../assets/ionicons/business-outline.svg"></ion-icon>
                     Gestionar Sedes
                 </a>
                 <a href="#" class="dashboard-btn secondary">
-                    <ion-icon name="book-outline"></ion-icon>
+                    <ion-icon src="../../assets/ionicons/book-outline.svg"></ion-icon>
                     Programas
                 </a>
             </div>

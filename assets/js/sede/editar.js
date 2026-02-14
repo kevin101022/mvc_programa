@@ -78,31 +78,11 @@ class SedeEdit {
     }
 
     async fetchSede(sedeId) {
-        try {
-            // Mock API call - replace with actual endpoint
-            const response = await fetch(`/api/sedes/${sedeId}`);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            // Mock data for demo
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    const mockSedes = {
-                        1: { sede_id: 1, sede_nombre: 'Complejo Sur - Tecnologías' },
-                        2: { sede_id: 2, sede_nombre: 'Centro de Diseño y Manufactura' },
-                        3: { sede_id: 3, sede_nombre: 'Sede Administrativa Norte' },
-                        4: { sede_id: 4, sede_nombre: 'Centro Agropecuario' },
-                        5: { sede_id: 5, sede_nombre: 'Sede Central - Bibliotecas' }
-                    };
-                    resolve(mockSedes[sedeId] || null);
-                }, 500);
-            });
+        const response = await fetch(`../controller/sedeController.php?action=get&id=${sedeId}`);
+        if (!response.ok) {
+            throw new Error('No se pudo obtener la información de la sede');
         }
+        return await response.json();
     }
 
     populateForm(sede) {
@@ -275,9 +255,9 @@ class SedeEdit {
 
     async checkSedeExists(sedeName) {
         try {
-            const response = await fetch(`/api/sedes/check-name?name=${encodeURIComponent(sedeName)}&exclude=${this.sedeId}`);
-            const data = await response.json();
-            return data.exists;
+            const response = await fetch(`../controller/sedeController.php?action=list`);
+            const sedes = await response.json();
+            return sedes.some(s => s.sede_nombre.toLowerCase() === sedeName.toLowerCase() && s.sede_id != this.sedeId);
         } catch (error) {
             console.error('Error checking sede name:', error);
             return false;
@@ -285,32 +265,28 @@ class SedeEdit {
     }
 
     async updateSede(sedeData) {
-        try {
-            const response = await fetch(`/api/sedes/${sedeData.sede_id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(sedeData)
-            });
+        const formData = new FormData();
+        formData.append('action', 'update');
+        formData.append('sede_id', sedeData.sede_id);
+        formData.append('sede_nombre', sedeData.sede_nombre);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            // Mock successful response for demo
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve({
-                        success: true,
-                        message: 'Sede actualizada exitosamente'
-                    });
-                }, 1000);
-            });
+        // Handle photo if present
+        const photoInput = document.getElementById('sede_foto');
+        if (photoInput && photoInput.files[0]) {
+            formData.append('sede_foto', photoInput.files[0]);
         }
+
+        const response = await fetch('../controller/sedeController.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            return { success: false, message: data.error || 'Error al actualizar la sede' };
+        }
+
+        return { success: true, message: data.message };
     }
 
     showSuccessModal(sedeName) {

@@ -12,9 +12,9 @@ require_once '../layouts/sidebar.php';
         <div class="header-content">
             <nav class="breadcrumb">
                 <a href="#">Inicio</a>
-                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg"></ion-icon>
                 <a href="index.php">Sedes</a>
-                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg"></ion-icon>
                 <span>Eliminar</span>
             </nav>
             <h1 class="page-title">Eliminar Sede</h1>
@@ -22,7 +22,7 @@ require_once '../layouts/sidebar.php';
 
         <div class="header-actions">
             <a href="index.php" class="btn-secondary">
-                <ion-icon name="arrow-back-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/arrow-back-outline.svg"></ion-icon>
                 Volver
             </a>
         </div>
@@ -40,7 +40,7 @@ require_once '../layouts/sidebar.php';
             <!-- Warning Card -->
             <div class="warning-card">
                 <div class="warning-icon">
-                    <ion-icon name="warning-outline"></ion-icon>
+                    <ion-icon src="../../assets/ionicons/warning-outline.svg"></ion-icon>
                 </div>
                 <div class="warning-content">
                     <h2>¡Atención! Eliminación de Sede</h2>
@@ -52,7 +52,7 @@ require_once '../layouts/sidebar.php';
             <div class="sede-info-card">
                 <div class="sede-info-header">
                     <div class="sede-info-icon">
-                        <ion-icon name="business-outline"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/business-outline.svg"></ion-icon>
                     </div>
                     <div>
                         <h3 id="sedeNombre">Cargando...</h3>
@@ -64,13 +64,13 @@ require_once '../layouts/sidebar.php';
             <!-- Impact Analysis -->
             <div class="impact-card">
                 <div class="impact-header">
-                    <ion-icon name="analytics-outline"></ion-icon>
+                    <ion-icon src="../../assets/ionicons/analytics-outline.svg"></ion-icon>
                     <h3>Análisis de Impacto</h3>
                 </div>
                 <div class="impact-content">
                     <div class="impact-item">
                         <div class="impact-icon">
-                            <ion-icon name="school-outline"></ion-icon>
+                            <ion-icon src="../../assets/ionicons/school-outline.svg"></ion-icon>
                         </div>
                         <div class="impact-details">
                             <span class="impact-count" id="programasCount">0</span>
@@ -80,7 +80,7 @@ require_once '../layouts/sidebar.php';
 
                     <div class="impact-item">
                         <div class="impact-icon">
-                            <ion-icon name="people-outline"></ion-icon>
+                            <ion-icon src="../../assets/ionicons/people-outline.svg"></ion-icon>
                         </div>
                         <div class="impact-details">
                             <span class="impact-count" id="instructoresCount">0</span>
@@ -90,7 +90,7 @@ require_once '../layouts/sidebar.php';
 
                     <div class="impact-item">
                         <div class="impact-icon">
-                            <ion-icon name="people-outline"></ion-icon>
+                            <ion-icon src="../../assets/ionicons/people-outline.svg"></ion-icon>
                         </div>
                         <div class="impact-details">
                             <span class="impact-count" id="fichasCount">0</span>
@@ -103,7 +103,7 @@ require_once '../layouts/sidebar.php';
             <!-- Consequences Warning -->
             <div id="consequencesWarning" class="consequences-card" style="display: none;">
                 <div class="consequences-header">
-                    <ion-icon name="alert-circle-outline"></ion-icon>
+                    <ion-icon src="../../assets/ionicons/alert-circle-outline.svg"></ion-icon>
                     <h3>Consecuencias de la Eliminación</h3>
                 </div>
                 <div class="consequences-content">
@@ -116,7 +116,7 @@ require_once '../layouts/sidebar.php';
             <!-- Confirmation Form -->
             <div class="confirmation-card">
                 <div class="confirmation-header">
-                    <ion-icon name="shield-checkmark-outline"></ion-icon>
+                    <ion-icon src="../../assets/ionicons/shield-checkmark-outline.svg"></ion-icon>
                     <h3>Confirmación Requerida</h3>
                 </div>
 
@@ -146,11 +146,11 @@ require_once '../layouts/sidebar.php';
 
                     <div class="form-actions">
                         <a href="index.php" class="btn-secondary">
-                            <ion-icon name="close-circle-outline"></ion-icon>
+                            <ion-icon src="../../assets/ionicons/close-circle-outline.svg"></ion-icon>
                             Cancelar
                         </a>
                         <button type="submit" class="btn-danger" id="deleteButton" disabled>
-                            <ion-icon name="trash-outline"></ion-icon>
+                            <ion-icon src="../../assets/ionicons/trash-outline.svg"></ion-icon>
                             Eliminar Permanentemente
                         </button>
                     </div>
@@ -161,7 +161,7 @@ require_once '../layouts/sidebar.php';
         <!-- Cannot Delete Card -->
         <div id="cannotDeleteCard" class="error-card" style="display: none;">
             <div class="error-icon">
-                <ion-icon name="ban-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/ban-outline.svg"></ion-icon>
             </div>
             <div>
                 <h3>No se puede Eliminar</h3>
@@ -176,7 +176,7 @@ require_once '../layouts/sidebar.php';
         <!-- Error Card -->
         <div id="errorCard" class="error-card" style="display: none;">
             <div class="error-icon">
-                <ion-icon name="alert-circle-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/alert-circle-outline.svg"></ion-icon>
             </div>
             <div>
                 <h3>Error al Cargar</h3>
@@ -191,7 +191,7 @@ require_once '../layouts/sidebar.php';
 <div id="successModal" class="modal">
     <div class="modal-content">
         <div class="modal-header success">
-            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <ion-icon src="../../assets/ionicons/checkmark-circle-outline.svg"></ion-icon>
             <h3>Sede Eliminada</h3>
         </div>
         <div class="modal-body">

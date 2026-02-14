@@ -24,7 +24,7 @@ class SedeForm {
             sedeNombreInput.addEventListener('blur', () => {
                 this.validateSedeNombre();
             });
-            
+
             sedeNombreInput.addEventListener('input', () => {
                 this.clearError('sede_nombre');
             });
@@ -55,7 +55,7 @@ class SedeForm {
 
         const submitBtn = this.form.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        
+
         try {
             // Show loading state
             submitBtn.disabled = true;
@@ -78,7 +78,7 @@ class SedeForm {
 
             // Submit to API
             const result = await this.createSede(sedeData);
-            
+
             if (result.success) {
                 this.showSuccessModal(sedeData.sede_nombre);
                 this.form.reset();
@@ -170,45 +170,38 @@ class SedeForm {
 
     async checkSedeExists(sedeName) {
         try {
-            // Mock API call - replace with actual endpoint
-            const response = await fetch(`/api/sedes/check-name?name=${encodeURIComponent(sedeName)}`);
-            const data = await response.json();
-            return data.exists;
+            const response = await fetch(`../controller/sedeController.php?action=list`);
+            const sedes = await response.json();
+            return sedes.some(s => s.sede_nombre.toLowerCase() === sedeName.toLowerCase());
         } catch (error) {
             console.error('Error checking sede name:', error);
-            return false; // Assume it doesn't exist if we can't check
+            return false;
         }
     }
 
     async createSede(sedeData) {
-        try {
-            // Mock API call - replace with actual endpoint
-            const response = await fetch('/api/sedes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(sedeData)
-            });
+        const formData = new FormData();
+        formData.append('action', 'create');
+        formData.append('sede_nombre', sedeData.sede_nombre);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            // Mock successful response for demo
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve({
-                        success: true,
-                        sede_id: Math.floor(Math.random() * 1000) + 100,
-                        message: 'Sede creada exitosamente'
-                    });
-                }, 1000);
-            });
+        // Handle photo if present
+        const photoInput = document.getElementById('sede_foto');
+        if (photoInput && photoInput.files[0]) {
+            formData.append('sede_foto', photoInput.files[0]);
         }
+
+        const response = await fetch('../controller/sedeController.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            const detailMsg = data.details ? ` (${data.details})` : '';
+            return { success: false, message: (data.error || 'Error al crear la sede') + detailMsg };
+        }
+
+        return { success: true, message: data.message };
     }
 
     showSuccessModal(sedeName) {

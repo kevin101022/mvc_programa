@@ -13,21 +13,21 @@ $activeNavItem = isset($activeNavItem) ? $activeNavItem : 'sedes';
     <nav class="sidebar-nav">
         <p class="nav-section">Principal</p>
         <a href="../dashboard/index.php" class="nav-item <?php echo ($activeNavItem === 'dashboard') ? 'active' : ''; ?>">
-            <ion-icon name="grid-outline"></ion-icon>
+            <ion-icon src="../../assets/ionicons/grid-outline.svg"></ion-icon>
             Dashboard
         </a>
 
         <p class="nav-section">Gestión</p>
         <a href="../sede/index.php" class="nav-item <?php echo ($activeNavItem === 'sedes') ? 'active' : ''; ?>">
-            <ion-icon name="business-outline"></ion-icon>
+            <ion-icon src="../../assets/ionicons/business-outline.svg"></ion-icon>
             Sedes
         </a>
         <a href="#" class="nav-item <?php echo ($activeNavItem === 'programas') ? 'active' : ''; ?>">
-            <ion-icon name="school-outline"></ion-icon>
+            <ion-icon src="../../assets/ionicons/school-outline.svg"></ion-icon>
             Programas
         </a>
         <a href="#" class="nav-item <?php echo ($activeNavItem === 'instructores') ? 'active' : ''; ?>">
-            <ion-icon name="people-outline"></ion-icon>
+            <ion-icon src="../../assets/ionicons/people-outline.svg"></ion-icon>
             Instructores
         </a>
     </nav>
@@ -39,7 +39,7 @@ $activeNavItem = isset($activeNavItem) ? $activeNavItem : 'sedes';
                 <p class="profile-name">Carlos Rodriguez</p>
                 <p class="profile-role">Coordinador Académico</p>
             </div>
-            <ion-icon name="log-out-outline"></ion-icon>
+            <ion-icon src="../../assets/ionicons/log-out-outline.svg"></ion-icon>
         </div>
     </div>
 </aside>

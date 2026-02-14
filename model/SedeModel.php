@@ -1,15 +1,17 @@
 <?php
-require_once '../Conexion.php';
+require_once dirname(__DIR__) . '/Conexion.php';
 class SedeModel
 {
     private $sede_id;
     private $sede_nombre;
+    private $sede_foto;
     private $db;
 
-    public function __construct($sede_id, $sede_nombre)
+    public function __construct($sede_id = null, $sede_nombre = null, $sede_foto = null)
     {
         $this->setSedeId($sede_id);
-        $this->setSedNombre($sede_nombre);
+        $this->setSedeNombre($sede_nombre);
+        $this->setSedeFoto($sede_foto);
         $this->db = Conexion::getConnect();
     }
     //getters 
@@ -18,9 +20,13 @@ class SedeModel
     {
         return $this->sede_id;
     }
-    public function getSedNombre()
+    public function getSedeNombre()
     {
         return $this->sede_nombre;
+    }
+    public function getSedeFoto()
+    {
+        return $this->sede_foto;
     }
 
     //setters 
@@ -28,23 +34,28 @@ class SedeModel
     {
         $this->sede_id = $sede_id;
     }
-    public function setSedNombre($sede_nombre)
+    public function setSedeNombre($sede_nombre)
     {
         $this->sede_nombre = $sede_nombre;
+    }
+    public function setSedeFoto($sede_foto)
+    {
+        $this->sede_foto = $sede_foto;
     }
     //crud
     public function create()
     {
-        $query = "INSERT INTO sede (sede_nombre) 
-        VALUES (:sede_nombre)";
+        $query = "INSERT INTO sede (sede_nombre, foto) 
+        VALUES (:sede_nombre, :foto)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':sede_nombre', $this->sede_nombre);
+        $stmt->bindParam(':foto', $this->sede_foto);
         $stmt->execute();
         return $this->db->lastInsertId();
     }
     public function read()
     {
-        $sql = "SELECT * FROM sede WHERE sede_id = :sede_id";
+        $sql = "SELECT sede_id, sede_nombre, foto AS sede_foto FROM sede WHERE sede_id = :sede_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':sede_id' => $this->sede_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -52,16 +63,17 @@ class SedeModel
 
     public function readAll()
     {
-        $sql = "SELECT * FROM sede";
+        $sql = "SELECT sede_id, sede_nombre, foto AS sede_foto FROM sede";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function update()
     {
-        $query = "UPDATE sede SET sede_nombre = :sede_nombre WHERE sede_id = :sede_id";
+        $query = "UPDATE sede SET sede_nombre = :sede_nombre, foto = :foto WHERE sede_id = :sede_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':sede_nombre', $this->sede_nombre);
+        $stmt->bindParam(':foto', $this->sede_foto);
         $stmt->bindParam(':sede_id', $this->sede_id);
         $stmt->execute();
         return $stmt;

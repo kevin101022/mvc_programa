@@ -12,9 +12,9 @@ require_once '../layouts/sidebar.php';
         <div class="header-content">
             <nav class="breadcrumb">
                 <a href="#">Inicio</a>
-                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg"></ion-icon>
                 <a href="index.php">Sedes</a>
-                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg"></ion-icon>
                 <span>Editar</span>
             </nav>
             <h1 class="page-title">Editar Sede</h1>
@@ -22,7 +22,7 @@ require_once '../layouts/sidebar.php';
 
         <div class="header-actions">
             <a href="index.php" class="btn-secondary">
-                <ion-icon name="arrow-back-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/arrow-back-outline.svg"></ion-icon>
                 Volver
             </a>
         </div>
@@ -39,7 +39,7 @@ require_once '../layouts/sidebar.php';
         <div id="formCard" class="form-card" style="display: none;">
             <div class="form-header">
                 <div class="form-icon">
-                    <ion-icon name="create-outline"></ion-icon>
+                    <ion-icon src="../../assets/ionicons/create-outline.svg"></ion-icon>
                 </div>
                 <div>
                     <h2>Modificar Información</h2>
@@ -71,14 +71,14 @@ require_once '../layouts/sidebar.php';
                     <label class="form-label">Foto de la Sede</label>
                     <div class="flex items-center gap-6 mt-2 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700">
                         <div id="imagePreviewContainer" class="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-sena-green to-emerald-700 text-white shadow-md">
-                            <ion-icon id="placeholderIcon" name="business-outline" class="text-5xl"></ion-icon>
+                            <ion-icon id="placeholderIcon" src="../../assets/ionicons/business-outline.svg" class="text-5xl"></ion-icon>
                             <img id="imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
                         </div>
                         <div class="flex-1">
                             <p class="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Cambiar imagen del campus</p>
                             <p class="text-xs text-slate-500 mb-4">Formatos sugeridos: JPG, PNG o WEBP (Máx. 2MB)</p>
                             <label for="sede_foto" class="inline-flex items-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-sena-green border border-sena-green/50 px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-all">
-                                <ion-icon name="cloud-upload-outline" class="text-lg"></ion-icon>
+                                <ion-icon src="../../assets/ionicons/cloud-upload-outline.svg" class="text-lg"></ion-icon>
                                 Seleccionar Imagen
                             </label>
                             <input type="file" id="sede_foto" name="sede_foto" class="hidden" accept="image/*">
@@ -106,11 +106,11 @@ require_once '../layouts/sidebar.php';
 
                 <div class="form-actions">
                     <a href="index.php" class="btn-secondary">
-                        <ion-icon name="close-circle-outline"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/close-circle-outline.svg"></ion-icon>
                         Cancelar
                     </a>
                     <button type="submit" class="btn-primary">
-                        <ion-icon name="save-outline"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/save-outline.svg"></ion-icon>
                         Actualizar Sede
                     </button>
                 </div>
@@ -120,7 +120,7 @@ require_once '../layouts/sidebar.php';
         <!-- Error Card -->
         <div id="errorCard" class="error-card" style="display: none;">
             <div class="error-icon">
-                <ion-icon name="alert-circle-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/alert-circle-outline.svg"></ion-icon>
             </div>
             <div>
                 <h3>Error al Cargar</h3>
@@ -132,7 +132,7 @@ require_once '../layouts/sidebar.php';
         <!-- Info Card -->
         <div id="infoCard" class="info-card" style="display: none;">
             <div class="info-header">
-                <ion-icon name="information-circle-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/information-circle-outline.svg"></ion-icon>
                 <h3>Información de Edición</h3>
             </div>
             <div class="info-content">
@@ -151,7 +151,7 @@ require_once '../layouts/sidebar.php';
 <div id="successModal" class="modal">
     <div class="modal-content">
         <div class="modal-header success">
-            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <ion-icon src="../../assets/ionicons/checkmark-circle-outline.svg"></ion-icon>
             <h3>Sede Actualizada</h3>
         </div>
         <div class="modal-body">

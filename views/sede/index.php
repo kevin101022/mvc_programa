@@ -12,7 +12,7 @@ require_once '../layouts/sidebar.php';
         <div class="header-content">
             <nav class="breadcrumb">
                 <a href="#">Inicio</a>
-                <ion-icon name="chevron-forward-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg"></ion-icon>
                 <span>Sedes</span>
             </nav>
             <h1 class="page-title">Administración de Sedes</h1>
@@ -30,7 +30,7 @@ require_once '../layouts/sidebar.php';
                 <div class="stat-card-header">
                     <span class="stat-card-label">TOTAL DE SEDES</span>
                     <div class="stat-card-icon green">
-                        <ion-icon name="business-outline"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/business-outline.svg"></ion-icon>
                     </div>
                 </div>
                 <div class="stat-card-body">
@@ -43,12 +43,12 @@ require_once '../layouts/sidebar.php';
         <!-- Action Bar -->
         <div class="action-bar">
             <div class="search-container">
-                <ion-icon name="search-outline" class="search-icon"></ion-icon>
+                <ion-icon src="../../assets/ionicons/search-outline.svg" class="search-icon"></ion-icon>
                 <input type="text" id="searchInput" placeholder="Buscar por nombre de sede..." class="search-input">
             </div>
 
             <a href="crear.php" class="btn-primary">
-                <ion-icon name="add-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/add-outline.svg"></ion-icon>
                 Registrar Sede
             </a>
         </div>
@@ -58,9 +58,8 @@ require_once '../layouts/sidebar.php';
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>ID Sede</th>
+                        <th class="w-20">ID</th>
                         <th>Nombre Sede</th>
-                        <th class="text-right">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="sedesTableBody">
@@ -75,11 +74,11 @@ require_once '../layouts/sidebar.php';
                 </div>
                 <nav class="pagination">
                     <button class="pagination-btn" id="prevBtn">
-                        <ion-icon name="chevron-back-outline"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/chevron-back-outline.svg"></ion-icon>
                     </button>
                     <div id="paginationNumbers"></div>
                     <button class="pagination-btn" id="nextBtn">
-                        <ion-icon name="chevron-forward-outline"></ion-icon>
+                        <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg"></ion-icon>
                     </button>
                 </nav>
             </div>
@@ -93,7 +92,7 @@ require_once '../layouts/sidebar.php';
         <div class="modal-header">
             <h3>Confirmar Eliminación</h3>
             <button class="modal-close" onclick="closeDeleteModal()">
-                <ion-icon name="close-outline"></ion-icon>
+                <ion-icon src="../../assets/ionicons/close-outline.svg"></ion-icon>
             </button>
         </div>
         <div class="modal-body">
