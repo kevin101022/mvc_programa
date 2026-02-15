@@ -1,4 +1,4 @@
-# � Guía de Configuración: SENA Académico (MVC)
+# 🎓 Guía de Configuración: SENA Académico (MVC)
 
 Esta guía explica paso a paso cómo poner en marcha el proyecto, configurar la base de datos y entender la arquitectura de rutas y seguridad.
 
@@ -10,9 +10,13 @@ Esta guía explica paso a paso cómo poner en marcha el proyecto, configurar la 
 - **¿Para qué sirve?**: En lugar de escribir tu contraseña dentro de los archivos de PHP (lo cual es inseguro), la guardamos en el archivo `.env`.
 - **EnvLoader.php**: Es el encargado de leer ese archivo y "prestarle" los datos a la clase `Conexion.php`. Si mañana cambias de contraseña, **solo editas el .env**.
 
-### � Gestión de Rutas Maestras
-- El proyecto usa `dirname(dirname(__DIR__))`.
+### 🛰️ Gestión de Rutas Maestras
+- El proyecto usa la función `dirname(__DIR__)` y cadenas de `dirname`.
 - **¿Por qué?**: Esto hace que las rutas sean **absolutas e inteligentes**. No importa si usas Laragon o XAMPP, el sistema siempre sabrá dónde están las carpetas `model`, `view` y `controller` sin perderse.
+
+### � Front Controller (routing.php)
+- **¿Qué es?**: Es el punto de entrada único de la aplicación.
+- **¿Cómo funciona?**: En lugar de llamar a cada archivo por separado, todas las peticiones van a `routing.php`. Él se encarga de llamar al controlador y la acción correcta de forma segura usando **Reflexión de PHP**.
 
 ---
 
@@ -39,7 +43,7 @@ Elige tu servidor local:
 
 ## 3. 🗄️ Configuración de la Base de Datos (.env)
 
-Abre el archivo `.env` en la raíz y configura según tu motor:
+Crea y abre en tu editor de código el archivo `.env` en la raíz y configura según tu motor:
 
 ### 🐘 Usando PostgreSQL
 ```env
@@ -51,7 +55,7 @@ DB_USER=postgres
 DB_PASS=tu_contraseña_de_postgres
 ```
 
-### � Usando MySQL
+### 🐬 Usando MySQL
 ```env
 DB_DRIVER=mysql
 DB_PORT=3306
@@ -72,5 +76,4 @@ DB_PASS=          # En XAMPP suele estar vacío
    - ✅ Tablas encontradas con su estructura.
 
 ---
-
 
