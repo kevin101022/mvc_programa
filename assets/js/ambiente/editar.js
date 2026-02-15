@@ -11,8 +11,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Load sedes and current data
     Promise.all([
-        fetch('../../routing.php?controller=sede&action=index').then(res => res.json()),
-        fetch(`../../routing.php?controller=ambiente&action=show&id=${id}`).then(res => res.json())
+        fetch('../../routing.php?controller=sede&action=index', {
+            headers: { 'Accept': 'application/json' }
+        }).then(res => res.json()),
+        fetch(`../../routing.php?controller=ambiente&action=show&id=${id}`, {
+            headers: { 'Accept': 'application/json' }
+        }).then(res => res.json())
     ]).then(([sedes, data]) => {
         sedes.forEach(s => {
             const opt = document.createElement('option');
@@ -42,15 +46,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(res => res.json())
             .then(data => {
                 if (data.message) {
-                    document.getElementById('successModal').classList.add('show');
+                    NotificationService.showSuccess('Ambiente actualizado correctamente', () => {
+                        window.location.href = `ver.php?id=${id}`;
+                    });
                 } else {
-                    alert('Error: ' + data.error);
+                    NotificationService.showError(data.error);
                 }
             })
             .catch(err => {
                 console.error('Error updating ambiente:', err);
                 const detail = err.description || err.message || '';
-                alert('Error al actualizar: ' + (err.error || 'Error en el servidor') + (detail ? '\n\nDetalle: ' + detail : ''));
+                const fullMsg = (err.error || 'Error en el servidor') + (detail ? '\n\nDetalle: ' + detail : '');
+                NotificationService.showError('Error al actualizar: ' + fullMsg);
             });
     };
 });

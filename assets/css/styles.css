@@ -2,6 +2,7 @@
 :root {
     /* SENA Green Palette (Restored) */
     --primary-green: #39A900;
+    --sena-green: #39A900;
     --secondary-green: #007832;
     --light-green: #E8F5E8;
     --dark-green: #2D7A00;
@@ -1147,6 +1148,14 @@ ion-icon {
 
 .hidden {
     display: none;
+}
+
+.bg-sena-green {
+    background-color: var(--sena-green);
+}
+
+.hover\:bg-dark-green:hover {
+    background-color: var(--dark-green);
 }
 
 .sr-only {

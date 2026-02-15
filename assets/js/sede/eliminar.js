@@ -33,7 +33,7 @@ class SedeDelete {
 
         try {
             const sede = await this.fetchSede(this.sedeId);
-            
+
             if (sede) {
                 this.sedeData = sede;
                 this.populateDeleteForm();
@@ -43,7 +43,7 @@ class SedeDelete {
             }
         } catch (error) {
             console.error('Error loading sede:', error);
-            this.showError('Error al cargar la información de la sede');
+            NotificationService.showError('Error al cargar la información de la sede');
         }
     }
 
@@ -77,29 +77,34 @@ class SedeDelete {
     }
 
     showError(message) {
-        const loadingState = document.getElementById('loadingState');
-        const errorCard = document.getElementById('errorCard');
-        const errorMessage = document.getElementById('errorMessage');
-
-        if (loadingState) loadingState.style.display = 'none';
-        if (errorMessage) errorMessage.textContent = message;
-        if (errorCard) errorCard.style.display = 'block';
+        NotificationService.showError(message);
     }
 
     async handleDelete() {
         const result = await this.deleteSede(this.sedeData.sede_id);
-        
+
         if (result.success) {
             this.showSuccessModal(this.sedeData.sede_nombre);
         }
     }
 
     async deleteSede(sedeId) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({ success: true });
-            }, 1000);
+        const formData = new FormData();
+        formData.append('controller', 'sede');
+        formData.append('action', 'destroy');
+        formData.append('sede_id', sedeId);
+
+        const response = await fetch('../../routing.php', {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
         });
+
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'Error al eliminar la sede');
+        }
+        return { success: true };
     }
 
     showSuccessModal(sedeName) {

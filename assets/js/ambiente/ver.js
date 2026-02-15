@@ -96,7 +96,10 @@ class AmbienteView {
 
             const response = await fetch('../../routing.php', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
             });
 
             const data = await response.json();
@@ -112,7 +115,7 @@ class AmbienteView {
 
         } catch (error) {
             console.error('Error deleting ambiente:', error);
-            alert(error.message || 'Hubo un error al intentar eliminar el ambiente. Por favor, intente de nuevo.');
+            NotificationService.showError(error.message || 'Hubo un error al intentar eliminar el ambiente. Por favor, intente de nuevo.');
             this.confirmBtn.disabled = false;
             this.confirmBtn.textContent = 'Sí, eliminar';
         }
@@ -134,8 +137,12 @@ class AmbienteView {
     async loadAmbienteData() {
         try {
             const [ambiente, sedes] = await Promise.all([
-                fetch(`../../routing.php?controller=ambiente&action=show&id=${this.ambienteId}`).then(res => res.json()),
-                fetch('../../routing.php?controller=sede&action=index').then(res => res.json())
+                fetch(`../../routing.php?controller=ambiente&action=show&id=${this.ambienteId}`, {
+                    headers: { 'Accept': 'application/json' }
+                }).then(res => res.json()),
+                fetch('../../routing.php?controller=sede&action=index', {
+                    headers: { 'Accept': 'application/json' }
+                }).then(res => res.json())
             ]);
 
             if (ambiente && !ambiente.error) {

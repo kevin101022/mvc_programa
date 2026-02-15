@@ -3,7 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const sedeSelect = document.getElementById('sede_sede_id');
 
     // Load sedes into select
-    fetch('../../routing.php?controller=sede&action=index')
+    fetch('../../routing.php?controller=sede&action=index', {
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
         .then(res => {
             if (!res.ok) throw new Error('Network response was not ok');
             return res.json();
@@ -37,15 +41,18 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 if (data.message) {
-                    document.getElementById('successModal').classList.add('show');
+                    NotificationService.showSuccess('Ambiente creado correctamente', () => {
+                        window.location.href = 'index.php';
+                    });
                 } else {
-                    alert('Error: ' + (data.error || 'Ocurrió un error inesperado'));
+                    NotificationService.showError(data.error || 'Ocurrió un error inesperado');
                 }
             })
             .catch(err => {
                 console.error('Error saving ambiente:', err);
                 const detail = err.description || err.message || '';
-                alert('Error al guardar: ' + (err.error || 'Error en el servidor') + (detail ? '\n\nDetalle: ' + detail : ''));
+                const fullMsg = (err.error || 'Error en el servidor') + (detail ? '\n\nDetalle: ' + detail : '');
+                NotificationService.showError('Error al guardar: ' + fullMsg);
             });
     };
 

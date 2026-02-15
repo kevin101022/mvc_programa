@@ -229,7 +229,8 @@ class SedeView {
 
             const response = await fetch('../../routing.php', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: { 'Accept': 'application/json' }
             });
 
             const data = await response.json();
@@ -245,7 +246,7 @@ class SedeView {
 
         } catch (error) {
             console.error('Error deleting sede:', error);
-            alert(error.message || 'Hubo un error al intentar eliminar la sede. Por favor, intente de nuevo.');
+            NotificationService.showError(error.message || 'Hubo un error al intentar eliminar la sede. Por favor, intente de nuevo.');
             this.confirmBtn.disabled = false;
             this.confirmBtn.textContent = 'Sí, eliminar';
         }
@@ -266,7 +267,7 @@ class SedeView {
 
     async loadSedeData() {
         if (!this.sedeId) {
-            this.showError('ID de sede no válido');
+            NotificationService.showError('ID de sede no válido');
             return;
         }
 
@@ -288,7 +289,9 @@ class SedeView {
     }
 
     async fetchSede(sedeId) {
-        const response = await fetch(`../../routing.php?controller=sede&action=show&id=${sedeId}`);
+        const response = await fetch(`../../routing.php?controller=sede&action=show&id=${sedeId}`, {
+            headers: { 'Accept': 'application/json' }
+        });
         if (!response.ok) {
             return null;
         }
@@ -331,7 +334,9 @@ class SedeView {
 
     async fetchAmbientes(sedeId) {
         try {
-            const response = await fetch(`../../routing.php?controller=ambiente&action=index&sede_id=${sedeId}`);
+            const response = await fetch(`../../routing.php?controller=ambiente&action=index&sede_id=${sedeId}`, {
+                headers: { 'Accept': 'application/json' }
+            });
             if (!response.ok) return [];
             return await response.json();
         } catch (error) {

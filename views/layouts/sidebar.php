@@ -47,3 +47,7 @@ $activeNavItem = isset($activeNavItem) ? $activeNavItem : 'sedes';
         </div>
     </div>
 </aside>
+
+<!-- Custom Notifications -->
+<?php require_once dirname(__DIR__) . '/layouts/notifications.php'; ?>
+<script src="../../assets/js/utils/notifications.js?v=<?php echo time(); ?>"></script>

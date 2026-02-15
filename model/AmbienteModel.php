@@ -85,7 +85,7 @@ class AmbienteModel
     {
         $sql = "SELECT a.*, s.sede_nombre 
                 FROM ambiente a 
-                INNER JOIN sede s ON a.Sede_sede_id = s.sede_id";
+                INNER JOIN sede s ON a.sede_sede_id = s.sede_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

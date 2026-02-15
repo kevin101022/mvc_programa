@@ -52,22 +52,26 @@ class SedeController
      */
     public function store()
     {
-        $nombre = $_POST['sede_nombre'] ?? null;
-        $foto = $this->handleFileUpload('sede_foto');
+        try {
+            $nombre = $_POST['sede_nombre'] ?? null;
+            $foto = $this->handleFileUpload('sede_foto');
 
-        if (!$nombre) {
-            $this->sendResponse(['error' => 'El nombre de la sede es obligatorio'], 400);
-            return;
-        }
+            if (!$nombre) {
+                $this->sendResponse(['error' => 'El nombre de la sede es obligatorio'], 400);
+                return;
+            }
 
-        $this->model->setSedeNombre($nombre);
-        $this->model->setSedeFoto($foto);
-        $id = $this->model->create();
+            $this->model->setSedeNombre($nombre);
+            $this->model->setSedeFoto($foto);
+            $id = $this->model->create();
 
-        if ($id) {
-            $this->sendResponse(['message' => 'Sede creada correctamente', 'id' => $id], 201);
-        } else {
-            $this->sendResponse(['error' => 'No se pudo crear la sede'], 500);
+            if ($id) {
+                $this->sendResponse(['message' => 'Sede creada correctamente', 'id' => $id], 201);
+            } else {
+                $this->sendResponse(['error' => 'No se pudo crear la sede'], 500);
+            }
+        } catch (Exception $e) {
+            $this->sendResponse(['error' => 'Error al crear la sede', 'details' => $e->getMessage()], 500);
         }
     }
 
@@ -76,29 +80,33 @@ class SedeController
      */
     public function update()
     {
-        $id = $_POST['sede_id'] ?? null;
-        $nombre = $_POST['sede_nombre'] ?? null;
-        $foto = $this->handleFileUpload('sede_foto');
+        try {
+            $id = $_POST['sede_id'] ?? null;
+            $nombre = $_POST['sede_nombre'] ?? null;
+            $foto = $this->handleFileUpload('sede_foto');
 
-        if (!$id || !$nombre) {
-            $this->sendResponse(['error' => 'ID y nombre son obligatorios'], 400);
-            return;
-        }
+            if (!$id || !$nombre) {
+                $this->sendResponse(['error' => 'ID y nombre son obligatorios'], 400);
+                return;
+            }
 
-        $this->model->setSedeId($id);
-        $this->model->setSedeNombre($nombre);
+            $this->model->setSedeId($id);
+            $this->model->setSedeNombre($nombre);
 
-        // Si no se subió foto nueva, mantenemos la actual
-        if (!$foto) {
-            $current = $this->model->read();
-            $foto = !empty($current) ? $current[0]['foto'] : null;
-        }
-        $this->model->setSedeFoto($foto);
+            // Si no se subió foto nueva, mantenemos la actual
+            if (!$foto) {
+                $current = $this->model->read();
+                $foto = !empty($current) ? $current[0]['foto'] : null;
+            }
+            $this->model->setSedeFoto($foto);
 
-        if ($this->model->update()) {
-            $this->sendResponse(['message' => 'Sede actualizada correctamente']);
-        } else {
-            $this->sendResponse(['error' => 'No se pudo actualizar la sede'], 500);
+            if ($this->model->update()) {
+                $this->sendResponse(['message' => 'Sede actualizada correctamente']);
+            } else {
+                $this->sendResponse(['error' => 'No se pudo actualizar la sede'], 500);
+            }
+        } catch (Exception $e) {
+            $this->sendResponse(['error' => 'Error al actualizar la sede', 'details' => $e->getMessage()], 500);
         }
     }
 
@@ -107,17 +115,26 @@ class SedeController
      */
     public function destroy($sede_id = null)
     {
-        if (!$sede_id) {
-            $this->sendResponse(['error' => 'ID de sede requerido para eliminar'], 400);
-            return;
-        }
+        try {
+            if (!$sede_id) {
+                $this->sendResponse(['error' => 'ID de sede requerido para eliminar'], 400);
+                return;
+            }
 
-        $this->model->setSedeId($sede_id);
+            $this->model->setSedeId($sede_id);
 
-        if ($this->model->delete()) {
-            $this->sendResponse(['message' => 'Sede eliminada correctamente']);
-        } else {
-            $this->sendResponse(['error' => 'No se pudo eliminar la sede'], 500);
+            if ($this->model->delete()) {
+                $this->sendResponse(['message' => 'Sede eliminada correctamente']);
+            } else {
+                $this->sendResponse(['error' => 'No se pudo eliminar la sede'], 500);
+            }
+        } catch (Exception $e) {
+            // Error común en pgsql: 23503 es violación de llave foránea
+            $message = 'No se puede eliminar la sede porque tiene ambientes o datos asociados.';
+            if (method_exists($e, 'getCode') && $e->getCode() != '23503') {
+                $message = 'Error al eliminar la sede: ' . $e->getMessage();
+            }
+            $this->sendResponse(['error' => $message], 500);
         }
     }
 

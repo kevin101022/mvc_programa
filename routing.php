@@ -81,15 +81,25 @@ function call($controller, $action)
                 $args[] = $param->getDefaultValue();
             } elseif (!$param->isOptional()) {
                 http_response_code(400);
-                echo "<h1>Error 400: Falta el parámetro requerido: $paramName</h1>";
+                if (ini_get('display_errors') == 0) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['error' => "Falta el parámetro requerido: $paramName"]);
+                } else {
+                    echo "<h1>Error 400: Falta el parámetro requerido: $paramName</h1>";
+                }
                 return;
             }
         }
 
         // Llama al método con los argumentos necesarios
         $controllerObj->{$action}(...$args);
-    } catch (ReflectionException $e) {
+    } catch (Exception $e) {
         http_response_code(500);
-        echo "<h1>Error 500: Error interno del servidor</h1>";
+        if (ini_get('display_errors') == 0) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Error interno en el servidor', 'details' => $e->getMessage()]);
+        } else {
+            echo "<h1>Error 500: " . $e->getMessage() . "</h1>";
+        }
     }
 }

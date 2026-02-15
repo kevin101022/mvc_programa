@@ -79,7 +79,9 @@ class SedeManager {
     }
 
     async fetchSedes() {
-        const response = await fetch('../../routing.php?controller=sede&action=index&t=' + new Date().getTime());
+        const response = await fetch('../../routing.php?controller=sede&action=index&t=' + new Date().getTime(), {
+            headers: { 'Accept': 'application/json' }
+        });
         const text = await response.text();
         console.log('Respuesta del servidor:', text);
 
@@ -272,7 +274,8 @@ class SedeManager {
 
         const response = await fetch('../../routing.php', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: { 'Accept': 'application/json' }
         });
 
         const data = await response.json();
@@ -283,13 +286,11 @@ class SedeManager {
     }
 
     showSuccess(message) {
-        // Simple success notification - can be enhanced with a proper notification system
-        alert(message);
+        NotificationService.showSuccess(message);
     }
 
     showError(message) {
-        // Simple error notification - can be enhanced with a proper notification system
-        alert(message);
+        NotificationService.showError(message);
     }
 }
 

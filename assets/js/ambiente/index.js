@@ -18,8 +18,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fetch initial data
     Promise.all([
-        fetch('../../routing.php?controller=ambiente&action=index').then(res => res.json()),
-        fetch('../../routing.php?controller=sede&action=index').then(res => res.json())
+        fetch('../../routing.php?controller=ambiente&action=index', {
+            headers: { 'Accept': 'application/json' }
+        }).then(res => res.json()),
+        fetch('../../routing.php?controller=sede&action=index', {
+            headers: { 'Accept': 'application/json' }
+        }).then(res => res.json())
     ]).then(([ambData, sedeData]) => {
         ambientes = ambData;
         sedes = sedeData;
@@ -134,7 +138,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     nextBtn.onclick = () => {
         const query = searchInput.value.toLowerCase();
-        const filtered = ambientes.filter(a => a.amb_nombre.toLowerCase().includes(query));
+        const filtered = ambientes.filter(a =>
+            a.amb_nombre.toLowerCase().includes(query) ||
+            (a.sede_nombre && a.sede_nombre.toLowerCase().includes(query))
+        );
         const totalPages = Math.ceil(filtered.length / itemsPerPage);
         if (currentPage < totalPages) {
             currentPage++;
@@ -157,16 +164,25 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('confirmDeleteBtn').onclick = () => {
         if (ambienteToDeleteId) {
             fetch(`../../routing.php?controller=ambiente&action=destroy&id=${ambienteToDeleteId}`, {
-                method: 'POST'
-            }).then(res => res.json())
+                method: 'POST',
+                headers: { 'Accept': 'application/json' }
+            }).then(res => {
+                if (!res.ok) return res.json().then(err => { throw err; });
+                return res.json();
+            })
                 .then(data => {
                     if (data.message) {
                         ambientes = ambientes.filter(a => a.amb_id != ambienteToDeleteId);
                         closeDeleteModal();
                         renderTable();
+                        NotificationService.showSuccess('Ambiente eliminado correctamente');
                     } else {
-                        alert('Error: ' + data.error);
+                        NotificationService.showError(data.error);
                     }
+                })
+                .catch(err => {
+                    console.error('Error deleting:', err);
+                    NotificationService.showError(err.error || 'Error al eliminar el ambiente');
                 });
         }
     };

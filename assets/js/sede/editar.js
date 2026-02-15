@@ -78,7 +78,9 @@ class SedeEdit {
     }
 
     async fetchSede(sedeId) {
-        const response = await fetch(`../../routing.php?controller=sede&action=show&id=${sedeId}`);
+        const response = await fetch(`../../routing.php?controller=sede&action=show&id=${sedeId}`, {
+            headers: { 'Accept': 'application/json' }
+        });
         if (!response.ok) {
             throw new Error('No se pudo obtener la información de la sede');
         }
@@ -177,7 +179,7 @@ class SedeEdit {
 
         } catch (error) {
             console.error('Error updating sede:', error);
-            this.showFieldError('sede_nombre', error.message || 'Error al actualizar la sede');
+            NotificationService.showError(error.message || 'Error al actualizar la sede');
         } finally {
             // Restore button state
             submitBtn.disabled = false;
@@ -255,7 +257,9 @@ class SedeEdit {
 
     async checkSedeExists(sedeName) {
         try {
-            const response = await fetch(`../../routing.php?controller=sede&action=index`);
+            const response = await fetch(`../../routing.php?controller=sede&action=index`, {
+                headers: { 'Accept': 'application/json' }
+            });
             const sedes = await response.json();
             return sedes.some(s => s.sede_nombre.toLowerCase() === sedeName.toLowerCase() && s.sede_id != this.sedeId);
         } catch (error) {
@@ -279,7 +283,8 @@ class SedeEdit {
 
         const response = await fetch('../../routing.php', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: { 'Accept': 'application/json' }
         });
 
         const data = await response.json();

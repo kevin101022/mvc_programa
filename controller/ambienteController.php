@@ -56,22 +56,26 @@ class AmbienteController
      */
     public function store()
     {
-        $nombre = $_POST['amb_nombre'] ?? null;
-        $sede_id = $_POST['sede_sede_id'] ?? null;
+        try {
+            $nombre = $_POST['amb_nombre'] ?? null;
+            $sede_id = $_POST['sede_sede_id'] ?? null;
 
-        if (!$nombre || !$sede_id) {
-            $this->sendResponse(['error' => 'Nombre y Sede son obligatorios'], 400);
-            return;
-        }
+            if (!$nombre || !$sede_id) {
+                $this->sendResponse(['error' => 'Nombre y Sede son obligatorios'], 400);
+                return;
+            }
 
-        $this->model->setAmbnombre($nombre);
-        $this->model->setSedeSedeId($sede_id);
-        $id = $this->model->create();
+            $this->model->setAmbnombre($nombre);
+            $this->model->setSedeSedeId($sede_id);
+            $id = $this->model->create();
 
-        if ($id) {
-            $this->sendResponse(['message' => 'Ambiente creado correctamente', 'id' => $id], 201);
-        } else {
-            $this->sendResponse(['error' => 'No se pudo crear el ambiente'], 500);
+            if ($id) {
+                $this->sendResponse(['message' => 'Ambiente creado correctamente', 'id' => $id], 201);
+            } else {
+                $this->sendResponse(['error' => 'No se pudo crear el ambiente'], 500);
+            }
+        } catch (Exception $e) {
+            $this->sendResponse(['error' => 'Error al crear ambiente', 'details' => $e->getMessage()], 500);
         }
     }
 
@@ -80,23 +84,27 @@ class AmbienteController
      */
     public function update()
     {
-        $id = $_POST['amb_id'] ?? null;
-        $nombre = $_POST['amb_nombre'] ?? null;
-        $sede_id = $_POST['sede_sede_id'] ?? null;
+        try {
+            $id = $_POST['amb_id'] ?? null;
+            $nombre = $_POST['amb_nombre'] ?? null;
+            $sede_id = $_POST['sede_sede_id'] ?? null;
 
-        if (!$id || !$nombre || !$sede_id) {
-            $this->sendResponse(['error' => 'ID, Nombre y Sede son obligatorios'], 400);
-            return;
-        }
+            if (!$id || !$nombre || !$sede_id) {
+                $this->sendResponse(['error' => 'ID, Nombre y Sede son obligatorios'], 400);
+                return;
+            }
 
-        $this->model->setAmbId($id);
-        $this->model->setAmbnombre($nombre);
-        $this->model->setSedeSedeId($sede_id);
+            $this->model->setAmbId($id);
+            $this->model->setAmbnombre($nombre);
+            $this->model->setSedeSedeId($sede_id);
 
-        if ($this->model->update()) {
-            $this->sendResponse(['message' => 'Ambiente actualizado correctamente']);
-        } else {
-            $this->sendResponse(['error' => 'No se pudo actualizar el ambiente'], 500);
+            if ($this->model->update()) {
+                $this->sendResponse(['message' => 'Ambiente actualizado correctamente']);
+            } else {
+                $this->sendResponse(['error' => 'No se pudo actualizar el ambiente'], 500);
+            }
+        } catch (Exception $e) {
+            $this->sendResponse(['error' => 'Error al actualizar ambiente', 'details' => $e->getMessage()], 500);
         }
     }
 
@@ -105,17 +113,26 @@ class AmbienteController
      */
     public function destroy($id = null)
     {
-        if (!$id) {
-            $this->sendResponse(['error' => 'ID requerido para eliminar'], 400);
-            return;
-        }
+        try {
+            if (!$id) {
+                $this->sendResponse(['error' => 'ID requerido para eliminar'], 400);
+                return;
+            }
 
-        $this->model->setAmbId($id);
+            $this->model->setAmbId($id);
 
-        if ($this->model->delete()) {
-            $this->sendResponse(['message' => 'Ambiente eliminado correctamente']);
-        } else {
-            $this->sendResponse(['error' => 'No se pudo eliminar el ambiente'], 500);
+            if ($this->model->delete()) {
+                $this->sendResponse(['message' => 'Ambiente eliminado correctamente']);
+            } else {
+                $this->sendResponse(['error' => 'No se pudo eliminar el ambiente'], 500);
+            }
+        } catch (Exception $e) {
+            // Error común en pgsql: 23503 es violación de llave foránea
+            $message = 'No se puede eliminar el ambiente porque tiene datos asociados (fichas o asignaciones).';
+            if (method_exists($e, 'getCode') && $e->getCode() != '23503') {
+                $message = 'Error al eliminar el ambiente: ' . $e->getMessage();
+            }
+            $this->sendResponse(['error' => $message], 500);
         }
     }
 
