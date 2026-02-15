@@ -4,7 +4,7 @@ $activeNavItem = isset($activeNavItem) ? $activeNavItem : 'sedes';
 <aside class="sidebar">
     <div class="sidebar-header">
         <div class="logo">
-            <img src="../../imagenes/LOGOsena.png" alt="SENA Logo" class="logo-img">
+            <img src="../../assets/imagenes/LOGOsena.png" alt="SENA Logo" class="logo-img">
             <div class="logo-divider"></div>
             <span class="logo-text">Gestión de Transversales</span>
         </div>
@@ -21,6 +21,10 @@ $activeNavItem = isset($activeNavItem) ? $activeNavItem : 'sedes';
         <a href="../sede/index.php" class="nav-item <?php echo ($activeNavItem === 'sedes') ? 'active' : ''; ?>">
             <ion-icon src="../../assets/ionicons/business-outline.svg"></ion-icon>
             Sedes
+        </a>
+        <a href="../ambiente/index.php" class="nav-item <?php echo ($activeNavItem === 'ambientes') ? 'active' : ''; ?>">
+            <ion-icon src="../../assets/ionicons/cube-outline.svg"></ion-icon>
+            Ambientes
         </a>
         <a href="#" class="nav-item <?php echo ($activeNavItem === 'programas') ? 'active' : ''; ?>">
             <ion-icon src="../../assets/ionicons/school-outline.svg"></ion-icon>

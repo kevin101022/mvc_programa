@@ -1,25 +1,25 @@
 <?php
-require_once '../Conexion.php';
+require_once dirname(__DIR__) . '/Conexion.php';
 class AmbienteModel
 {
-    private $id_ambiente;
+    private $amb_id;
     private $amb_nombre;
-    private $Sede_sede_id;
+    private $sede_sede_id;
 
     private $db;
 
-    public function __construct($id_ambiente, $amb_nombre, $Sede_sede_id)
+    public function __construct($amb_id, $amb_nombre, $sede_sede_id)
     {
-        $this->setIdAmbiente($id_ambiente);
+        $this->setAmbId($amb_id);
         $this->setAmbnombre($amb_nombre);
-        $this->setSedeSedeId($Sede_sede_id);
+        $this->setSedeSedeId($sede_sede_id);
         $this->db = Conexion::getConnect();
     }
     //getters 
 
-    public function getIdAmbiente()
+    public function getAmbId()
     {
-        return $this->id_ambiente;
+        return $this->amb_id;
     }
     public function getAmbnombre()
     {
@@ -27,68 +27,96 @@ class AmbienteModel
     }
     public function getSedeSedeId()
     {
-        return $this->Sede_sede_id;
+        return $this->sede_sede_id;
     }
 
     //setters 
-    public function setIdAmbiente($id_ambiente)
+    public function setAmbId($amb_id)
     {
-        $this->id_ambiente = $id_ambiente;
+        $this->amb_id = $amb_id;
     }
     public function setAmbnombre($amb_nombre)
     {
         $this->amb_nombre = $amb_nombre;
     }
-    public function setSedeSedeId($Sede_sede_id)
+    public function setSedeSedeId($sede_sede_id)
     {
-        $this->Sede_sede_id = $Sede_sede_id;
+        $this->sede_sede_id = $sede_sede_id;
     }
     //crud
     public function create()
     {
-        $query = "INSERT INTO ambiente (amb_nombre, Sede_sede_id) 
-        VALUES (:amb_nombre, :Sede_sede_id)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':amb_nombre', $this->amb_nombre);
-        $stmt->bindParam(':Sede_sede_id', $this->Sede_sede_id);
-        $stmt->execute();
-        return $this->db->lastInsertId();
-
+        try {
+            // Primero intentamos sin el ID (asumiendo SERIAL)
+            $query = "INSERT INTO ambiente (amb_nombre, sede_sede_id) VALUES (:amb_nombre, :sede)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':amb_nombre', $this->amb_nombre);
+            $stmt->bindParam(':sede', $this->sede_sede_id);
+            $stmt->execute();
+            return $this->db->lastInsertId();
+        } catch (PDOException $e) {
+            // Si falla por restricción not-null en amb_id, es que no es SERIAL
+            if ($e->getCode() == '23502') {
+                // Intentamos obtener el siguiente ID manualmente
+                $maxId = $this->db->query("SELECT COALESCE(MAX(CAST(amb_id AS INTEGER)), 0) + 1 FROM ambiente")->fetchColumn();
+                $query = "INSERT INTO ambiente (amb_id, amb_nombre, sede_sede_id) VALUES (:id, :amb_nombre, :sede)";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':id', $maxId);
+                $stmt->bindParam(':amb_nombre', $this->amb_nombre);
+                $stmt->bindParam(':sede', $this->sede_sede_id);
+                $stmt->execute();
+                return $maxId;
+            }
+            throw $e;
+        }
     }
     public function read()
     {
-        $sql = "SELECT * FROM ambiente WHERE sede_sede_id = :sede";
+        $sql = "SELECT a.*, s.sede_nombre 
+                FROM ambiente a 
+                INNER JOIN sede s ON a.sede_sede_id = s.sede_id 
+                WHERE a.sede_sede_id = :sede";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':sede' => $this->Sede_sede_id]);
+        $stmt->execute([':sede' => $this->sede_sede_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function readAll()
     {
-        $sql = "SELECT * FROM ambiente";
+        $sql = "SELECT a.*, s.sede_nombre 
+                FROM ambiente a 
+                INNER JOIN sede s ON a.Sede_sede_id = s.sede_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function readById($id)
+    {
+        $sql = "SELECT a.*, s.sede_nombre 
+                FROM ambiente a 
+                INNER JOIN sede s ON a.sede_sede_id = s.sede_id 
+                WHERE a.amb_id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     public function update()
     {
-        $query = "UPDATE ambiente SET amb_nombre = :amb_nombre, Sede_sede_id = :Sede_sede_id WHERE id_ambiente = :id_ambiente";
+        $query = "UPDATE ambiente SET amb_nombre = :amb_nombre, sede_sede_id = :sede WHERE amb_id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':amb_nombre', $this->amb_nombre);
-        $stmt->bindParam(':Sede_sede_id', $this->Sede_sede_id);
-        $stmt->bindParam(':id_ambiente', $this->id_ambiente);
+        $stmt->bindParam(':sede', $this->sede_sede_id);
+        $stmt->bindParam(':id', $this->amb_id);
         $stmt->execute();
         return $stmt;
     }
     public function delete()
     {
-        $query = "DELETE FROM ambiente WHERE id_ambiente = :id_ambiente";
+        $query = "DELETE FROM ambiente WHERE amb_id = :id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id_ambiente', $this->id_ambiente);
+        $stmt->bindParam(':id', $this->amb_id);
         $stmt->execute();
         return $stmt;
     }
-
-
-
 }

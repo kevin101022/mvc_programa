@@ -79,7 +79,7 @@ class SedeManager {
     }
 
     async fetchSedes() {
-        const response = await fetch('../controller/sedeController.php?action=list&t=' + new Date().getTime());
+        const response = await fetch('../../routing.php?controller=sede&action=index&t=' + new Date().getTime());
         const text = await response.text();
         console.log('Respuesta del servidor:', text);
 
@@ -266,10 +266,11 @@ class SedeManager {
 
     async deleteSedeFetch(sedeId) {
         const formData = new FormData();
-        formData.append('action', 'delete');
+        formData.append('controller', 'sede');
+        formData.append('action', 'destroy');
         formData.append('sede_id', sedeId);
 
-        const response = await fetch('../controller/sedeController.php', {
+        const response = await fetch('../../routing.php', {
             method: 'POST',
             body: formData
         });

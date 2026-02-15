@@ -170,7 +170,7 @@ class SedeForm {
 
     async checkSedeExists(sedeName) {
         try {
-            const response = await fetch(`../controller/sedeController.php?action=list`);
+            const response = await fetch(`../../routing.php?controller=sede&action=index`);
             const sedes = await response.json();
             return sedes.some(s => s.sede_nombre.toLowerCase() === sedeName.toLowerCase());
         } catch (error) {
@@ -181,7 +181,8 @@ class SedeForm {
 
     async createSede(sedeData) {
         const formData = new FormData();
-        formData.append('action', 'create');
+        formData.append('controller', 'sede');
+        formData.append('action', 'store');
         formData.append('sede_nombre', sedeData.sede_nombre);
 
         // Handle photo if present
@@ -190,7 +191,7 @@ class SedeForm {
             formData.append('sede_foto', photoInput.files[0]);
         }
 
-        const response = await fetch('../controller/sedeController.php', {
+        const response = await fetch('../../routing.php', {
             method: 'POST',
             body: formData
         });

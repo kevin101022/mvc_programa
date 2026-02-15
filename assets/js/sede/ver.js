@@ -223,10 +223,11 @@ class SedeView {
             this.confirmBtn.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>';
 
             const formData = new FormData();
-            formData.append('action', 'delete');
+            formData.append('controller', 'sede');
+            formData.append('action', 'destroy');
             formData.append('sede_id', this.sedeId);
 
-            const response = await fetch('../controller/sedeController.php', {
+            const response = await fetch('../../routing.php', {
                 method: 'POST',
                 body: formData
             });
@@ -287,7 +288,7 @@ class SedeView {
     }
 
     async fetchSede(sedeId) {
-        const response = await fetch(`../controller/sedeController.php?action=get&id=${sedeId}`);
+        const response = await fetch(`../../routing.php?controller=sede&action=show&id=${sedeId}`);
         if (!response.ok) {
             return null;
         }
@@ -319,80 +320,24 @@ class SedeView {
     }
 
     async fetchProgramas(sedeId) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const mockProgramas = {
-                    1: [
-                        { programa_id: 1, programa_nombre: 'ADSO - Análisis y Desarrollo de Software', fichas_count: '2556812' },
-                        { programa_id: 2, programa_nombre: 'Mantenimiento de Equipos de Cómputo', fichas_count: '2611902' },
-                        { programa_id: 3, programa_nombre: 'Gestión de Redes de Datos', fichas_count: '2450091' }
-                    ],
-                    2: [
-                        { programa_id: 4, programa_nombre: 'Diseño Gráfico', fichas_count: '2445678' },
-                        { programa_id: 5, programa_nombre: 'Manufactura Industrial', fichas_count: '2334567' }
-                    ],
-                    3: [
-                        { programa_id: 6, programa_nombre: 'Administración Empresarial', fichas_count: '2223456' }
-                    ]
-                };
-                resolve(mockProgramas[sedeId] || []);
-            }, 300);
-        });
+        // No hay controlador de programas implementado aún con filtrado por sede
+        return [];
     }
 
     async fetchInstructores(sedeId) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const mockInstructores = {
-                    1: [
-                        { instructor_id: 1, nombre: 'Juan Carlos Díaz', especialidad: 'Desarrollo de Software', competencia_transversal: 'Programación', estado: 'Activo', email: 'juan.diaz@sena.edu.co' },
-                        { instructor_id: 2, nombre: 'María Patricia López', especialidad: 'Bases de Datos', competencia_transversal: 'Gestión de Datos', estado: 'Activo', email: 'maria.lopez@sena.edu.co' },
-                        { instructor_id: 3, nombre: 'Andrés Roberto Martínez', especialidad: 'Redes y Telecomunicaciones', competencia_transversal: 'Infraestructura TI', estado: 'Activo', email: 'andres.martinez@sena.edu.co' },
-                        { instructor_id: 4, nombre: 'Laura Carolina Pérez', especialidad: 'Programación Web', competencia_transversal: 'Programación', estado: 'Activo', email: 'laura.perez@sena.edu.co' },
-                        { instructor_id: 5, nombre: 'Carlos Eduardo Ramírez', especialidad: 'Sistemas Operativos', competencia_transversal: 'Infraestructura TI', estado: 'Activo', email: 'carlos.ramirez@sena.edu.co' },
-                        { instructor_id: 6, nombre: 'Ana Sofía González', especialidad: 'Ingeniería de Software', competencia_transversal: 'Análisis y Diseño', estado: 'Activo', email: 'ana.gonzalez@sena.edu.co' },
-                        { instructor_id: 7, nombre: 'Miguel Ángel Torres', especialidad: 'Seguridad Informática', competencia_transversal: 'Ciberseguridad', estado: 'Activo', email: 'miguel.torres@sena.edu.co' },
-                        { instructor_id: 8, nombre: 'Diana Patricia Ruiz', especialidad: 'Análisis de Sistemas', competencia_transversal: 'Análisis y Diseño', estado: 'Inactivo', email: 'diana.ruiz@sena.edu.co' },
-                        { instructor_id: 9, nombre: 'Roberto Silva Mendoza', especialidad: 'Desarrollo Mobile', competencia_transversal: 'Programación', estado: 'Activo', email: 'roberto.silva@sena.edu.co' },
-                        { instructor_id: 10, nombre: 'Carmen Elena Vargas', especialidad: 'Testing y QA', competencia_transversal: 'Calidad de Software', estado: 'Activo', email: 'carmen.vargas@sena.edu.co' }
-                    ],
-                    2: [
-                        { instructor_id: 11, nombre: 'Roberto Carlos Mendoza', especialidad: 'Diseño Gráfico', competencia_transversal: 'Diseño Visual', estado: 'Activo', email: 'roberto.mendoza@sena.edu.co' },
-                        { instructor_id: 12, nombre: 'Sandra Milena Castro', especialidad: 'Manufactura', competencia_transversal: 'Procesos Industriales', estado: 'Activo', email: 'sandra.castro@sena.edu.co' },
-                        { instructor_id: 13, nombre: 'Fernando José Vargas', especialidad: 'Procesos Industriales', competencia_transversal: 'Procesos Industriales', estado: 'Activo', email: 'fernando.vargas@sena.edu.co' }
-                    ],
-                    3: [
-                        { instructor_id: 14, nombre: 'Claudia Patricia Herrera', especialidad: 'Administración', competencia_transversal: 'Gestión Empresarial', estado: 'Activo', email: 'claudia.herrera@sena.edu.co' },
-                        { instructor_id: 15, nombre: 'Jorge Luis Morales', especialidad: 'Gestión Empresarial', competencia_transversal: 'Gestión Empresarial', estado: 'Activo', email: 'jorge.morales@sena.edu.co' }
-                    ]
-                };
-                resolve(mockInstructores[sedeId] || []);
-            }, 400);
-        });
+        // No hay controlador de instructores implementado aún con filtrado por sede
+        return [];
     }
 
     async fetchAmbientes(sedeId) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const mockAmbientes = {
-                    1: [
-                        { id_ambiente: 101, amb_nombre: 'Laboratorio de Software 1' },
-                        { id_ambiente: 102, amb_nombre: 'Laboratorio de Redes' },
-                        { id_ambiente: 103, amb_nombre: 'Ambiente de Mantenimiento' },
-                        { id_ambiente: 104, amb_nombre: 'Sala de Conferencias B' },
-                        { id_ambiente: 105, amb_nombre: 'Laboratorio de Software 2' }
-                    ],
-                    2: [
-                        { id_ambiente: 201, amb_nombre: 'Taller de Diseño' },
-                        { id_ambiente: 202, amb_nombre: 'Planta de Producción' }
-                    ],
-                    3: [
-                        { id_ambiente: 301, amb_nombre: 'Sala de Emprendimiento' }
-                    ]
-                };
-                resolve(mockAmbientes[sedeId] || []);
-            }, 350);
-        });
+        try {
+            const response = await fetch(`../../routing.php?controller=ambiente&action=index&sede_id=${sedeId}`);
+            if (!response.ok) return [];
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching ambientes:', error);
+            return [];
+        }
     }
 
     populateSedeInfo() {
@@ -543,6 +488,10 @@ class SedeView {
                 const ambienteItem = document.createElement('div');
                 ambienteItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
 
+                ambienteItem.onclick = () => {
+                    window.location.href = `../ambiente/ver.php?id=${ambiente.amb_id}`;
+                };
+
                 ambienteItem.innerHTML = `
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded bg-white dark:bg-slate-700 flex items-center justify-center text-slate-400 shadow-sm group-hover:text-sena-orange transition-colors">
@@ -550,7 +499,7 @@ class SedeView {
                         </div>
                         <div>
                             <p class="text-sm font-semibold text-slate-900 dark:text-white">${ambiente.amb_nombre}</p>
-                            <p class="text-xs text-slate-500">ID: ${String(ambiente.id_ambiente).padStart(3, '0')}</p>
+                            <p class="text-xs text-slate-500">ID: ${String(ambiente.amb_id).padStart(3, '0')}</p>
                         </div>
                     </div>
                     <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg" class="text-slate-400 group-hover:translate-x-1 transition-transform"></ion-icon>
@@ -599,10 +548,13 @@ class SedeView {
         }
 
         ambientesListComplete.innerHTML = '';
-
         this.filteredAmbientes.forEach(ambiente => {
             const ambienteItem = document.createElement('div');
             ambienteItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
+
+            ambienteItem.onclick = () => {
+                window.location.href = `../ambiente/ver.php?id=${ambiente.amb_id}`;
+            };
 
             ambienteItem.innerHTML = `
                 <div class="flex items-center gap-3">
@@ -611,7 +563,7 @@ class SedeView {
                     </div>
                     <div class="flex-1">
                         <p class="text-sm font-medium text-slate-900 dark:text-white">${ambiente.amb_nombre}</p>
-                        <p class="text-xs text-slate-500">ID: ${String(ambiente.id_ambiente).padStart(3, '0')}</p>
+                        <p class="text-xs text-slate-500">ID: ${String(ambiente.amb_id).padStart(3, '0')}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -654,7 +606,7 @@ class SedeView {
         this.filteredAmbientes = this.ambientes.filter(ambiente => {
             return !searchTerm ||
                 ambiente.amb_nombre.toLowerCase().includes(searchTerm) ||
-                String(ambiente.id_ambiente).includes(searchTerm);
+                String(ambiente.amb_id).includes(searchTerm);
         });
 
         this.renderAmbientesCompleteList();

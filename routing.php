@@ -1,71 +1,78 @@
 <?php
 
-/**
- * Front Controller / Router
- * Estilo Plantilla Académica
- */
-
-// Usamos la cadena inteligente de rutas absolutas
+// Carga de variables de entorno para que Conexion.php funcione
 require_once __DIR__ . '/EnvLoader.php';
 
-// Obtener controlador y acción de la petición
+// Prevenir salida de errores HTML que rompan el JSON en peticiones AJAX
+if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+    ini_set('display_errors', 0);
+    error_reporting(E_ALL);
+}
+
+$controllers = array(
+    'sede' => ['index', 'show', 'store', 'update', 'destroy'],
+    'ambiente' => ['index', 'show', 'store', 'update', 'destroy'],
+    // Agrega más controladores y acciones aquí si lo necesitas
+);
+
+// Obtener controlador y acción buscando en GET y POST
 $controller = $_GET['controller'] ?? $_POST['controller'] ?? 'sede';
 $action = $_GET['action'] ?? $_POST['action'] ?? 'index';
 
-// Definición de controladores y acciones permitidas
-$controllers = array(
-    'sede' => ['index', 'show', 'store', 'update', 'destroy'],
-);
-
-// Validación de existencia del controlador y acción
+// Validación básica de existencia del controlador y acción
 if (array_key_exists($controller, $controllers)) {
     if (in_array($action, $controllers[$controller])) {
         call($controller, $action);
     } else {
-        // Podrías redirigir a una página de error académica aquí
-        http_response_code(404);
-        echo "<h1>Error 404: Acción No Encontrada</h1>";
+        call('sede', 'index'); // acción por defecto si no existe
     }
 } else {
-    http_response_code(404);
-    echo "<h1>Error 404: Controlador No Encontrado</h1>";
+    call('sede', 'index'); // controlador por defecto si no existe
 }
 
 function call($controller, $action)
 {
-    // Ruta absoluta usando dirname
-    $controllerFile = __DIR__ . '/controller/' . $controller . 'Controller.php';
+    $controllerFile = 'controller/' . $controller . 'Controller.php';
 
+    // Verificar que el archivo del controlador existe
     if (!file_exists($controllerFile)) {
         http_response_code(404);
-        echo "<h1>Error 404: Archivo del Controlador no encontrado</h1>";
+        echo "<h1>Error 404: Controlador no encontrado</h1>";
         return;
     }
 
     require_once($controllerFile);
 
-    // Instanciación dinámica según el controlador
     switch ($controller) {
         case 'sede':
+            require_once('model/SedeModel.php');
             $controllerObj = new SedeController();
             break;
+        case 'ambiente':
+            require_once('model/AmbienteModel.php');
+            require_once('model/SedeModel.php');
+            $controllerObj = new AmbienteController();
+            break;
+        default:
+            http_response_code(404);
+            echo "<h1>Error 404: Controlador no encontrado</h1>";
+            return;
     }
 
-    // Verificar que el método existe en el objeto
+    // Verificar que el método existe
     if (!method_exists($controllerObj, $action)) {
         http_response_code(404);
-        echo "<h1>Error 404: El método $action no existe en el controlador</h1>";
+        echo "<h1>Error 404: Acción no encontrada</h1>";
         return;
     }
 
     try {
-        // Uso de Reflexión para llamadas dinámicas con parámetros inteligentes
         $reflection = new ReflectionMethod($controllerObj, $action);
         $args = [];
 
+        // Recolecta los parámetros esperados desde $_POST o $_GET en el orden correcto
         foreach ($reflection->getParameters() as $param) {
             $paramName = $param->getName();
-            // Priorizamos $_POST para creación/edición, luego $_GET
             if (isset($_POST[$paramName])) {
                 $args[] = $_POST[$paramName];
             } elseif (isset($_GET[$paramName])) {
@@ -79,10 +86,10 @@ function call($controller, $action)
             }
         }
 
-        // Ejecutar la acción
+        // Llama al método con los argumentos necesarios
         $controllerObj->{$action}(...$args);
     } catch (ReflectionException $e) {
         http_response_code(500);
-        echo "<h1>Error 500: Error de Reflexión - " . $e->getMessage() . "</h1>";
+        echo "<h1>Error 500: Error interno del servidor</h1>";
     }
 }

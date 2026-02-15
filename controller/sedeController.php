@@ -130,7 +130,7 @@ class SedeController
             return null;
         }
 
-        $uploadDir = dirname(__DIR__) . '/imagenes/';
+        $uploadDir = dirname(__DIR__) . '/assets/imagenes/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
@@ -141,7 +141,7 @@ class SedeController
 
         if (move_uploaded_file($_FILES[$fieldName]['tmp_name'], $targetPath)) {
             // Retornamos la ruta relativa para guardar en BD
-            return '../../imagenes/' . $fileName;
+            return '../../assets/imagenes/' . $fileName;
         }
 
         return null;

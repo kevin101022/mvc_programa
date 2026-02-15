@@ -294,7 +294,7 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     /* Overlaying a delicate blue gradient on top of the SVG */
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(227, 242, 253, 0.4)), url('../../imagenes/FooterModoLight.svg') no-repeat center bottom / cover;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(227, 242, 253, 0.4)), url('../imagenes/FooterModoLight.svg') no-repeat center bottom / cover;
     border-radius: 16px;
     padding: 24px;
     position: relative;

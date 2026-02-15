@@ -78,7 +78,7 @@ class SedeEdit {
     }
 
     async fetchSede(sedeId) {
-        const response = await fetch(`../controller/sedeController.php?action=get&id=${sedeId}`);
+        const response = await fetch(`../../routing.php?controller=sede&action=show&id=${sedeId}`);
         if (!response.ok) {
             throw new Error('No se pudo obtener la información de la sede');
         }
@@ -255,7 +255,7 @@ class SedeEdit {
 
     async checkSedeExists(sedeName) {
         try {
-            const response = await fetch(`../controller/sedeController.php?action=list`);
+            const response = await fetch(`../../routing.php?controller=sede&action=index`);
             const sedes = await response.json();
             return sedes.some(s => s.sede_nombre.toLowerCase() === sedeName.toLowerCase() && s.sede_id != this.sedeId);
         } catch (error) {
@@ -266,6 +266,7 @@ class SedeEdit {
 
     async updateSede(sedeData) {
         const formData = new FormData();
+        formData.append('controller', 'sede');
         formData.append('action', 'update');
         formData.append('sede_id', sedeData.sede_id);
         formData.append('sede_nombre', sedeData.sede_nombre);
@@ -276,7 +277,7 @@ class SedeEdit {
             formData.append('sede_foto', photoInput.files[0]);
         }
 
-        const response = await fetch('../controller/sedeController.php', {
+        const response = await fetch('../../routing.php', {
             method: 'POST',
             body: formData
         });
