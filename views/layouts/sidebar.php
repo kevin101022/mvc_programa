@@ -26,9 +26,13 @@ $activeNavItem = isset($activeNavItem) ? $activeNavItem : 'sedes';
             <ion-icon src="../../assets/ionicons/cube-outline.svg"></ion-icon>
             Ambientes
         </a>
-        <a href="#" class="nav-item <?php echo ($activeNavItem === 'programas') ? 'active' : ''; ?>">
+        <a href="../programa/index.php" class="nav-item <?php echo ($activeNavItem === 'programas') ? 'active' : ''; ?>">
             <ion-icon src="../../assets/ionicons/school-outline.svg"></ion-icon>
             Programas
+        </a>
+        <a href="../titulo_programa/index.php" class="nav-item <?php echo ($activeNavItem === 'titulos') ? 'active' : ''; ?>">
+            <ion-icon src="../../assets/ionicons/ribbon-outline.svg"></ion-icon>
+            Títulos de Programa
         </a>
         <a href="#" class="nav-item <?php echo ($activeNavItem === 'instructores') ? 'active' : ''; ?>">
             <ion-icon src="../../assets/ionicons/people-outline.svg"></ion-icon>

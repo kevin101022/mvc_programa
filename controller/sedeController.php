@@ -164,6 +164,18 @@ class SedeController
         return null;
     }
 
+    public function getProgramas($sede_id = null)
+    {
+        if (!$sede_id) {
+            $this->sendResponse(['error' => 'ID de sede requerido'], 400);
+            return;
+        }
+
+        $this->model->setSedeId($sede_id);
+        $programas = $this->model->getProgramasBySede();
+        $this->sendResponse($programas);
+    }
+
     /**
      * Helper para enviar respuestas JSON estandarizadas
      */

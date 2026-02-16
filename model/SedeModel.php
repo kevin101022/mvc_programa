@@ -86,4 +86,15 @@ class SedeModel
         $stmt->execute();
         return $stmt;
     }
+
+    public function getProgramasBySede()
+    {
+        $sql = "SELECT p.*, t.titpro_nombre 
+                FROM programa p
+                INNER JOIN titulo_programa t ON p.tit_programa_titpro_id = t.titpro_id
+                WHERE p.sede_sede_id = :sede_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':sede_id' => $this->sede_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

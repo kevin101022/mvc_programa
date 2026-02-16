@@ -307,8 +307,10 @@ class SedeView {
             ]);
 
             this.sedeData.programas = programas;
+            this.sedeData.programas_count = programas.length;
             this.filteredProgramas = [...programas];
             this.instructores = instructores;
+            this.sedeData.instructores_count = instructores.length;
             this.filteredInstructores = [...instructores];
             this.ambientes = ambientes;
             this.filteredAmbientes = [...ambientes];
@@ -323,8 +325,16 @@ class SedeView {
     }
 
     async fetchProgramas(sedeId) {
-        // No hay controlador de programas implementado aún con filtrado por sede
-        return [];
+        try {
+            const response = await fetch(`../../routing.php?controller=sede&action=getProgramas&sede_id=${sedeId}`, {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) return [];
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching programas:', error);
+            return [];
+        }
     }
 
     async fetchInstructores(sedeId) {
@@ -437,7 +447,11 @@ class SedeView {
                 const programaItem = document.createElement('div');
                 programaItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
 
-                const iconType = this.getProgramIcon(programa.programa_nombre);
+                programaItem.onclick = () => {
+                    window.location.href = `../programa/ver.php?id=${programa.prog_id}`;
+                };
+
+                const iconType = this.getProgramIcon(programa.prog_denominacion);
 
                 programaItem.innerHTML = `
                     <div class="flex items-center gap-3">
@@ -445,8 +459,8 @@ class SedeView {
                             <ion-icon src="../../assets/ionicons/${iconType}"></ion-icon>
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white">${programa.programa_nombre}</p>
-                            <p class="text-xs text-slate-500">Ficha: ${programa.fichas_count}</p>
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white">${programa.prog_denominacion}</p>
+                            <p class="text-xs text-slate-500">${programa.titpro_nombre}</p>
                         </div>
                     </div>
                     <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg" class="text-slate-400 group-hover:translate-x-1 transition-transform"></ion-icon>
@@ -660,7 +674,11 @@ class SedeView {
             const programaItem = document.createElement('div');
             programaItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
 
-            const iconType = this.getProgramIcon(programa.programa_nombre);
+            programaItem.onclick = () => {
+                window.location.href = `../programa/ver.php?id=${programa.prog_id}`;
+            };
+
+            const iconType = this.getProgramIcon(programa.prog_denominacion);
 
             programaItem.innerHTML = `
                 <div class="flex items-center gap-3">
@@ -668,8 +686,8 @@ class SedeView {
                         <ion-icon src="../../assets/ionicons/${iconType}"></ion-icon>
                     </div>
                     <div class="flex-1">
-                        <p class="text-sm font-medium text-slate-900 dark:text-white">${programa.programa_nombre}</p>
-                        <p class="text-xs text-slate-500">Ficha: ${programa.fichas_count}</p>
+                        <p class="text-sm font-medium text-slate-900 dark:text-white">${programa.prog_denominacion}</p>
+                        <p class="text-xs text-slate-500">${programa.titpro_nombre}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -712,10 +730,10 @@ class SedeView {
 
         this.filteredProgramas = this.sedeData.programas.filter(programa => {
             const matchesSearch = !searchTerm ||
-                programa.programa_nombre.toLowerCase().includes(searchTerm);
+                programa.prog_denominacion.toLowerCase().includes(searchTerm);
 
             const matchesNivel = !nivelFilter ||
-                programa.programa_nombre.toLowerCase().includes(nivelFilter.toLowerCase());
+                programa.prog_denominacion.toLowerCase().includes(nivelFilter.toLowerCase());
 
             return matchesSearch && matchesNivel;
         });
@@ -1064,6 +1082,7 @@ class SedeView {
     }
 
     getProgramIcon(programName) {
+        if (!programName) return 'school-outline.svg';
         const name = programName.toLowerCase();
         if (name.includes('software') || name.includes('desarrollo')) return 'code-slash-outline.svg';
         if (name.includes('redes') || name.includes('network')) return 'wifi-outline.svg';

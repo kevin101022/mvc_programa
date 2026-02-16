@@ -10,8 +10,10 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) || (isset($_SERVER['HTTP_ACCEPT']) 
 }
 
 $controllers = array(
-    'sede' => ['index', 'show', 'store', 'update', 'destroy'],
+    'sede' => ['index', 'show', 'store', 'update', 'destroy', 'getProgramas'],
     'ambiente' => ['index', 'show', 'store', 'update', 'destroy'],
+    'programa' => ['index', 'show', 'store', 'update', 'destroy', 'getTitulos'],
+    'titulo_programa' => ['index', 'show', 'store', 'update', 'destroy'],
     // Agrega más controladores y acciones aquí si lo necesitas
 );
 
@@ -52,6 +54,15 @@ function call($controller, $action)
             require_once('model/AmbienteModel.php');
             require_once('model/SedeModel.php');
             $controllerObj = new AmbienteController();
+            break;
+        case 'programa':
+            require_once('model/ProgramaModel.php');
+            require_once('model/TituloProgramaModel.php');
+            $controllerObj = new ProgramaController();
+            break;
+        case 'titulo_programa':
+            require_once('model/TituloProgramaModel.php');
+            $controllerObj = new TituloProgramaController();
             break;
         default:
             http_response_code(404);

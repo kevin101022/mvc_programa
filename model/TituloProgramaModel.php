@@ -1,77 +1,78 @@
 <?php
-require_once '../Conexion.php';
+require_once dirname(__DIR__) . '/Conexion.php';
 class TituloProgramaModel
 {
-    private $tibro_id;
-    private $tibro_nombre;
+    private $titpro_id;
+    private $titpro_nombre;
     private $db;
 
-    public function __construct($tibro_id, $tibro_nombre)
+    public function __construct($titpro_id = null, $titpro_nombre = null)
     {
-        $this->setTibroId($tibro_id);
-        $this->setTibroNombre($tibro_nombre);
+        $this->setTitproId($titpro_id);
+        $this->setTitproNombre($titpro_nombre);
         $this->db = Conexion::getConnect();
     }
-    //getters 
 
-    public function getTibroId()
+    // Getters
+    public function getTitproId()
     {
-        return $this->tibro_id;
+        return $this->titpro_id;
     }
-    public function getTibroNombre()
+    public function getTitproNombre()
     {
-        return $this->tibro_nombre;
+        return $this->titpro_nombre;
     }
 
-    //setters 
-    public function setTibroId($tibro_id)
+    // Setters
+    public function setTitproId($titpro_id)
     {
-        $this->tibro_id = $tibro_id;
+        $this->titpro_id = $titpro_id;
     }
-    public function setTibroNombre($tibro_nombre)
+    public function setTitproNombre($titpro_nombre)
     {
-        $this->tibro_nombre = $tibro_nombre;
+        $this->titpro_nombre = $titpro_nombre;
     }
-    //crud
+
+    // CRUD
     public function create()
     {
-        $query = "INSERT INTO titulo_programa (tibro_nombre) 
-        VALUES (:tibro_nombre)";
+        $query = "INSERT INTO titulo_programa (titpro_nombre) VALUES (:titpro_nombre) RETURNING titpro_id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':tibro_nombre', $this->tibro_nombre);
+        $stmt->bindParam(':titpro_nombre', $this->titpro_nombre);
         $stmt->execute();
-        return $this->db->lastInsertId();
+        return $stmt->fetchColumn();
     }
+
     public function read()
     {
-        $sql = "SELECT * FROM titulo_programa WHERE tibro_id = :tibro_id";
+        $sql = "SELECT * FROM titulo_programa WHERE titpro_id = :titpro_id";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':tibro_id' => $this->tibro_id]);
+        $stmt->execute([':titpro_id' => $this->titpro_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function readAll()
     {
-        $sql = "SELECT * FROM titulo_programa";
+        $sql = "SELECT * FROM titulo_programa ORDER BY titpro_nombre ASC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     public function update()
     {
-        $query = "UPDATE titulo_programa SET tibro_nombre = :tibro_nombre WHERE tibro_id = :tibro_id";
+        $query = "UPDATE titulo_programa SET titpro_nombre = :titpro_nombre WHERE titpro_id = :titpro_id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':tibro_nombre', $this->tibro_nombre);
-        $stmt->bindParam(':tibro_id', $this->tibro_id);
-        $stmt->execute();
-        return $stmt;
+        $stmt->bindParam(':titpro_nombre', $this->titpro_nombre);
+        $stmt->bindParam(':titpro_id', $this->titpro_id);
+        return $stmt->execute();
     }
+
     public function delete()
     {
-        $query = "DELETE FROM titulo_programa WHERE tibro_id = :tibro_id";
+        $query = "DELETE FROM titulo_programa WHERE titpro_id = :titpro_id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':tibro_id', $this->tibro_id);
-        $stmt->execute();
-        return $stmt;
+        $stmt->bindParam(':titpro_id', $this->titpro_id);
+        return $stmt->execute();
     }
 }

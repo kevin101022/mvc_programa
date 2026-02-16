@@ -3,7 +3,7 @@
 -- ===============================
 CREATE TABLE titulo_programa (
     titpro_id SERIAL PRIMARY KEY,
-    titpro_nombre VARCHAR(45) NOT NULL
+    titpro_nombre VARCHAR(150) NOT NULL
 );
 
 -- ===============================
@@ -12,12 +12,15 @@ CREATE TABLE titulo_programa (
 CREATE TABLE programa (
     prog_id SERIAL PRIMARY KEY,
     prog_codigo INT NOT NULL,
-    prog_denominacion VARCHAR(100) NOT NULL,
     tit_programa_titpro_id INT NOT NULL,
     prog_tipo VARCHAR(30),
+    sede_sede_id INT,
     CONSTRAINT fk_programa_titulo
         FOREIGN KEY (tit_programa_titpro_id)
-        REFERENCES titulo_programa(titpro_id)
+        REFERENCES titulo_programa(titpro_id),
+    CONSTRAINT fk_programa_sede
+        FOREIGN KEY (sede_sede_id)
+        REFERENCES sede(sede_id)
 );
 
 -- ===============================
