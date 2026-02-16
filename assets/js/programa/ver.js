@@ -85,7 +85,43 @@ class VerPrograma {
         if (this.tituloEl) this.tituloEl.textContent = this.programaData.titpro_nombre || 'No asignado';
         if (this.tipoEl) {
             this.tipoEl.textContent = this.programaData.prog_tipo || 'N/A';
-            // Update badge color based on type if needed
+        }
+
+        this.renderCompetencias();
+    }
+
+    renderCompetencias() {
+        const list = document.getElementById('competenciasList');
+        const empty = document.getElementById('noCompetencias');
+        const comps = this.programaData.competencias || [];
+
+        if (comps.length > 0) {
+            if (empty) empty.style.display = 'none';
+            if (list) {
+                list.innerHTML = '';
+                comps.forEach(c => {
+                    const item = document.createElement('div');
+                    item.className = 'p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700/50 flex items-center justify-between group hover:border-sena-green/30 transition-all cursor-pointer';
+                    item.onclick = () => window.location.href = `../competencia/ver.php?id=${c.comp_id}`;
+
+                    item.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-sena-green shadow-sm border border-slate-100 dark:border-slate-700">
+                                <ion-icon src="../../assets/ionicons/bookmarks-outline.svg"></ion-icon>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">${c.comp_nombre_corto}</h4>
+                                <p class="text-xs text-slate-500">${c.comp_horas} horas totales</p>
+                            </div>
+                        </div>
+                        <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg" class="text-slate-300 group-hover:text-sena-green transition-colors"></ion-icon>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+        } else {
+            if (empty) empty.style.display = 'block';
+            if (list) list.innerHTML = '';
         }
     }
 

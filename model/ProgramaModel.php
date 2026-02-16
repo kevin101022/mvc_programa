@@ -139,4 +139,15 @@ class ProgramaModel
         $stmt->bindParam(':prog_id', $this->prog_id);
         return $stmt->execute();
     }
+
+    public function getCompetenciasByPrograma()
+    {
+        $sql = "SELECT c.* 
+                FROM competencia c
+                INNER JOIN competxprograma cp ON c.comp_id = cp.competencia_comp_id
+                WHERE cp.programa_prog_id = :prog_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':prog_id' => $this->prog_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

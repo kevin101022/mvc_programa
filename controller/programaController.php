@@ -54,7 +54,9 @@ class ProgramaController
             return;
         }
 
-        $this->sendResponse($result[0]);
+        $programa = $result[0];
+        $programa['competencias'] = $this->model->getCompetenciasByPrograma();
+        $this->sendResponse($programa);
     }
 
     /**

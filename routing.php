@@ -13,7 +13,9 @@ $controllers = array(
     'sede' => ['index', 'show', 'store', 'update', 'destroy', 'getProgramas'],
     'ambiente' => ['index', 'show', 'store', 'update', 'destroy'],
     'programa' => ['index', 'show', 'store', 'update', 'destroy', 'getTitulos'],
+    'competencia' => ['index', 'show', 'store', 'update', 'destroy'],
     'titulo_programa' => ['index', 'show', 'store', 'update', 'destroy'],
+    'instructor' => ['index', 'show', 'showByCentro', 'store', 'update', 'destroy', 'getSedes'],
     // Agrega más controladores y acciones aquí si lo necesitas
 );
 
@@ -63,6 +65,15 @@ function call($controller, $action)
         case 'titulo_programa':
             require_once('model/TituloProgramaModel.php');
             $controllerObj = new TituloProgramaController();
+            break;
+        case 'competencia':
+            require_once('model/CompetenciaModel.php');
+            $controllerObj = new CompetenciaController();
+            break;
+        case 'instructor':
+            require_once('model/InstructorModel.php');
+            require_once('model/CentroFormacionModel.php');
+            $controllerObj = new InstructorController();
             break;
         default:
             http_response_code(404);
