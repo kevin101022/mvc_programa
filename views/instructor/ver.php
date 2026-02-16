@@ -56,7 +56,7 @@ require_once '../layouts/sidebar.php';
                             </div>
                         </div>
                         <div class="detail-item">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Sede</span>
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Centro de Formación</span>
                             <div class="flex items-center gap-2">
                                 <ion-icon src="../../assets/ionicons/business-outline.svg" class="text-lg text-gray-400"></ion-icon>
                                 <span class="status-badge status-active" id="instSede">---</span>
@@ -64,34 +64,35 @@ require_once '../layouts/sidebar.php';
                         </div>
                     </div>
                 </div>
-
-                <div class="form-card p-6">
-                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <ion-icon src="../../assets/ionicons/warning-outline.svg" class="text-red-500"></ion-icon>
-                        Zona de Peligro
-                    </h3>
-                    <p class="text-sm text-gray-500 mb-4">La eliminación de un instructor eliminará todas sus asociaciones.</p>
-                    <button id="deleteBtn" class="btn-danger w-full justify-center">
-                        <ion-icon src="../../assets/ionicons/trash-outline.svg"></ion-icon>
-                        Eliminar Instructor
-                    </button>
-                </div>
             </div>
 
-            <!-- Content Area -->
-            <div class="lg:col-span-2 space-y-6">
-                <div class="form-card p-8">
-                    <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2 border-b border-gray-100 pb-4">
-                        <ion-icon src="../../assets/ionicons/briefcase-outline.svg" class="text-green-600"></ion-icon>
-                        Asignaciones del Instructor
-                    </h3>
-                    <div id="asignacionesContainer" class="py-12 text-center text-gray-500">
-                        <ion-icon src="../../assets/ionicons/calendar-outline.svg" class="text-4xl mb-2 opacity-20"></ion-icon>
-                        <p>No hay asignaciones registradas para este instructor.</p>
-                    </div>
+            <div class="form-card p-6">
+                <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <ion-icon src="../../assets/ionicons/warning-outline.svg" class="text-red-500"></ion-icon>
+                    Zona de Peligro
+                </h3>
+                <p class="text-sm text-gray-500 mb-4">La eliminación de un instructor eliminará todas sus asociaciones.</p>
+                <button id="deleteBtn" class="btn-danger w-full justify-center">
+                    <ion-icon src="../../assets/ionicons/trash-outline.svg"></ion-icon>
+                    Eliminar Instructor
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="form-card p-8">
+                <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2 border-b border-gray-100 pb-4">
+                    <ion-icon src="../../assets/ionicons/briefcase-outline.svg" class="text-green-600"></ion-icon>
+                    Asignaciones del Instructor
+                </h3>
+                <div id="asignacionesContainer" class="py-12 text-center text-gray-500">
+                    <ion-icon src="../../assets/ionicons/calendar-outline.svg" class="text-4xl mb-2 opacity-20"></ion-icon>
+                    <p>No hay asignaciones registradas para este instructor.</p>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </main>
 

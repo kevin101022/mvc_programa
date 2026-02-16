@@ -15,13 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 // UI Elements
-                document.getElementById('instIdDisplay').textContent = String(inst.inst_id).padStart(3, '0');
                 document.getElementById('instNombreCompleto').textContent = `${inst.inst_nombres} ${inst.inst_apellidos}`;
+                document.getElementById('instIdDisplay').textContent = String(inst.inst_id).padStart(3, '0');
                 document.getElementById('instCorreo').textContent = inst.inst_correo;
-                document.getElementById('instTelefono').textContent = inst.inst_telefono || 'No registrado';
-                document.getElementById('instSede').textContent = inst.sede_nombre || 'Sin sede asignada';
+                document.getElementById('instTelefono').textContent = inst.inst_telefono || 'Sin teléfono';
+                document.getElementById('instSede').textContent = inst.cent_nombre || 'Sin centro';
                 document.getElementById('instInitial').textContent = `${inst.inst_nombres[0]}${inst.inst_apellidos[0]}`;
-
                 document.getElementById('editLink').href = `editar.php?id=${inst.inst_id}`;
             } else {
                 NotificationService.showError('Instructor no encontrado');

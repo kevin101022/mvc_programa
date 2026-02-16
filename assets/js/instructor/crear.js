@@ -4,15 +4,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const sedeSelect = document.getElementById('sede_id');
     const submitBtn = document.getElementById('submitBtn');
 
-    const loadSedes = async () => {
+    const loadCentros = async () => {
         try {
-            const response = await fetch('../../routing.php?controller=instructor&action=getSedes');
-            const sedes = await response.json();
+            const response = await fetch('../../routing.php?controller=instructor&action=getCentros', {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
 
-            sedes.forEach(sede => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
+            const centros = await response.json();
+
+            centros.forEach(centro => {
                 const option = document.createElement('option');
-                option.value = sede.sede_id;
-                option.textContent = sede.sede_nombre;
+                option.value = centro.cent_id;
+                option.textContent = centro.cent_nombre;
                 sedeSelect.appendChild(option);
             });
         } catch (error) {
@@ -36,17 +45,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 }
             });
 
-            const result = await response.json();
+            let result;
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                result = await response.json();
+            } else {
+                const text = await response.text();
+                console.error('Servidor devolvió HTML/Texto en lugar de JSON:', text);
+                NotificationService.showError('Error interno del servidor. Revisa la consola.');
+                submitBtn.disabled = false;
+                return;
+            }
 
             if (response.ok) {
                 NotificationService.showSuccess('Instructor registrado con éxito');
                 setTimeout(() => window.location.href = 'index.php', 1500);
             } else {
+                console.error('Error detallado:', result);
                 NotificationService.showError(result.error || 'Error al registrar instructor');
+                if (result.details) {
+                    console.error('Detalles del error:', result.details, 'en', result.file, 'línea', result.line);
+                }
                 submitBtn.disabled = false;
             }
         } catch (error) {
@@ -56,5 +80,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    loadSedes();
+    loadCentros();
 });

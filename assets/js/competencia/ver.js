@@ -98,20 +98,41 @@ class DetalleCompetencia {
     }
 
     async handleDelete() {
-        if (!confirm('¿Estás seguro de eliminar esta competencia? Esta acción no se puede deshacer.')) return;
+        if (typeof NotificationService === 'undefined' && !window.NotificationService) {
+            if (!confirm('¿Estás seguro de eliminar esta competencia? Se borrarán todas sus asociaciones y esta acción no se puede deshacer.')) return;
+            this.executeDelete();
+        } else {
+            const service = window.NotificationService || NotificationService;
+            service.showConfirm(
+                '¿Estás seguro de eliminar esta competencia? Se borrarán todas sus asociaciones con programas y esta acción no se puede deshacer.',
+                () => this.executeDelete()
+            );
+        }
+    }
 
+    async executeDelete() {
         try {
             const response = await fetch(`../../routing.php?controller=competencia&action=destroy&id=${this.compId}`);
             const result = await response.json();
 
             if (result.message) {
-                if (window.NotificationService) NotificationService.show(result.message, 'success');
-                setTimeout(() => window.location.href = 'index.php', 1500);
+                if (window.NotificationService) {
+                    NotificationService.showSuccess(result.message, () => {
+                        window.location.href = 'index.php';
+                    });
+                } else {
+                    alert(result.message);
+                    window.location.href = 'index.php';
+                }
             } else {
                 throw new Error(result.error || 'Error al eliminar');
             }
         } catch (error) {
-            if (window.NotificationService) NotificationService.show(error.message, 'error');
+            if (window.NotificationService) {
+                NotificationService.showError(error.message);
+            } else {
+                alert(error.message);
+            }
         }
     }
 }

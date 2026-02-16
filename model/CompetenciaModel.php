@@ -101,10 +101,29 @@ class CompetenciaModel
 
     public function delete()
     {
-        $query = "DELETE FROM competencia WHERE comp_id = :comp_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':comp_id', $this->comp_id);
-        return $stmt->execute();
+        try {
+            $this->db->beginTransaction();
+
+            // 1. Eliminar asociaciones con programas
+            $queryAsoc = "DELETE FROM competxprograma WHERE competencia_comp_id = :comp_id";
+            $stmtAsoc = $this->db->prepare($queryAsoc);
+            $stmtAsoc->bindParam(':comp_id', $this->comp_id);
+            $stmtAsoc->execute();
+
+            // 2. Eliminar la competencia
+            $queryComp = "DELETE FROM competencia WHERE comp_id = :comp_id";
+            $stmtComp = $this->db->prepare($queryComp);
+            $stmtComp->bindParam(':comp_id', $this->comp_id);
+            $stmtComp->execute();
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw new Exception("No se puede eliminar la competencia: Puede que esté asignada a un instructor o ficha.");
+        }
     }
 
     // Association with Programs (competxprograma)

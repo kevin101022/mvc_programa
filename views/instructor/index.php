@@ -45,7 +45,7 @@ require_once '../layouts/sidebar.php';
                 </div>
                 <div class="filter-container">
                     <select id="sedeFilter" class="search-input" style="padding-left: 12px !important; width: 240px;">
-                        <option value="">Todas las Sedes</option>
+                        <option value="">Todos los Centros</option>
                     </select>
                 </div>
             </div>
@@ -64,7 +64,7 @@ require_once '../layouts/sidebar.php';
                         <th class="w-20">ID</th>
                         <th>Instructor</th>
                         <th>Contacto</th>
-                        <th>Sede</th>
+                        <th>Centro de Formación</th>
                         <th class="text-right">Acciones</th>
                     </tr>
                 </thead>

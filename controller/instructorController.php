@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/model/InstructorModel.php';
-require_once dirname(__DIR__) . '/model/SedeModel.php';
+require_once dirname(__DIR__) . '/model/CentroFormacionModel.php';
 
 class instructorController
 {
@@ -11,11 +11,11 @@ class instructorController
         return $this->sendResponse($instructores);
     }
 
-    public function getSedes()
+    public function getCentros()
     {
-        $model = new SedeModel();
-        $sedes = $model->readAll();
-        return $this->sendResponse($sedes);
+        $model = new CentroFormacionModel();
+        $centros = $model->getAll();
+        return $this->sendResponse($centros);
     }
 
     public function store()

@@ -8,14 +8,53 @@ const NotificationService = {
     successAlert: null,
     errorText: null,
     successText: null,
+    confirmAlert: null,
+    confirmText: null,
+    confirmBtn: null,
 
     init() {
         this.overlay = document.getElementById('notification-overlay');
         this.modal = document.getElementById('notification-modal');
         this.errorAlert = document.getElementById('error-alert');
         this.successAlert = document.getElementById('success-alert');
+        this.confirmAlert = document.getElementById('confirm-alert');
+
         this.errorText = document.getElementById('error-message-text');
         this.successText = document.getElementById('success-message-text');
+        this.confirmText = document.getElementById('confirm-message-text');
+
+        this.errorBtn = document.getElementById('error-close-btn');
+        this.successBtn = document.getElementById('success-close-btn');
+        this.confirmBtn = document.getElementById('confirm-btn-primary');
+        this.cancelBtn = document.getElementById('confirm-cancel-btn');
+
+        // Default handlers for static buttons
+        if (this.errorBtn) this.errorBtn.onclick = () => this.hide();
+        if (this.cancelBtn) this.cancelBtn.onclick = () => this.hide();
+    },
+
+    showConfirm(message, callback) {
+        if (!this.overlay) this.init();
+
+        this.confirmText.textContent = message;
+        this.confirmAlert.classList.remove('hidden');
+        this.errorAlert.classList.add('hidden');
+        this.successAlert.classList.add('hidden');
+
+        this.confirmBtn.onclick = () => {
+            this.hide();
+            setTimeout(() => callback(), 100);
+        };
+
+        this.show();
+    },
+
+    show(message, type = 'success') {
+        if (type === 'error') {
+            this.showError(message);
+        } else {
+            this.showSuccess(message);
+        }
     },
 
     showError(message) {
@@ -34,15 +73,15 @@ const NotificationService = {
         this.successText.textContent = message;
         this.successAlert.classList.remove('hidden');
         this.errorAlert.classList.add('hidden');
+        this.confirmAlert.classList.add('hidden');
 
-        const closeBtn = document.getElementById('success-close-btn');
         if (callback) {
-            closeBtn.onclick = () => {
+            this.successBtn.onclick = () => {
                 this.hide();
-                callback();
+                setTimeout(() => callback(), 100);
             };
         } else {
-            closeBtn.onclick = () => this.hide();
+            this.successBtn.onclick = () => this.hide();
         }
 
         this.show();
@@ -73,3 +112,6 @@ const NotificationService = {
 document.addEventListener('DOMContentLoaded', () => {
     NotificationService.init();
 });
+
+// Explicitly expose to window object
+window.NotificationService = NotificationService;

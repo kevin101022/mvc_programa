@@ -78,22 +78,39 @@ class CompetenciaIndex {
     }
 
     async handleDelete(id) {
-        if (!confirm('¿Estás seguro de eliminar esta competencia?')) return;
+        if (typeof NotificationService === 'undefined' && !window.NotificationService) {
+            if (!confirm('¿Estás seguro de eliminar esta competencia? Se borrarán todas sus asociaciones y esta acción no se puede deshacer.')) return;
+            this.executeDelete(id);
+        } else {
+            const service = window.NotificationService || NotificationService;
+            service.showConfirm(
+                '¿Estás seguro de eliminar esta competencia? Se borrarán todas sus asociaciones con programas y esta acción no se puede deshacer.',
+                () => this.executeDelete(id)
+            );
+        }
+    }
 
+    async executeDelete(id) {
         try {
-            const response = await fetch(`../../routing.php?controller=competencia&action=destroy&id=${id}`, {
-                method: 'GET' // En este MVC usamos GET para destroy con parámetro id en routing
-            });
+            const response = await fetch(`../../routing.php?controller=competencia&action=destroy&id=${id}`);
             const result = await response.json();
 
             if (result.message) {
-                if (window.NotificationService) NotificationService.show(result.message, 'success');
+                if (window.NotificationService) {
+                    NotificationService.showSuccess(result.message);
+                } else {
+                    alert(result.message);
+                }
                 await this.loadCompetencias();
             } else {
                 throw new Error(result.error || 'Error al eliminar');
             }
         } catch (error) {
-            if (window.NotificationService) NotificationService.show(error.message, 'error');
+            if (window.NotificationService) {
+                NotificationService.showError(error.message);
+            } else {
+                alert(error.message);
+            }
         }
     }
 }

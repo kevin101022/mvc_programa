@@ -9,20 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let instructores = [];
 
-    const loadSedes = async () => {
+    const loadCentros = async () => {
         try {
-            const response = await fetch('../../routing.php?controller=instructor&action=getSedes');
-            const sedes = await response.json();
+            const response = await fetch('../../routing.php?controller=instructor&action=getCentros');
+            const centros = await response.json();
 
-            sedeFilter.innerHTML = '<option value="">Todas las Sedes</option>';
-            sedes.forEach(sede => {
+            sedeFilter.innerHTML = '<option value="">Todos los Centros</option>';
+            centros.forEach(centro => {
                 const option = document.createElement('option');
-                option.value = sede.sede_id;
-                option.textContent = sede.sede_nombre;
+                option.value = centro.cent_id;
+                option.textContent = centro.cent_nombre;
                 sedeFilter.appendChild(option);
             });
         } catch (error) {
-            console.error('Error al cargar sedes:', error);
+            console.error('Error al cargar centros:', error);
         }
     };
 
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
                 <td class="px-6 py-4">
                     <span class="status-badge status-active">
-                        ${inst.sede_nombre || 'Sin sede'}
+                        ${inst.cent_nombre || 'Sin centro'}
                     </span>
                 </td>
                 <td class="px-6 py-4 text-right">
@@ -113,6 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
     sedeFilter.addEventListener('change', filterData);
     if (refreshBtn) refreshBtn.onclick = loadInstructores;
 
-    loadSedes();
+    loadCentros();
     loadInstructores();
 });

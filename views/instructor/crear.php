@@ -53,9 +53,9 @@ require_once '../layouts/sidebar.php';
                         </div>
 
                         <div class="form-group md:col-span-2">
-                            <label class="form-label">Sede de Adscripción <span class="text-red-500">*</span></label>
+                            <label class="form-label">Centro de Formación <span class="text-red-500">*</span></label>
                             <select id="sede_id" name="centro_formacion_cent_id" required class="search-input" style="padding-left: 12px !important;">
-                                <option value="">Seleccione una sede...</option>
+                                <option value="">Seleccione un centro...</option>
                             </select>
                         </div>
                     </div>
