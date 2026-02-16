@@ -42,7 +42,7 @@ $activeNavItem = isset($activeNavItem) ? $activeNavItem : 'sedes';
 
     <div class="sidebar-footer">
         <div class="user-profile">
-            <img src="../../assets/img/profile.jpg" alt="Coordinador" class="profile-img">
+            <img src="../../assets/imagenes/Foto-nota-2024-01-03T181318.611.webp" alt="Coordinador" class="profile-img">
             <div class="profile-info">
                 <p class="profile-name">Carlos Rodriguez</p>
                 <p class="profile-role">Coordinador Académico</p>
