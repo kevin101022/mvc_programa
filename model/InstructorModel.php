@@ -89,8 +89,7 @@ class InstructorModel
     {
         try {
             $query = "INSERT INTO instructor (inst_nombres, inst_apellidos, inst_correo, inst_telefono, especialidad, centro_formacion_cent_id) 
-            VALUES (:inst_nombres, :inst_apellidos, :inst_correo, :inst_telefono, :especialidad, :cent_id)
-            RETURNING inst_id";
+            VALUES (:inst_nombres, :inst_apellidos, :inst_correo, :inst_telefono, :especialidad, :cent_id)";
 
             $stmt = $this->db->prepare($query);
 
@@ -107,8 +106,7 @@ class InstructorModel
             $stmt->bindParam(':cent_id', $centId);
 
             $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result['inst_id'] ?? false;
+            return $this->db->lastInsertId();
         } catch (PDOException $e) {
             error_log("Error en InstructorModel::create: " . $e->getMessage());
             throw $e;

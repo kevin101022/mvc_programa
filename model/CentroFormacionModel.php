@@ -36,12 +36,11 @@ class CentroFormacionModel
 
     public function create()
     {
-        $query = "INSERT INTO centro_formacion (cent_nombre) VALUES (:cent_nombre) RETURNING cent_id";
+        $query = "INSERT INTO centro_formacion (cent_nombre) VALUES (:cent_nombre)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':cent_nombre', $this->cent_nombre);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['cent_id'] ?? false;
+        return $this->db->lastInsertId();
     }
 
     public function read()

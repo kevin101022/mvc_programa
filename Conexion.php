@@ -17,22 +17,23 @@ class Conexion
 
             $host = getenv('DB_HOST') ?: 'localhost';
             $db   = getenv('DB_NAME') ?: 'transversal';
-            $user = getenv('DB_USER') ?: 'postgres';
+            $user = getenv('DB_USER') ?: 'root';
             $pass = getenv('DB_PASS') ?: '';
-            $port = getenv('DB_PORT') ?: '5432';
-            $driver = getenv('DB_DRIVER') ?: 'pgsql';
+            $port = getenv('DB_PORT') ?: '3306';
+            $driver = getenv('DB_DRIVER') ?: 'mysql';
 
-            // Verificar que el driver de PostgreSQL esté habilitado
-            if (!in_array('pgsql', PDO::getAvailableDrivers())) {
-                throw new Exception("El driver 'pdo_pgsql' no está habilitado en su PHP. Por favor, actívelo en el archivo php.ini de Laragon.");
+            // Verificar que el driver esté habilitado
+            if (!in_array($driver, PDO::getAvailableDrivers())) {
+                throw new Exception("El driver 'pdo_$driver' no está habilitado en su PHP.");
             }
 
-            $dsn = "pgsql:host=$host;port=$port;dbname=$db";
+            // DSN dinámico para soportar mysql o pgsql
+            $dsn = "$driver:host=$host;port=$port;dbname=$db";
+            
             try {
                 self::$instance = new PDO($dsn, $user, $pass, $pdo_options);
             } catch (PDOException $e) {
-                // Si falla por credenciales o base de datos no existe
-                throw new Exception("Error al conectar a PostgreSQL: " . $e->getMessage());
+                throw new Exception("Error al conectar a la base de datos: " . $e->getMessage());
             }
         }
         return self::$instance;

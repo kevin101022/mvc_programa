@@ -77,8 +77,7 @@ class ProgramaModel
     public function create()
     {
         $query = "INSERT INTO programa (prog_codigo, prog_denominacion, tit_programa_titpro_id, prog_tipo, sede_sede_id) 
-                  VALUES (:prog_codigo, :prog_denominacion, :tit_programa_titpro_id, :prog_tipo, :sede_sede_id)
-                  RETURNING prog_id";
+                  VALUES (:prog_codigo, :prog_denominacion, :tit_programa_titpro_id, :prog_tipo, :sede_sede_id)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':prog_codigo', $this->prog_codigo);
         $stmt->bindParam(':prog_denominacion', $this->prog_denominacion);
@@ -86,7 +85,7 @@ class ProgramaModel
         $stmt->bindParam(':prog_tipo', $this->prog_tipo);
         $stmt->bindParam(':sede_sede_id', $this->sede_sede_id);
         $stmt->execute();
-        return $stmt->fetchColumn();
+        return $this->db->lastInsertId();
     }
 
     public function read()

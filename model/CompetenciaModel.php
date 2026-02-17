@@ -58,14 +58,13 @@ class CompetenciaModel
     public function create()
     {
         $query = "INSERT INTO competencia (comp_nombre_corto, comp_horas, comp_nombre_unidad_competencia) 
-                  VALUES (:comp_nombre_corto, :comp_horas, :comp_nombre_unidad_competencia)
-                  RETURNING comp_id";
+                  VALUES (:comp_nombre_corto, :comp_horas, :comp_nombre_unidad_competencia)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':comp_nombre_corto', $this->comp_nombre_corto);
         $stmt->bindParam(':comp_horas', $this->comp_horas);
         $stmt->bindParam(':comp_nombre_unidad_competencia', $this->comp_nombre_unidad_competencia);
         $stmt->execute();
-        return $stmt->fetchColumn();
+        return $this->db->lastInsertId();
     }
 
     public function read()

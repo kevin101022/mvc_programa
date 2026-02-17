@@ -62,7 +62,7 @@ class FichaModel
     public function create()
     {
         $query = "INSERT INTO ficha (fich_id, programa_prog_id, instructor_inst_id, fich_jornada, coordinacion_coord_id) 
-        VALUES (:fich_id, :programa_prog_id, :instructor_inst_id, :fich_jornada, :coordinacion_id) RETURNING fich_id";
+        VALUES (:fich_id, :programa_prog_id, :instructor_inst_id, :fich_jornada, :coordinacion_id)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':fich_id', $this->fich_id);
         $stmt->bindParam(':programa_prog_id', $this->programa_prog_id);
@@ -70,8 +70,7 @@ class FichaModel
         $stmt->bindParam(':fich_jornada', $this->fich_jornada);
         $stmt->bindParam(':coordinacion_id', $this->coordinacion_id);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['fich_id'] ?? false;
+        return $this->db->lastInsertId() ?: $this->fich_id;
     }
     public function read()
     {

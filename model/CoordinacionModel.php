@@ -47,13 +47,12 @@ class CoordinacionModel
     public function create()
     {
         $query = "INSERT INTO coordinacion (coord_nombre, centro_formacion_cent_id) 
-                  VALUES (:coord_nombre, :cent_id) RETURNING coord_id";
+                  VALUES (:coord_nombre, :cent_id)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':coord_nombre', $this->coord_nombre);
         $stmt->bindParam(':cent_id', $this->centro_formacion_cent_id);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['coord_id'] ?? false;
+        return $this->db->lastInsertId();
     }
 
     public function read()

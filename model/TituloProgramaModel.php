@@ -36,11 +36,11 @@ class TituloProgramaModel
     // CRUD
     public function create()
     {
-        $query = "INSERT INTO titulo_programa (titpro_nombre) VALUES (:titpro_nombre) RETURNING titpro_id";
+        $query = "INSERT INTO titulo_programa (titpro_nombre) VALUES (:titpro_nombre)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':titpro_nombre', $this->titpro_nombre);
         $stmt->execute();
-        return $stmt->fetchColumn();
+        return $this->db->lastInsertId();
     }
 
     public function read()

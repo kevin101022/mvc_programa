@@ -86,7 +86,7 @@ class AsignacionModel
     public function create()
     {
         $query = "INSERT INTO asignacion (instructor_inst_id, asig_fecha_ini, asig_fecha_fin, ficha_fich_id, ambiente_amb_id, competencia_comp_id) 
-                  VALUES (:instructor_id, :fecha_ini, :fecha_fin, :ficha_id, :ambiente_id, :competencia_id) RETURNING asig_id";
+                  VALUES (:instructor_id, :fecha_ini, :fecha_fin, :ficha_id, :ambiente_id, :competencia_id)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':instructor_id', $this->instructor_inst_id);
         $stmt->bindParam(':fecha_ini', $this->asig_fecha_ini);
@@ -95,8 +95,7 @@ class AsignacionModel
         $stmt->bindParam(':ambiente_id', $this->ambiente_amb_id);
         $stmt->bindParam(':competencia_id', $this->competencia_comp_id);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['asig_id'] ?? false;
+        return $this->db->lastInsertId();
     }
     public function read()
     {

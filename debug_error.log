@@ -36,3 +36,45 @@
     "line": 91,
     "trace": "#0 C:\\laragon\\www\\MVC\\mvc_programa\\model\\FichaModel.php(91): PDOStatement->execute()\n#1 C:\\laragon\\www\\MVC\\mvc_programa\\controller\\fichaController.php(9): FichaModel->readAll()\n#2 C:\\laragon\\www\\MVC\\mvc_programa\\routing.php(141): FichaController->index()\n#3 {main}"
 }
+[2026-02-17 13:28:21] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'RETURNING cent_id' at line 1",
+    "file": "C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\CentroFormacionModel.php",
+    "line": 42,
+    "trace": "#0 C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\CentroFormacionModel.php(42): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVC\\mvc_programa\\controller\\centro_formacionController.php(22): CentroFormacionModel->create()\n#2 C:\\xampp\\htdocs\\MVC\\mvc_programa\\routing.php(141): CentroFormacionController->store()\n#3 {main}"
+}
+[2026-02-17 13:28:29] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'RETURNING cent_id' at line 1",
+    "file": "C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\CentroFormacionModel.php",
+    "line": 42,
+    "trace": "#0 C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\CentroFormacionModel.php(42): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVC\\mvc_programa\\controller\\centro_formacionController.php(22): CentroFormacionModel->create()\n#2 C:\\xampp\\htdocs\\MVC\\mvc_programa\\routing.php(141): CentroFormacionController->store()\n#3 {main}"
+}
+[2026-02-17 16:23:18] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`transversal`.`asignacion`, CONSTRAINT `fk_asig_inst` FOREIGN KEY (`instructor_inst_id`) REFERENCES `instructor` (`inst_id`))",
+    "file": "C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\InstructorModel.php",
+    "line": 172,
+    "trace": "#0 C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\InstructorModel.php(172): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVC\\mvc_programa\\controller\\instructorController.php(92): InstructorModel->delete()\n#2 C:\\xampp\\htdocs\\MVC\\mvc_programa\\routing.php(141): instructorController->destroy()\n#3 {main}"
+}
+[2026-02-17 16:23:22] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`transversal`.`asignacion`, CONSTRAINT `fk_asig_inst` FOREIGN KEY (`instructor_inst_id`) REFERENCES `instructor` (`inst_id`))",
+    "file": "C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\InstructorModel.php",
+    "line": 172,
+    "trace": "#0 C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\InstructorModel.php(172): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVC\\mvc_programa\\controller\\instructorController.php(92): InstructorModel->delete()\n#2 C:\\xampp\\htdocs\\MVC\\mvc_programa\\routing.php(141): instructorController->destroy()\n#3 {main}"
+}
+[2026-02-17 16:29:52] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`transversal`.`asignacion`, CONSTRAINT `fk_asig_ficha` FOREIGN KEY (`ficha_fich_id`) REFERENCES `ficha` (`fich_id`))",
+    "file": "C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\FichaModel.php",
+    "line": 118,
+    "trace": "#0 C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\FichaModel.php(118): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVC\\mvc_programa\\controller\\fichaController.php(66): FichaModel->delete()\n#2 C:\\xampp\\htdocs\\MVC\\mvc_programa\\routing.php(141): FichaController->destroy()\n#3 {main}"
+}
+[2026-02-17 16:30:02] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`transversal`.`asignacion`, CONSTRAINT `fk_asig_ficha` FOREIGN KEY (`ficha_fich_id`) REFERENCES `ficha` (`fich_id`))",
+    "file": "C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\FichaModel.php",
+    "line": 118,
+    "trace": "#0 C:\\xampp\\htdocs\\MVC\\mvc_programa\\model\\FichaModel.php(118): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVC\\mvc_programa\\controller\\fichaController.php(66): FichaModel->delete()\n#2 C:\\xampp\\htdocs\\MVC\\mvc_programa\\routing.php(141): FichaController->destroy()\n#3 {main}"
+}

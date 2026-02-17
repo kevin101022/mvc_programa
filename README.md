@@ -67,27 +67,25 @@ DB_PASS=          # En XAMPP suele estar vacío
 
 ---
 
-## 5. 🔄 Cómo cambiar de PostgreSQL a MySQL (Paso a Paso)
+## 5. 🔄 Configuración por Motor de Base de Datos
 
-Si decides cambiar el motor de base de datos a MySQL, sigue estos pasos:
+El proyecto es compatible con ambos motores. Aquí tienes el código de `Conexion.php` y la configuración de `.env` separada para cada uno.
 
-### Paso 1: Modificar el archivo `.env`
-Cambia los valores actuales por los de MySQL:
+---
+
+### 🐬 Opción A: Configuración para MySQL
+
+**1. Archivo `.env`:**
 ```env
 DB_DRIVER=mysql
 DB_PORT=3306
 DB_HOST=localhost
 DB_NAME=transversal
 DB_USER=root
-DB_PASS=          # Vacío si usas Laragon/XAMPP por defecto
+DB_PASS=          # Vacío en XAMPP/Laragon por defecto
 ```
 
-### Paso 2: Habilitar la extensión en PHP
-Asegúrate de que la extensión `pdo_mysql` esté activa en tu `php.ini` o a través del menú de Laragon/XAMPP.
-
-### Paso 3: Código de `Conexion.php` para MySQL
-Para que la conexión sea compatible con MySQL, asegúrate de que tu archivo `mvc_programa/Conexion.php` se vea así:
-
+**2.copia y pega este Código en `mvc_programa/Conexion.php`:**
 ```php
 <?php
 
@@ -100,7 +98,6 @@ class Conexion
     public static function getConnect()
     {
         if (!isset(self::$instance)) {
-            // Cargar variables de entorno
             require_once __DIR__ . '/EnvLoader.php';
             EnvLoader::load(__DIR__ . '/.env');
 
@@ -111,26 +108,78 @@ class Conexion
             $user = getenv('DB_USER') ?: 'root';
             $pass = getenv('DB_PASS') ?: '';
             $port = getenv('DB_PORT') ?: '3306';
-            $driver = getenv('DB_DRIVER') ?: 'mysql';
 
-            // Verificar que el driver esté habilitado
-            if (!in_array($driver, PDO::getAvailableDrivers())) {
-                throw new Exception("El driver 'pdo_$driver' no está habilitado en su PHP.");
-            }
-
-            // DSN dinámico para soportar mysql o pgsql
-            $dsn = "$driver:host=$host;port=$port;dbname=$db";
+            // Driver para MySQL
+            $dsn = "mysql:host=$host;port=$port;dbname=$db";
             
             try {
                 self::$instance = new PDO($dsn, $user, $pass, $pdo_options);
             } catch (PDOException $e) {
-                throw new Exception("Error al conectar a la base de datos: " . $e->getMessage());
+                throw new Exception("Error al conectar a MySQL: " . $e->getMessage());
             }
         }
         return self::$instance;
     }
 }
 ```
+
+---
+
+### 🐘 Opción B: Configuración para PostgreSQL
+
+**1. Archivo `.env`:**
+```env
+DB_DRIVER=pgsql
+DB_PORT=5432
+DB_HOST=localhost
+DB_NAME=transversal
+DB_USER=postgres
+DB_PASS=tu_contraseña
+```
+
+**2.copia y pega este Código en `mvc_programa/Conexion.php`:**
+```php
+<?php
+
+class Conexion
+{
+    private static $instance = NULL;
+
+    private function __construct() {}
+
+    public static function getConnect()
+    {
+        if (!isset(self::$instance)) {
+            require_once __DIR__ . '/EnvLoader.php';
+            EnvLoader::load(__DIR__ . '/.env');
+
+            $pdo_options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+
+            $host = getenv('DB_HOST') ?: 'localhost';
+            $db   = getenv('DB_NAME') ?: 'transversal';
+            $user = getenv('DB_USER') ?: 'postgres';
+            $pass = getenv('DB_PASS') ?: '';
+            $port = getenv('DB_PORT') ?: '5432';
+
+            // Verificar driver de PostgreSQL
+            if (!in_array('pgsql', PDO::getAvailableDrivers())) {
+                throw new Exception("El driver 'pdo_pgsql' no está habilitado.");
+            }
+
+            // Driver para PostgreSQL
+            $dsn = "pgsql:host=$host;port=$port;dbname=$db";
+            try {
+                self::$instance = new PDO($dsn, $user, $pass, $pdo_options);
+            } catch (PDOException $e) {
+                throw new Exception("Error al conectar a PostgreSQL: " . $e->getMessage());
+            }
+        }
+        return self::$instance;
+    }
+}
+```
+
+
 
 ### Paso 4: Importar la base de datos
 Recuerda importar tu archivo `.sql` en PHPMyAdmin o la herramienta que utilices para MySQL.
