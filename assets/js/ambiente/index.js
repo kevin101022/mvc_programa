@@ -17,31 +17,44 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalRecords = document.getElementById('totalRecords');
 
     // Fetch initial data
+    const headers = { 'Accept': 'application/json' };
+
     Promise.all([
-        fetch('../../routing.php?controller=ambiente&action=index', {
-            headers: { 'Accept': 'application/json' }
-        }).then(res => res.json()),
-        fetch('../../routing.php?controller=sede&action=index', {
-            headers: { 'Accept': 'application/json' }
-        }).then(res => res.json())
+        fetch('../../routing.php?controller=ambiente&action=index', { headers })
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.details || data.error || 'Error al cargar ambientes');
+                return data;
+            }),
+        fetch('../../routing.php?controller=sede&action=index', { headers })
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.details || data.error || 'Error al cargar sedes');
+                return data;
+            })
     ]).then(([ambData, sedeData]) => {
-        ambientes = ambData;
-        sedes = sedeData;
+        ambientes = Array.isArray(ambData) ? ambData : [];
+        sedes = Array.isArray(sedeData) ? sedeData : [];
 
         // Apply URL filter if present
-        if (sedeFilterId) {
+        if (sedeFilterId && ambientes.length > 0) {
             ambientes = ambientes.filter(a => a.sede_sede_id == sedeFilterId);
             showFilterBadge();
         }
 
         renderTable();
-    }).catch(err => console.error('Error loading data:', err));
+    }).catch(err => {
+        console.error('Error loading data:', err);
+        if (tableBody) {
+            tableBody.innerHTML = `<tr><td colspan="3" class="text-center p-8 text-red-500">Error: ${err.message}</td></tr>`;
+        }
+    });
 
     function showFilterBadge() {
+        if (!sedes.length) return;
         const sede = sedes.find(s => s.sede_id == sedeFilterId);
         const sedeName = sede ? sede.sede_nombre : 'Sede seleccionada';
 
-        // Check if badge already exists
         if (document.getElementById('sedeFilterBadge')) return;
 
         const badge = document.createElement('div');
@@ -60,20 +73,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function getSedeName(sedeId) {
-        const sede = sedes.find(s => s.sede_id == sedeId);
-        return sede ? sede.sede_nombre : 'N/A';
-    }
-
     function renderTable() {
-        const query = searchInput.value.toLowerCase();
+        if (!tableBody) return;
+        const query = (searchInput ? searchInput.value : '').toLowerCase();
         const filtered = ambientes.filter(a =>
-            a.amb_nombre.toLowerCase().includes(query) ||
+            (a.amb_nombre || '').toLowerCase().includes(query) ||
             (a.sede_nombre && a.sede_nombre.toLowerCase().includes(query))
         );
 
         const total = filtered.length;
-        totalAmbientesSpan.textContent = ambientes.length;
+        if (totalAmbientesSpan) totalAmbientesSpan.textContent = ambientes.length;
         if (totalRecords) totalRecords.textContent = total;
 
         const totalPages = Math.ceil(total / itemsPerPage);
@@ -109,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderPagination(totalPages) {
+        if (!paginationNumbers) return;
         paginationNumbers.innerHTML = '';
         for (let i = 1; i <= totalPages; i++) {
             const btn = document.createElement('button');
@@ -120,70 +130,79 @@ document.addEventListener('DOMContentLoaded', function () {
             };
             paginationNumbers.appendChild(btn);
         }
-        prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+        if (prevBtn) prevBtn.disabled = currentPage === 1;
+        if (nextBtn) nextBtn.disabled = currentPage === totalPages || totalPages === 0;
     }
 
-    searchInput.addEventListener('input', () => {
-        currentPage = 1;
-        renderTable();
-    });
-
-    prevBtn.onclick = () => {
-        if (currentPage > 1) {
-            currentPage--;
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            currentPage = 1;
             renderTable();
-        }
-    };
+        });
+    }
 
-    nextBtn.onclick = () => {
-        const query = searchInput.value.toLowerCase();
-        const filtered = ambientes.filter(a =>
-            a.amb_nombre.toLowerCase().includes(query) ||
-            (a.sede_nombre && a.sede_nombre.toLowerCase().includes(query))
-        );
-        const totalPages = Math.ceil(filtered.length / itemsPerPage);
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderTable();
-        }
-    };
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        };
+    }
+
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            const query = searchInput.value.toLowerCase();
+            const filtered = ambientes.filter(a =>
+                (a.amb_nombre || '').toLowerCase().includes(query) ||
+                (a.sede_nombre && a.sede_nombre.toLowerCase().includes(query))
+            );
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+        };
+    }
 
     // Global delete modal functions
     let ambienteToDeleteId = null;
     window.openDeleteModal = (id, nombre) => {
         ambienteToDeleteId = id;
-        document.getElementById('ambienteToDelete').textContent = nombre;
-        document.getElementById('deleteModal').classList.add('show');
+        const label = document.getElementById('ambienteToDelete');
+        if (label) label.textContent = nombre;
+        const modal = document.getElementById('deleteModal');
+        if (modal) modal.classList.add('show');
     };
 
     window.closeDeleteModal = () => {
-        document.getElementById('deleteModal').classList.remove('show');
+        const modal = document.getElementById('deleteModal');
+        if (modal) modal.classList.remove('show');
     };
 
-    document.getElementById('confirmDeleteBtn').onclick = () => {
-        if (ambienteToDeleteId) {
-            fetch(`../../routing.php?controller=ambiente&action=destroy&id=${ambienteToDeleteId}`, {
-                method: 'POST',
-                headers: { 'Accept': 'application/json' }
-            }).then(res => {
-                if (!res.ok) return res.json().then(err => { throw err; });
-                return res.json();
-            })
-                .then(data => {
-                    if (data.message) {
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    if (confirmBtn) {
+        confirmBtn.onclick = () => {
+            if (ambienteToDeleteId) {
+                fetch(`../../routing.php?controller=ambiente&action=destroy&id=${ambienteToDeleteId}`, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' }
+                }).then(async res => {
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.details || data.error || 'Error al eliminar');
+                    return data;
+                })
+                    .then(data => {
                         ambientes = ambientes.filter(a => a.amb_id != ambienteToDeleteId);
-                        closeDeleteModal();
+                        window.closeDeleteModal();
                         renderTable();
                         NotificationService.showSuccess('Ambiente eliminado correctamente');
-                    } else {
-                        NotificationService.showError(data.error);
-                    }
-                })
-                .catch(err => {
-                    console.error('Error deleting:', err);
-                    NotificationService.showError(err.error || 'Error al eliminar el ambiente');
-                });
-        }
-    };
+                    })
+                    .catch(err => {
+                        console.error('Error deleting:', err);
+                        NotificationService.showError(err.message);
+                    });
+            }
+        };
+    }
 });

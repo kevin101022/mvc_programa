@@ -1,0 +1,49 @@
+<!-- Create/Edit Modal -->
+<div id="asignacionModal" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-header">
+            <h3 id="modalTitle">Nueva Asignación</h3>
+            <button class="modal-close" id="closeModal">
+                <ion-icon src="../../assets/ionicons/close-outline.svg"></ion-icon>
+            </button>
+        </div>
+        <form id="asignacionForm">
+            <input type="hidden" id="asig_id" name="asig_id">
+            <div class="modal-body p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Instructor <span class="text-red-500">*</span></label>
+                        <select id="instructor_id" name="instructor_inst_id" required class="search-input" style="padding-left: 12px !important;"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ficha <span class="text-red-500">*</span></label>
+                        <select id="ficha_id" name="ficha_fich_id" required class="search-input" style="padding-left: 12px !important;"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ambiente <span class="text-red-500">*</span></label>
+                        <select id="ambiente_id" name="ambiente_amb_id" required class="search-input" style="padding-left: 12px !important;"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Competencia <span class="text-red-500">*</span></label>
+                        <select id="competencia_id" name="competencia_comp_id" required class="search-input" style="padding-left: 12px !important;"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha Inicio <span class="text-red-500">*</span></label>
+                        <input type="date" id="asig_fecha_ini" name="asig_fecha_ini" required class="search-input" style="padding-left: 12px !important;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha Final <span class="text-red-500">*</span></label>
+                        <input type="date" id="asig_fecha_fin" name="asig_fecha_fin" required class="search-input" style="padding-left: 12px !important;">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+                <button type="submit" class="btn-primary" id="saveBtn">
+                    <ion-icon src="../../assets/ionicons/save-outline.svg"></ion-icon>
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

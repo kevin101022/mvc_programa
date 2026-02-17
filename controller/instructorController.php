@@ -31,7 +31,8 @@ class instructorController
             $data['inst_apellidos'],
             $data['inst_correo'],
             $data['inst_telefono'],
-            $data['centro_formacion_cent_id']
+            $data['centro_formacion_cent_id'],
+            $data['especialidad'] ?? null
         );
 
         $id = $model->create();
@@ -70,7 +71,8 @@ class instructorController
             $data['inst_apellidos'],
             $data['inst_correo'],
             $data['inst_telefono'],
-            $data['centro_formacion_cent_id']
+            $data['centro_formacion_cent_id'],
+            $data['especialidad'] ?? null
         );
 
         if ($model->update()) {

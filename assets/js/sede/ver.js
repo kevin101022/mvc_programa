@@ -3,13 +3,7 @@ class SedeView {
     constructor() {
         this.sedeId = this.getSedeIdFromUrl();
         this.sedeData = null;
-        this.instructores = [];
-        this.filteredInstructores = [];
         this.filteredProgramas = [];
-        this.currentFilters = {
-            search: '',
-            competencia: ''
-        };
         this.programaFilters = {
             search: '',
             nivel: ''
@@ -29,22 +23,6 @@ class SedeView {
     }
 
     bindEvents() {
-        // Instructores toggle functionality
-        const verTodosBtn = document.getElementById('verTodosInstructores');
-        const volverBtn = document.getElementById('volverPreview');
-
-        if (verTodosBtn) {
-            verTodosBtn.addEventListener('click', () => {
-                this.showFullInstructorsList();
-            });
-        }
-
-        if (volverBtn) {
-            volverBtn.addEventListener('click', () => {
-                this.showInstructoresPreview();
-            });
-        }
-
         // Programas toggle functionality
         const verTodosProgramasBtn = document.getElementById('verTodosProgramas');
         const volverProgramasBtn = document.getElementById('volverProgramasPreview');
@@ -58,38 +36,6 @@ class SedeView {
         if (volverProgramasBtn) {
             volverProgramasBtn.addEventListener('click', () => {
                 this.showProgramasPreview();
-            });
-        }
-
-        // Instructor filter events
-        const searchInput = document.getElementById('searchInstructor');
-        const competenciaSelect = document.getElementById('filterCompetencia');
-        const clearFiltersBtn = document.getElementById('clearFilters');
-        const clearFiltersBtn2 = document.getElementById('clearFiltersBtn');
-
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                this.currentFilters.search = e.target.value;
-                this.applyFilters();
-            });
-        }
-
-        if (competenciaSelect) {
-            competenciaSelect.addEventListener('change', (e) => {
-                this.currentFilters.competencia = e.target.value;
-                this.applyFilters();
-            });
-        }
-
-        if (clearFiltersBtn) {
-            clearFiltersBtn.addEventListener('click', () => {
-                this.clearAllFilters();
-            });
-        }
-
-        if (clearFiltersBtn2) {
-            clearFiltersBtn2.addEventListener('click', () => {
-                this.clearAllFilters();
             });
         }
 
@@ -300,25 +246,19 @@ class SedeView {
 
     async loadRelatedData() {
         try {
-            const [programas, instructores, ambientes] = await Promise.all([
+            const [programas, ambientes] = await Promise.all([
                 this.fetchProgramas(this.sedeId),
-                this.fetchInstructores(this.sedeId),
                 this.fetchAmbientes(this.sedeId)
             ]);
 
             this.sedeData.programas = programas;
             this.sedeData.programas_count = programas.length;
             this.filteredProgramas = [...programas];
-            this.instructores = instructores;
-            this.sedeData.instructores_count = instructores.length;
-            this.filteredInstructores = [...instructores];
             this.ambientes = ambientes;
             this.filteredAmbientes = [...ambientes];
         } catch (error) {
             console.error('Error loading related data:', error);
             this.sedeData.programas = [];
-            this.instructores = [];
-            this.filteredInstructores = [];
             this.ambientes = [];
             this.filteredAmbientes = [];
         }
@@ -335,11 +275,6 @@ class SedeView {
             console.error('Error fetching programas:', error);
             return [];
         }
-    }
-
-    async fetchInstructores(sedeId) {
-        // No hay controlador de instructores implementado aún con filtrado por sede
-        return [];
     }
 
     async fetchAmbientes(sedeId) {
@@ -359,14 +294,9 @@ class SedeView {
         // Basic info
         const sedeNombreCard = document.getElementById('sedeNombreCard');
         const sedeId = document.getElementById('sedeId');
-        const sedeNombreInstructores = document.getElementById('sedeNombreInstructores');
 
         if (sedeNombreCard) {
             sedeNombreCard.textContent = this.sedeData.sede_nombre;
-        }
-
-        if (sedeNombreInstructores) {
-            sedeNombreInstructores.textContent = this.sedeData.sede_nombre;
         }
 
         if (sedeId) {
@@ -391,7 +321,6 @@ class SedeView {
 
         // Statistics
         const totalProgramas = document.getElementById('totalProgramas');
-        const totalInstructores = document.getElementById('totalInstructores');
 
         if (totalProgramas) {
             totalProgramas.textContent = this.sedeData.programas_count || 0;
@@ -402,21 +331,15 @@ class SedeView {
             totalAmbientes.textContent = this.ambientes.length || 0;
         }
 
-        if (totalInstructores) {
-            totalInstructores.textContent = this.sedeData.instructores_count || 0;
-        }
-
         // Edit link
         const editLink = document.getElementById('editLink');
         if (editLink) {
             editLink.href = `editar.php?id=${this.sedeData.sede_id}`;
         }
 
-        // Populate programs, instructors and environments
+        // Populate programs and environments
         this.populateProgramas();
         this.populateAmbientes();
-        this.populateInstructores();
-        this.setupCompetenciaFilter();
         this.setupNivelFilter();
     }
 
@@ -828,249 +751,6 @@ class SedeView {
             option.textContent = nivel;
             nivelSelect.appendChild(option);
         });
-    }
-
-    setupCompetenciaFilter() {
-        const competenciaSelect = document.getElementById('filterCompetencia');
-        if (!competenciaSelect) return;
-
-        // Get unique competencias
-        const competencias = [...new Set(this.instructores.map(instructor => instructor.competencia_transversal))];
-        competencias.sort();
-
-        // Clear existing options (except the first one)
-        competenciaSelect.innerHTML = '<option value="">Todas las competencias</option>';
-
-        // Add competencia options
-        competencias.forEach(competencia => {
-            const option = document.createElement('option');
-            option.value = competencia;
-            option.textContent = competencia;
-            competenciaSelect.appendChild(option);
-        });
-    }
-
-    populateInstructores() {
-        const noInstructores = document.getElementById('noInstructores');
-        const instructoresPreview = document.getElementById('instructoresPreview');
-
-        if (!this.instructores || this.instructores.length === 0) {
-            if (instructoresPreview) instructoresPreview.style.display = 'none';
-            if (noInstructores) noInstructores.style.display = 'block';
-            return;
-        }
-
-        if (noInstructores) noInstructores.style.display = 'none';
-        if (instructoresPreview) instructoresPreview.style.display = 'block';
-
-        this.renderInstructoresAvatars();
-        this.renderInstructoresList();
-    }
-
-    applyFilters() {
-        const searchTerm = this.currentFilters.search.toLowerCase();
-        const competenciaFilter = this.currentFilters.competencia;
-
-        this.filteredInstructores = this.instructores.filter(instructor => {
-            const matchesSearch = !searchTerm ||
-                instructor.nombre.toLowerCase().includes(searchTerm) ||
-                instructor.especialidad.toLowerCase().includes(searchTerm);
-
-            const matchesCompetencia = !competenciaFilter ||
-                instructor.competencia_transversal === competenciaFilter;
-
-            return matchesSearch && matchesCompetencia;
-        });
-
-        this.renderInstructoresList();
-        this.updateActiveFilters();
-        this.updateFilteredCount();
-    }
-
-    updateFilteredCount() {
-        const filteredCount = document.getElementById('filteredInstructoresCount');
-        if (filteredCount) {
-            filteredCount.textContent = this.filteredInstructores.length;
-        }
-    }
-
-    updateActiveFilters() {
-        const activeFilters = document.getElementById('activeFilters');
-        const activeFiltersList = document.getElementById('activeFiltersList');
-
-        if (!activeFilters || !activeFiltersList) return;
-
-        const hasActiveFilters = this.currentFilters.search || this.currentFilters.competencia;
-
-        if (hasActiveFilters) {
-            activeFilters.style.display = 'flex';
-            activeFiltersList.innerHTML = '';
-
-            if (this.currentFilters.search) {
-                const filterTag = document.createElement('span');
-                filterTag.className = 'inline-flex items-center gap-1 px-2 py-1 bg-sena-green/10 text-sena-green text-xs rounded-full';
-                filterTag.innerHTML = `
-                    Nombre: "${this.currentFilters.search}"
-                    <button onclick="sedeView.removeFilter('search')" class="hover:text-green-700">
-                        <ion-icon src="../../assets/ionicons/close-outline.svg" class="text-xs"></ion-icon>
-                    </button>
-                `;
-                activeFiltersList.appendChild(filterTag);
-            }
-
-            if (this.currentFilters.competencia) {
-                const filterTag = document.createElement('span');
-                filterTag.className = 'inline-flex items-center gap-1 px-2 py-1 bg-sena-orange/10 text-sena-orange text-xs rounded-full';
-                filterTag.innerHTML = `
-                    Competencia: "${this.currentFilters.competencia}"
-                    <button onclick="sedeView.removeFilter('competencia')" class="hover:text-orange-700">
-                        <ion-icon src="../../assets/ionicons/close-outline.svg" class="text-xs"></ion-icon>
-                    </button>
-                `;
-                activeFiltersList.appendChild(filterTag);
-            }
-        } else {
-            activeFilters.style.display = 'none';
-        }
-    }
-
-    removeFilter(filterType) {
-        this.currentFilters[filterType] = '';
-
-        if (filterType === 'search') {
-            const searchInput = document.getElementById('searchInstructor');
-            if (searchInput) searchInput.value = '';
-        } else if (filterType === 'competencia') {
-            const competenciaSelect = document.getElementById('filterCompetencia');
-            if (competenciaSelect) competenciaSelect.value = '';
-        }
-
-        this.applyFilters();
-    }
-
-    clearAllFilters() {
-        this.currentFilters = { search: '', competencia: '' };
-
-        const searchInput = document.getElementById('searchInstructor');
-        const competenciaSelect = document.getElementById('filterCompetencia');
-
-        if (searchInput) searchInput.value = '';
-        if (competenciaSelect) competenciaSelect.value = '';
-
-        this.applyFilters();
-    }
-
-    renderInstructoresAvatars() {
-        const avatarsContainer = document.getElementById('instructoresAvatars');
-        if (!avatarsContainer) return;
-
-        avatarsContainer.innerHTML = '';
-
-        // Show first 4 instructors as avatars
-        const instructoresToShow = this.instructores.slice(0, 4);
-        const colors = ['blue', 'green', 'purple', 'orange', 'red', 'indigo'];
-
-        instructoresToShow.forEach((instructor, index) => {
-            const color = colors[index % colors.length];
-            const initials = this.getInitials(instructor.nombre);
-
-            const avatar = document.createElement('div');
-            avatar.className = `inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-surface-dark bg-gradient-to-r from-${color}-400 to-${color}-600 flex items-center justify-center text-white text-sm font-medium cursor-pointer hover:scale-110 transition-transform`;
-            avatar.title = `${instructor.nombre} - ${instructor.competencia_transversal}`;
-            avatar.textContent = initials;
-
-            avatarsContainer.appendChild(avatar);
-        });
-
-        // Add counter if more instructors
-        if (this.instructores.length > 4) {
-            const counter = document.createElement('div');
-            counter.className = 'h-10 w-10 rounded-full ring-2 ring-white dark:ring-surface-dark bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-medium text-slate-500 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors';
-            counter.textContent = `+${this.instructores.length - 4}`;
-            counter.title = `Ver todos los ${this.instructores.length} instructores`;
-
-            avatarsContainer.appendChild(counter);
-        }
-    }
-
-    renderInstructoresList() {
-        const instructoresList = document.getElementById('instructoresList');
-        const totalCount = document.getElementById('totalInstructoresCount');
-        const noFilterResults = document.getElementById('noFilterResults');
-
-        if (!instructoresList) return;
-
-        if (totalCount) {
-            totalCount.textContent = this.instructores.length;
-        }
-
-        // Show/hide no results message
-        if (this.filteredInstructores.length === 0 && (this.currentFilters.search || this.currentFilters.competencia)) {
-            instructoresList.style.display = 'none';
-            if (noFilterResults) noFilterResults.style.display = 'block';
-            return;
-        } else {
-            instructoresList.style.display = 'block';
-            if (noFilterResults) noFilterResults.style.display = 'none';
-        }
-
-        instructoresList.innerHTML = '';
-
-        this.filteredInstructores.forEach(instructor => {
-            const instructorItem = document.createElement('div');
-            instructorItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors';
-
-            const initials = this.getInitials(instructor.nombre);
-            const statusClass = instructor.estado === 'Activo' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
-
-            instructorItem.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-medium">
-                        ${initials}
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-slate-900 dark:text-white">${instructor.nombre}</p>
-                        <p class="text-xs text-slate-500">${instructor.especialidad}</p>
-                        <p class="text-xs text-sena-green font-medium">${instructor.competencia_transversal}</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusClass}">
-                        ${instructor.estado}
-                    </span>
-                    <button class="text-slate-400 hover:text-sena-green transition-colors" title="Ver detalles">
-                        <ion-icon src="../../assets/ionicons/eye-outline.svg" class="text-sm"></ion-icon>
-                    </button>
-                </div>
-            `;
-
-            instructoresList.appendChild(instructorItem);
-        });
-
-        this.updateFilteredCount();
-    }
-
-    showFullInstructorsList() {
-        const preview = document.getElementById('instructoresPreview');
-        const fullList = document.getElementById('instructoresFullList');
-
-        if (preview) preview.style.display = 'none';
-        if (fullList) fullList.style.display = 'block';
-
-        // Reset filters when opening full list
-        this.filteredInstructores = [...this.instructores];
-        this.renderInstructoresList();
-    }
-
-    showInstructoresPreview() {
-        const preview = document.getElementById('instructoresPreview');
-        const fullList = document.getElementById('instructoresFullList');
-
-        if (preview) preview.style.display = 'block';
-        if (fullList) fullList.style.display = 'none';
-
-        // Clear filters when going back to preview
-        this.clearAllFilters();
     }
 
     getInitials(name) {

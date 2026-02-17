@@ -61,16 +61,16 @@ require_once '../layouts/sidebar.php';
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th class="w-20">ID</th>
+                        <th class="w-20">N°</th>
                         <th>Instructor</th>
                         <th>Contacto</th>
+                        <th>Especialidad</th>
                         <th>Centro de Formación</th>
-                        <th class="text-right">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="instructorTableBody">
                     <tr>
-                        <td colspan="5" class="text-center py-8">Cargando instructores...</td>
+                        <td colspan="6" class="text-center py-8">Cargando instructores...</td>
                     </tr>
                 </tbody>
             </table>
@@ -78,7 +78,7 @@ require_once '../layouts/sidebar.php';
     </div>
 </main>
 
-<script src="../../assets/js/instructor/index.js"></script>
+<script src="../../assets/js/instructor/index.js?v=<?php echo time(); ?>"></script>
 </body>
 
 </html>

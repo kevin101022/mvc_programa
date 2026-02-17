@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadCentros = async () => {
         try {
-            const response = await fetch('../../routing.php?controller=instructor&action=getCentros');
+            const response = await fetch('../../routing.php?controller=instructor&action=getCentros', {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) throw new Error('Error al cargar centros');
             const centros = await response.json();
 
             sedeFilter.innerHTML = '<option value="">Todos los Centros</option>';
@@ -28,21 +31,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadInstructores = async () => {
         try {
-            const response = await fetch('../../routing.php?controller=instructor&action=index');
-            instructores = await response.json();
+            const response = await fetch('../../routing.php?controller=instructor&action=index', {
+                headers: { 'Accept': 'application/json' }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.details || data.error || 'Error desconocido');
+            }
+
+            instructores = data;
             renderInstructores(instructores);
             updateStats(instructores);
         } catch (error) {
             console.error('Error:', error);
-            tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-red-500">Error al cargar datos</td></tr>';
+            if (tableBody) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-red-500">Error: ${error.message}</td></tr>`;
+            }
         }
     };
 
     const renderInstructores = (data) => {
+        if (!tableBody) return;
         tableBody.innerHTML = '';
 
         if (data.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No se encontraron instructores</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No se encontraron instructores</td></tr>';
             return;
         }
 
@@ -70,17 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="text-sm text-gray-600">${inst.inst_correo}</div>
                     <div class="text-xs text-gray-400">${inst.inst_telefono || 'Sin teléfono'}</div>
                 </td>
+                <td class="px-6 py-4 text-sm text-gray-600">${inst.especialidad || '--'}</td>
                 <td class="px-6 py-4">
                     <span class="status-badge status-active">
                         ${inst.cent_nombre || 'Sin centro'}
                     </span>
-                </td>
-                <td class="px-6 py-4 text-right">
-                    <div class="table-actions">
-                        <button class="action-btn" title="Ver detalles">
-                            <ion-icon src="../../assets/ionicons/eye-outline.svg"></ion-icon>
-                        </button>
-                    </div>
                 </td>
             `;
             tableBody.appendChild(row);
@@ -96,21 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const sedeId = sedeFilter.value;
 
         const filtered = instructores.filter(inst => {
-            const matchesSearch =
-                inst.inst_nombres.toLowerCase().includes(searchTerm) ||
-                inst.inst_apellidos.toLowerCase().includes(searchTerm) ||
-                inst.inst_correo.toLowerCase().includes(searchTerm);
-
+            const names = (inst.inst_nombres + ' ' + inst.inst_apellidos).toLowerCase();
+            const matchesSearch = names.includes(searchTerm) || inst.inst_correo.toLowerCase().includes(searchTerm);
             const matchesSede = !sedeId || inst.centro_formacion_cent_id == sedeId;
-
             return matchesSearch && matchesSede;
         });
 
         renderInstructores(filtered);
     };
 
-    searchInput.addEventListener('input', filterData);
-    sedeFilter.addEventListener('change', filterData);
+    if (searchInput) searchInput.addEventListener('input', filterData);
+    if (sedeFilter) sedeFilter.addEventListener('change', filterData);
     if (refreshBtn) refreshBtn.onclick = loadInstructores;
 
     loadCentros();

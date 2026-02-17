@@ -1,5 +1,5 @@
 <?php
-require_once '../Conexion.php';
+require_once dirname(__DIR__) . '/Conexion.php';
 class AsignacionModel
 {
     private $asig_id;
@@ -85,53 +85,71 @@ class AsignacionModel
     //crud
     public function create()
     {
-        $query = "INSERT INTO asignacion (INSTRUCTOR_inst_id, asig_fecha_ini, asig_fecha_fin, FICHA_fich_id, AMBIENTE_amb_id, COMPETENCIA_comp_id) 
-        VALUES (:instructor_inst_id, :asig_fecha_ini, :asig_fecha_fin, :ficha_fich_id, :ambiente_amb_id, :competencia_comp_id)";
+        $query = "INSERT INTO asignacion (instructor_inst_id, asig_fecha_ini, asig_fecha_fin, ficha_fich_id, ambiente_amb_id, competencia_comp_id) 
+                  VALUES (:instructor_id, :fecha_ini, :fecha_fin, :ficha_id, :ambiente_id, :competencia_id) RETURNING asig_id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':instructor_inst_id', $this->instructor_inst_id);
-        $stmt->bindParam(':asig_fecha_ini', $this->asig_fecha_ini);
-        $stmt->bindParam(':asig_fecha_fin', $this->asig_fecha_fin);
-        $stmt->bindParam(':ficha_fich_id', $this->ficha_fich_id);
-        $stmt->bindParam(':ambiente_amb_id', $this->ambiente_amb_id);
-        $stmt->bindParam(':competencia_comp_id', $this->competencia_comp_id);
+        $stmt->bindParam(':instructor_id', $this->instructor_inst_id);
+        $stmt->bindParam(':fecha_ini', $this->asig_fecha_ini);
+        $stmt->bindParam(':fecha_fin', $this->asig_fecha_fin);
+        $stmt->bindParam(':ficha_id', $this->ficha_fich_id);
+        $stmt->bindParam(':ambiente_id', $this->ambiente_amb_id);
+        $stmt->bindParam(':competencia_id', $this->competencia_comp_id);
         $stmt->execute();
-        return $this->db->lastInsertId();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['asig_id'] ?? false;
     }
     public function read()
     {
-        $sql = "SELECT * FROM asignacion WHERE INSTRUCTOR_inst_id = :instructor_id";
+        $sql = "SELECT a.*, i.inst_nombres, i.inst_apellidos, f.fich_id, am.amb_nombre, c.comp_nombre_corto 
+                FROM asignacion a
+                INNER JOIN instructor i ON a.instructor_inst_id = i.inst_id
+                INNER JOIN ficha f ON a.ficha_fich_id = f.fich_id
+                INNER JOIN ambiente am ON a.ambiente_amb_id = am.amb_id
+                INNER JOIN competencia c ON a.competencia_comp_id = c.comp_id
+                WHERE a.asig_id = :asig_id";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':instructor_id' => $this->instructor_inst_id]);
+        $stmt->execute([':asig_id' => $this->asig_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function readAll()
     {
-        $sql = "SELECT * FROM asignacion";
+        $sql = "SELECT a.*, i.inst_nombres, i.inst_apellidos, f.fich_id, am.amb_nombre, c.comp_nombre_corto 
+                FROM asignacion a
+                INNER JOIN instructor i ON a.instructor_inst_id = i.inst_id
+                INNER JOIN ficha f ON a.ficha_fich_id = f.fich_id
+                INNER JOIN ambiente am ON a.ambiente_amb_id = am.amb_id
+                INNER JOIN competencia c ON a.competencia_comp_id = c.comp_id
+                ORDER BY a.asig_id DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function update()
     {
-        $query = "UPDATE asignacion SET INSTRUCTOR_inst_id = :instructor_inst_id, asig_fecha_ini = :asig_fecha_ini, asig_fecha_fin = :asig_fecha_fin, FICHA_fich_id = :ficha_fich_id, AMBIENTE_amb_id = :ambiente_amb_id, COMPETENCIA_comp_id = :competencia_comp_id WHERE ASIG_ID = :asig_id";
+        $query = "UPDATE asignacion 
+                  SET instructor_inst_id = :instructor_id, 
+                      asig_fecha_ini = :fecha_ini, 
+                      asig_fecha_fin = :fecha_fin, 
+                      ficha_fich_id = :ficha_id, 
+                      ambiente_amb_id = :ambiente_id, 
+                      competencia_comp_id = :competencia_id 
+                  WHERE asig_id = :asig_id";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':instructor_inst_id', $this->instructor_inst_id);
-        $stmt->bindParam(':asig_fecha_ini', $this->asig_fecha_ini);
-        $stmt->bindParam(':asig_fecha_fin', $this->asig_fecha_fin);
-        $stmt->bindParam(':ficha_fich_id', $this->ficha_fich_id);
-        $stmt->bindParam(':ambiente_amb_id', $this->ambiente_amb_id);
-        $stmt->bindParam(':competencia_comp_id', $this->competencia_comp_id);
+        $stmt->bindParam(':instructor_id', $this->instructor_inst_id);
+        $stmt->bindParam(':fecha_ini', $this->asig_fecha_ini);
+        $stmt->bindParam(':fecha_fin', $this->asig_fecha_fin);
+        $stmt->bindParam(':ficha_id', $this->ficha_fich_id);
+        $stmt->bindParam(':ambiente_id', $this->ambiente_amb_id);
+        $stmt->bindParam(':competencia_id', $this->competencia_comp_id);
         $stmt->bindParam(':asig_id', $this->asig_id);
-        $stmt->execute();
-        return $stmt;
+        return $stmt->execute();
     }
     public function delete()
     {
-        $query = "DELETE FROM asignacion WHERE ASIG_ID = :asig_id";
+        $query = "DELETE FROM asignacion WHERE asig_id = :asig_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':asig_id', $this->asig_id);
-        $stmt->execute();
-        return $stmt;
+        return $stmt->execute();
     }
 }

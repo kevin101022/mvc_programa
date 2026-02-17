@@ -1,5 +1,5 @@
 <?php
-require_once '../Conexion.php';
+require_once dirname(__DIR__) . '/Conexion.php';
 class DetalleAsignacionModel
 {
     private $asignacion_asig_id;
@@ -55,7 +55,7 @@ class DetalleAsignacionModel
     //crud
     public function create()
     {
-        $query = "INSERT INTO detallexasgnacion (ASIGNACION_asig_id, detasig_hora_ini, detasig_hora_fin) 
+        $query = "INSERT INTO detalle_asignacion (asignacion_asig_id, detasig_hora_ini, detasig_hora_fin) 
         VALUES (:asignacion_asig_id, :detasig_hora_ini, :detasig_hora_fin)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':asignacion_asig_id', $this->asignacion_asig_id);
@@ -66,22 +66,32 @@ class DetalleAsignacionModel
     }
     public function read()
     {
-        $sql = "SELECT * FROM detallexasgnacion WHERE ASIGNACION_asig_id = :asignacion_asig_id";
+        $sql = "SELECT * FROM detalle_asignacion WHERE asignacion_asig_id = :asignacion_asig_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':asignacion_asig_id' => $this->asignacion_asig_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function readAll()
+    public function readAllByAsignacion($asig_id)
     {
-        $sql = "SELECT * FROM detallexasgnacion";
+        $sql = "SELECT * FROM detalle_asignacion WHERE asignacion_asig_id = :asig_id ORDER BY detasig_hora_ini ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':asig_id' => $asig_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAll()
+    {
+        $sql = "SELECT d.*, a.asig_fecha_ini, a.asig_fecha_fin 
+                FROM detalle_asignacion d
+                INNER JOIN asignacion a ON d.asignacion_asig_id = a.asig_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function update()
     {
-        $query = "UPDATE detallexasgnacion SET ASIGNACION_asig_id = :asignacion_asig_id, detasig_hora_ini = :detasig_hora_ini, detasig_hora_fin = :detasig_hora_fin WHERE detasig_id = :detasig_id";
+        $query = "UPDATE detalle_asignacion SET asignacion_asig_id = :asignacion_asig_id, detasig_hora_ini = :detasig_hora_ini, detasig_hora_fin = :detasig_hora_fin WHERE detasig_id = :detasig_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':asignacion_asig_id', $this->asignacion_asig_id);
         $stmt->bindParam(':detasig_hora_ini', $this->detasig_hora_ini);
@@ -92,10 +102,18 @@ class DetalleAsignacionModel
     }
     public function delete()
     {
-        $query = "DELETE FROM detallexasgnacion WHERE detasig_id = :detasig_id";
+        $query = "DELETE FROM detalle_asignacion WHERE detasig_id = :detasig_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':detasig_id', $this->detasig_id);
         $stmt->execute();
         return $stmt;
+    }
+
+    public function readByDetalleId($id)
+    {
+        $sql = "SELECT * FROM detalle_asignacion WHERE detasig_id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

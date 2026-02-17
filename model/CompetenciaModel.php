@@ -104,11 +104,10 @@ class CompetenciaModel
         try {
             $this->db->beginTransaction();
 
-            // 1. Eliminar asociaciones con programas
-            $queryAsoc = "DELETE FROM competxprograma WHERE competencia_comp_id = :comp_id";
-            $stmtAsoc = $this->db->prepare($queryAsoc);
-            $stmtAsoc->bindParam(':comp_id', $this->comp_id);
-            $stmtAsoc->execute();
+            // 1. Eliminar asociaciones con programas (Refactorizado)
+            require_once __DIR__ . '/CompetenciaProgramaModel.php';
+            $assocModel = new CompetenciaProgramaModel();
+            $assocModel->deleteAllByCompetencia($this->comp_id);
 
             // 2. Eliminar la competencia
             $queryComp = "DELETE FROM competencia WHERE comp_id = :comp_id";
@@ -126,33 +125,18 @@ class CompetenciaModel
         }
     }
 
-    // Association with Programs (competxprograma)
+    // Association with Programs (competxprograma) - Refactored to use CompetenciaProgramaModel
     public function getProgramasByCompetencia()
     {
-        $sql = "SELECT p.*, t.titpro_nombre 
-                FROM programa p
-                INNER JOIN competxprograma cp ON p.prog_id = cp.programa_prog_id
-                INNER JOIN titulo_programa t ON p.tit_programa_titpro_id = t.titpro_id
-                WHERE cp.competencia_comp_id = :comp_id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':comp_id' => $this->comp_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        require_once __DIR__ . '/CompetenciaProgramaModel.php';
+        $assocModel = new CompetenciaProgramaModel();
+        return $assocModel->getProgramasByCompetencia($this->comp_id);
     }
 
     public function assignProgramas($programaIds)
     {
-        // First delete existing associations
-        $delQuery = "DELETE FROM competxprograma WHERE competencia_comp_id = :comp_id";
-        $this->db->prepare($delQuery)->execute([':comp_id' => $this->comp_id]);
-
-        if (empty($programaIds)) return true;
-
-        // Insert new associations
-        $insQuery = "INSERT INTO competxprograma (competencia_comp_id, programa_prog_id) VALUES (:comp_id, :prog_id)";
-        $stmt = $this->db->prepare($insQuery);
-        foreach ($programaIds as $progId) {
-            $stmt->execute([':comp_id' => $this->comp_id, ':prog_id' => $progId]);
-        }
-        return true;
+        require_once __DIR__ . '/CompetenciaProgramaModel.php';
+        $assocModel = new CompetenciaProgramaModel();
+        return $assocModel->syncProgramas($this->comp_id, $programaIds);
     }
 }

@@ -51,19 +51,12 @@ require_once '../layouts/sidebar.php';
                 <div class="lg:col-span-1 space-y-6">
                     <!-- Environment Card -->
                     <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-                        <div class="p-8 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col items-center justify-center text-center">
-                            <div class="w-20 h-20 bg-sena-green/10 dark:bg-sena-green/20 rounded-full flex items-center justify-center mb-4 shadow-sm">
-                                <ion-icon src="../../assets/ionicons/cube-outline.svg" class="text-4xl text-sena-green"></ion-icon>
-                            </div>
-                            <h3 class="text-slate-900 dark:text-white font-bold text-xl" id="ambienteNombreCard">Cargando...</h3>
-                            <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-sena-orange/10 text-sena-orange text-xs font-bold rounded-full mt-2">
-                                <ion-icon src="../../assets/ionicons/ribbon-outline.svg"></ion-icon>
-                                AMBIENTE DE FORMACIÓN
-                            </div>
+                        <div class="bg-gray-50 h-24 flex items-center justify-center border-b border-gray-50">
+                            <ion-icon src="../../assets/ionicons/cube-outline.svg" class="text-gray-200 text-6xl"></ion-icon>
                         </div>
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-4">
-                                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Datos del Registro</h4>
+                                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">DATOS DEL AMBIENTE</h4>
                                 <a href="#" id="editBtn" class="text-sena-green hover:text-emerald-700 transition-colors flex items-center gap-1 text-sm font-medium">
                                     <ion-icon src="../../assets/ionicons/create-outline.svg"></ion-icon>
                                     Editar

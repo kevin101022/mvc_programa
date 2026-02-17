@@ -1,17 +1,20 @@
 // Instructor Edit JavaScript
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('instructorForm');
-    const sedeSelect = document.getElementById('sede_id');
-    const centroSelect = document.getElementById('sede_id'); // Assuming sede_id element will now hold centro data
+    const centroSelect = document.getElementById('centro_id');
+    const especialidadSelect = document.getElementById('especialidad_id');
     const instId = document.getElementById('inst_id').value;
     const submitBtn = document.getElementById('submitBtn');
 
     const loadData = async () => {
         try {
-            // Load centros first
-            const centrosRes = await fetch('../../routing.php?controller=instructor&action=getCentros');
-            const centros = await centrosRes.json();
+            const [centrosRes, competenciasRes, instructorRes] = await Promise.all([
+                fetch('../../routing.php?controller=instructor&action=getCentros'),
+                fetch('../../routing.php?controller=competencia&action=index'),
+                fetch(`../../routing.php?controller=instructor&action=show&id=${instId}`)
+            ]);
 
+            const centros = await centrosRes.json();
             centros.forEach(centro => {
                 const option = document.createElement('option');
                 option.value = centro.cent_id;
@@ -19,22 +22,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 centroSelect.appendChild(option);
             });
 
-            // Load instructor data
-            const instructorRes = await fetch(`../../routing.php?controller=instructor&action=show&id=${instId}`);
-
-            if (!instructorRes.ok) {
-                throw new Error('Error al cargar datos del instructor');
+            const competencias = await competenciasRes.json();
+            if (especialidadSelect) {
+                especialidadSelect.innerHTML = '<option value="">Seleccione competencia...</option>';
+                competencias.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.comp_nombre_corto;
+                    opt.textContent = c.comp_nombre_corto;
+                    especialidadSelect.appendChild(opt);
+                });
             }
 
+            if (!instructorRes.ok) throw new Error('Error al cargar datos del instructor');
             const instructor = await instructorRes.json();
 
-            if (instructorRes.ok) {
-                document.getElementById('inst_nombres').value = instructor.inst_nombres;
-                document.getElementById('inst_apellidos').value = instructor.inst_apellidos;
-                document.getElementById('inst_correo').value = instructor.inst_correo;
-                document.getElementById('inst_telefono').value = instructor.inst_telefono;
-                sedeSelect.value = instructor.centro_formacion_cent_id;
-            }
+            document.getElementById('inst_nombres').value = instructor.inst_nombres;
+            document.getElementById('inst_apellidos').value = instructor.inst_apellidos;
+            document.getElementById('inst_correo').value = instructor.inst_correo;
+            document.getElementById('inst_telefono').value = instructor.inst_telefono || '';
+            centroSelect.value = instructor.centro_formacion_cent_id;
+            if (especialidadSelect) especialidadSelect.value = instructor.especialidad || '';
         } catch (error) {
             console.error('Error:', error);
             NotificationService.showError('Error al cargar datos del instructor');

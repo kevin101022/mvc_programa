@@ -7,17 +7,19 @@ class InstructorModel
     private $inst_apellidos;
     private $inst_correo;
     private $inst_telefono;
-    private $sede_id;
+    private $inst_especialidad;
+    private $cent_id;
     private $db;
 
-    public function __construct($inst_id = null, $inst_nombres = null, $inst_apellidos = null, $inst_correo = null, $inst_telefono = null, $sede_id = null)
+    public function __construct($inst_id = null, $inst_nombres = null, $inst_apellidos = null, $inst_correo = null, $inst_telefono = null, $cent_id = null, $inst_especialidad = null)
     {
         $this->inst_id = $inst_id;
         $this->inst_nombres = $inst_nombres;
         $this->inst_apellidos = $inst_apellidos;
         $this->inst_correo = $inst_correo;
         $this->inst_telefono = $inst_telefono;
-        $this->sede_id = $sede_id;
+        $this->inst_especialidad = $inst_especialidad;
+        $this->cent_id = $cent_id;
         $this->db = Conexion::getConnect();
     }
     //getters 
@@ -43,9 +45,14 @@ class InstructorModel
         return $this->inst_telefono;
     }
 
-    public function getSedeId()
+    public function getInstEspecialidad()
     {
-        return $this->sede_id;
+        return $this->inst_especialidad;
+    }
+
+    public function getCentId()
+    {
+        return $this->cent_id;
     }
 
     //setters 
@@ -69,16 +76,20 @@ class InstructorModel
     {
         $this->inst_telefono = $inst_telefono;
     }
-    public function setSedeId($sede_id)
+    public function setInstEspecialidad($inst_especialidad)
     {
-        $this->sede_id = $sede_id;
+        $this->inst_especialidad = $inst_especialidad;
+    }
+    public function setCentId($cent_id)
+    {
+        $this->cent_id = $cent_id;
     }
     //crud
     public function create()
     {
         try {
-            $query = "INSERT INTO instructor (inst_nombres, inst_apellidos, inst_correo, inst_telefono, centro_formacion_cent_id) 
-            VALUES (:inst_nombres, :inst_apellidos, :inst_correo, :inst_telefono, :sede_id)
+            $query = "INSERT INTO instructor (inst_nombres, inst_apellidos, inst_correo, inst_telefono, especialidad, centro_formacion_cent_id) 
+            VALUES (:inst_nombres, :inst_apellidos, :inst_correo, :inst_telefono, :especialidad, :cent_id)
             RETURNING inst_id";
 
             $stmt = $this->db->prepare($query);
@@ -86,13 +97,14 @@ class InstructorModel
             $stmt->bindParam(':inst_nombres', $this->inst_nombres);
             $stmt->bindParam(':inst_apellidos', $this->inst_apellidos);
             $stmt->bindParam(':inst_correo', $this->inst_correo);
+            $stmt->bindParam(':especialidad', $this->inst_especialidad);
 
             // Set null if empty string for numbers to avoid PG errors
             $telefono = !empty($this->inst_telefono) ? $this->inst_telefono : null;
             $stmt->bindParam(':inst_telefono', $telefono);
 
-            $sedeId = !empty($this->sede_id) ? $this->sede_id : null;
-            $stmt->bindParam(':sede_id', $sedeId);
+            $centId = !empty($this->cent_id) ? $this->cent_id : null;
+            $stmt->bindParam(':cent_id', $centId);
 
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -131,19 +143,21 @@ class InstructorModel
                           inst_apellidos = :inst_apellidos, 
                           inst_correo = :inst_correo, 
                           inst_telefono = :inst_telefono, 
-                          centro_formacion_cent_id = :sede_id 
+                          especialidad = :especialidad,
+                          centro_formacion_cent_id = :cent_id 
                       WHERE inst_id = :inst_id";
 
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':inst_nombres', $this->inst_nombres);
             $stmt->bindParam(':inst_apellidos', $this->inst_apellidos);
             $stmt->bindParam(':inst_correo', $this->inst_correo);
+            $stmt->bindParam(':especialidad', $this->inst_especialidad);
 
             $telefono = !empty($this->inst_telefono) ? $this->inst_telefono : null;
             $stmt->bindParam(':inst_telefono', $telefono);
 
-            $sedeId = !empty($this->sede_id) ? $this->sede_id : null;
-            $stmt->bindParam(':sede_id', $sedeId);
+            $centId = !empty($this->cent_id) ? $this->cent_id : null;
+            $stmt->bindParam(':cent_id', $centId);
 
             $stmt->bindParam(':inst_id', $this->inst_id);
             return $stmt->execute();

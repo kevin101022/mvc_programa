@@ -142,12 +142,8 @@ class ProgramaModel
 
     public function getCompetenciasByPrograma()
     {
-        $sql = "SELECT c.* 
-                FROM competencia c
-                INNER JOIN competxprograma cp ON c.comp_id = cp.competencia_comp_id
-                WHERE cp.programa_prog_id = :prog_id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':prog_id' => $this->prog_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        require_once __DIR__ . '/CompetenciaProgramaModel.php';
+        $assocModel = new CompetenciaProgramaModel();
+        return $assocModel->getCompetenciasByPrograma($this->prog_id);
     }
 }

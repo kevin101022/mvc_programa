@@ -1,0 +1,38 @@
+[INIT LOG]
+[2026-02-17 00:36:41] {
+    "type": "PHP Error\/Warning",
+    "level": 2,
+    "message": "require_once(..\/Conexion.php): Failed to open stream: No such file or directory",
+    "file": "C:\\laragon\\www\\MVC\\mvc_programa\\model\\FichaModel.php",
+    "line": 2,
+    "timestamp": "2026-02-17 00:36:41"
+}
+[2026-02-17 00:36:41] {
+    "error": "Error interno en el servidor",
+    "details": "Failed opening required '..\/Conexion.php' (include_path='.;C:\/laragon\/etc\/php\/pear')",
+    "file": "C:\\laragon\\www\\MVC\\mvc_programa\\model\\FichaModel.php",
+    "line": 2,
+    "trace": "#0 C:\\laragon\\www\\MVC\\mvc_programa\\controller\\fichaController.php(2): require_once()\n#1 C:\\laragon\\www\\MVC\\mvc_programa\\routing.php(59): require_once('C:\\\\laragon\\\\www\\\\...')\n#2 {main}"
+}
+[2026-02-17 00:36:44] {
+    "type": "PHP Error\/Warning",
+    "level": 2,
+    "message": "require_once(..\/Conexion.php): Failed to open stream: No such file or directory",
+    "file": "C:\\laragon\\www\\MVC\\mvc_programa\\model\\FichaModel.php",
+    "line": 2,
+    "timestamp": "2026-02-17 00:36:44"
+}
+[2026-02-17 00:36:44] {
+    "error": "Error interno en el servidor",
+    "details": "Failed opening required '..\/Conexion.php' (include_path='.;C:\/laragon\/etc\/php\/pear')",
+    "file": "C:\\laragon\\www\\MVC\\mvc_programa\\model\\FichaModel.php",
+    "line": 2,
+    "trace": "#0 C:\\laragon\\www\\MVC\\mvc_programa\\controller\\fichaController.php(2): require_once()\n#1 C:\\laragon\\www\\MVC\\mvc_programa\\routing.php(59): require_once('C:\\\\laragon\\\\www\\\\...')\n#2 {main}"
+}
+[2026-02-17 00:40:09] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[42703]: Undefined column: 7 ERROR:  no existe la columna p.prog_nombre\nLINE 1: SELECT f.*, p.prog_nombre, i.inst_nombres, i.inst_apellidos \n                    ^",
+    "file": "C:\\laragon\\www\\MVC\\mvc_programa\\model\\FichaModel.php",
+    "line": 91,
+    "trace": "#0 C:\\laragon\\www\\MVC\\mvc_programa\\model\\FichaModel.php(91): PDOStatement->execute()\n#1 C:\\laragon\\www\\MVC\\mvc_programa\\controller\\fichaController.php(9): FichaModel->readAll()\n#2 C:\\laragon\\www\\MVC\\mvc_programa\\routing.php(141): FichaController->index()\n#3 {main}"
+}

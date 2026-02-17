@@ -77,6 +77,7 @@ CREATE TABLE instructor (
     inst_apellidos VARCHAR(45) NOT NULL,
     inst_correo VARCHAR(45),
     inst_telefono BIGINT,
+    inst_especialidad VARCHAR(150),
     centro_formacion_cent_id INT NOT NULL,
     CONSTRAINT fk_inst_centro
         FOREIGN KEY (centro_formacion_cent_id)

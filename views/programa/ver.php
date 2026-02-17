@@ -52,11 +52,14 @@ $id = $_GET['id'] ?? null;
                 <!-- Main Info Card -->
                 <div class="lg:col-span-1 space-y-6">
                     <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <div class="bg-gray-50 h-24 flex items-center justify-center border-b border-gray-50">
+                            <ion-icon src="../../assets/ionicons/school-outline.svg" class="text-gray-200 text-6xl"></ion-icon>
+                        </div>
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-6">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-12 h-12 bg-sena-green/10 rounded-xl flex items-center justify-center">
-                                        <ion-icon src="../../assets/ionicons/school-outline.svg" class="text-2xl text-sena-green"></ion-icon>
+                                    <div class="w-10 h-10 bg-sena-green/10 rounded-lg flex items-center justify-center">
+                                        <ion-icon src="../../assets/ionicons/ribbon-outline.svg" class="text-xl text-sena-green"></ion-icon>
                                     </div>
                                     <div>
                                         <h3 class="text-slate-900 dark:text-white font-bold">Programa Académico</h3>

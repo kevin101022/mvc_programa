@@ -26,6 +26,22 @@ $activeNavItem = isset($activeNavItem) ? $activeNavItem : 'sedes';
             <ion-icon src="../../assets/ionicons/cube-outline.svg"></ion-icon>
             Ambientes
         </a>
+        <a href="../centro_formacion/index.php" class="nav-item <?php echo ($activeNavItem === 'centros') ? 'active' : ''; ?>">
+            <ion-icon src="../../assets/ionicons/business-outline.svg"></ion-icon>
+            Centros de Formación
+        </a>
+        <a href="../coordinacion/index.php" class="nav-item <?php echo ($activeNavItem === 'coordinaciones') ? 'active' : ''; ?>">
+            <ion-icon src="../../assets/ionicons/people-circle-outline.svg"></ion-icon>
+            Coordinaciones
+        </a>
+        <a href="../ficha/index.php" class="nav-item <?php echo ($activeNavItem === 'fichas') ? 'active' : ''; ?>">
+            <ion-icon src="../../assets/ionicons/layers-outline.svg"></ion-icon>
+            Fichas
+        </a>
+        <a href="../asignacion/index.php" class="nav-item <?php echo ($activeNavItem === 'asignaciones') ? 'active' : ''; ?>">
+            <ion-icon src="../../assets/ionicons/calendar-outline.svg"></ion-icon>
+            Asignaciones
+        </a>
         <a href="../programa/index.php" class="nav-item <?php echo ($activeNavItem === 'programas') ? 'active' : ''; ?>">
             <ion-icon src="../../assets/ionicons/school-outline.svg"></ion-icon>
             Programas

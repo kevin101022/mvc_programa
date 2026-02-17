@@ -57,9 +57,16 @@ require_once '../layouts/sidebar.php';
                             <input type="number" id="inst_telefono" name="inst_telefono" class="search-input" style="padding-left: 12px !important;">
                         </div>
 
-                        <div class="form-group md:col-span-2">
+                        <div class="form-group">
+                            <label class="form-label">Especialidad (Competencia)</label>
+                            <select id="especialidad_id" name="especialidad" class="search-input" style="padding-left: 12px !important;">
+                                <option value="">Seleccione competencia...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label class="form-label">Centro de Formación <span class="text-red-500">*</span></label>
-                            <select id="sede_id" name="centro_formacion_cent_id" required class="search-input" style="padding-left: 12px !important;">
+                            <select id="centro_id" name="centro_formacion_cent_id" required class="search-input" style="padding-left: 12px !important;">
                                 <option value="">Seleccione un centro...</option>
                             </select>
                         </div>
