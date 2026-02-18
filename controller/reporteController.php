@@ -17,8 +17,8 @@ class ReporteController
     {
         $sql = "SELECT cf.cent_id, cf.cent_nombre, 
                        i.inst_id, i.inst_nombres, i.inst_apellidos, i.inst_correo, i.inst_telefono
-                FROM instructor i
-                INNER JOIN centro_formacion cf ON i.centro_formacion_cent_id = cf.cent_id
+                FROM INSTRUCTOR i
+                INNER JOIN CENTRO_FORMACION cf ON i.CENTRO_FORMACION_cent_id = cf.cent_id
                 ORDER BY cf.cent_nombre, i.inst_apellidos";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -56,10 +56,10 @@ class ReporteController
                        f.fich_id, f.fich_jornada, f.fich_fecha_ini_lectiva, f.fich_fecha_fin_lectiva,
                        i.inst_nombres, i.inst_apellidos,
                        co.coord_descripcion
-                FROM ficha f
-                INNER JOIN programa p ON f.programa_prog_id = p.prog_codigo
-                LEFT JOIN instructor i ON f.instructor_inst_id_lider = i.inst_id
-                LEFT JOIN coordinacion co ON f.coordinacion_coord_id = co.coord_id
+                FROM FICHA f
+                INNER JOIN PROGRAMA p ON f.PROGRAMA_prog_id = p.prog_codigo
+                LEFT JOIN INSTRUCTOR i ON f.INSTRUCTOR_inst_id_lider = i.inst_id
+                LEFT JOIN COORDINACION co ON f.COORDINACION_coord_id = co.coord_id
                 ORDER BY p.prog_denominacion, f.fich_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -99,12 +99,12 @@ class ReporteController
                        f.fich_id, p.prog_denominacion,
                        c.comp_nombre_corto,
                        amb.amb_id, amb.amb_nombre
-                FROM asignacion a
-                INNER JOIN instructor i ON a.instructor_inst_id = i.inst_id
-                INNER JOIN ficha f ON a.ficha_fich_id = f.fich_id
-                INNER JOIN programa p ON f.programa_prog_id = p.prog_codigo
-                INNER JOIN competencia c ON a.competencia_comp_id = c.comp_id
-                LEFT JOIN ambiente amb ON a.ambiente_amb_id = amb.amb_id
+                FROM ASIGNACION a
+                INNER JOIN INSTRUCTOR i ON a.INSTRUCTOR_inst_id = i.inst_id
+                INNER JOIN FICHA f ON a.FICHA_fich_id = f.fich_id
+                INNER JOIN PROGRAMA p ON f.PROGRAMA_prog_id = p.prog_codigo
+                INNER JOIN COMPETENCIA c ON a.COMPETENCIA_comp_id = c.comp_id
+                LEFT JOIN AMBIENTE amb ON a.AMBIENTE_amb_id = amb.amb_id
                 ORDER BY i.inst_apellidos, a.asig_fecha_ini";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -143,8 +143,8 @@ class ReporteController
         $sql = "SELECT p.prog_codigo, p.prog_denominacion, p.prog_tipo,
                        c.comp_id, c.comp_nombre_corto, c.comp_horas, c.comp_nombre_unidad_competencia
                 FROM COMPETxPROGRAMA cp
-                INNER JOIN programa p ON cp.programa_prog_id = p.prog_codigo
-                INNER JOIN competencia c ON cp.competencia_comp_id = c.comp_id
+                INNER JOIN PROGRAMA p ON cp.PROGRAMA_prog_id = p.prog_codigo
+                INNER JOIN COMPETENCIA c ON cp.COMPETENCIA_comp_id = c.comp_id
                 ORDER BY p.prog_denominacion, c.comp_nombre_corto";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();

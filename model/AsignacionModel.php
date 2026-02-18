@@ -45,7 +45,12 @@ class AsignacionModel
 
     public function readAll()
     {
-        $sql = "SELECT a.*, i.inst_nombres, i.inst_apellidos, f.fich_id, am.amb_nombre, c.comp_nombre_corto 
+        $sql = "SELECT a.ASIG_ID as asig_id, a.INSTRUCTOR_inst_id as instructor_inst_id, 
+                       a.asig_fecha_ini, a.asig_fecha_fin, 
+                       a.FICHA_fich_id as ficha_fich_id, 
+                       a.AMBIENTE_amb_id as ambiente_amb_id, 
+                       a.COMPETENCIA_comp_id as competencia_comp_id,
+                       i.inst_nombres, i.inst_apellidos, f.fich_id, am.amb_nombre, c.comp_nombre_corto 
                 FROM ASIGNACION a
                 INNER JOIN INSTRUCTOR i ON a.INSTRUCTOR_inst_id = i.inst_id
                 INNER JOIN FICHA f ON a.FICHA_fich_id = f.fich_id
@@ -54,6 +59,25 @@ class AsignacionModel
                 ORDER BY a.ASIG_ID DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function read()
+    {
+        $sql = "SELECT a.ASIG_ID as asig_id, a.INSTRUCTOR_inst_id as instructor_inst_id, 
+                       a.asig_fecha_ini, a.asig_fecha_fin, 
+                       a.FICHA_fich_id as ficha_fich_id, 
+                       a.AMBIENTE_amb_id as ambiente_amb_id, 
+                       a.COMPETENCIA_comp_id as competencia_comp_id,
+                       i.inst_nombres, i.inst_apellidos, f.fich_id, am.amb_nombre, c.comp_nombre_corto 
+                FROM ASIGNACION a
+                INNER JOIN INSTRUCTOR i ON a.INSTRUCTOR_inst_id = i.inst_id
+                INNER JOIN FICHA f ON a.FICHA_fich_id = f.fich_id
+                INNER JOIN AMBIENTE am ON a.AMBIENTE_amb_id = am.amb_id
+                INNER JOIN COMPETENCIA c ON a.COMPETENCIA_comp_id = c.comp_id
+                WHERE a.ASIG_ID = :asig_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':asig_id' => $this->asig_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -72,6 +96,14 @@ class AsignacionModel
         $stmt->bindParam(':ficha_id', $this->ficha_fich_id);
         $stmt->bindParam(':amb_id', $this->ambiente_amb_id);
         $stmt->bindParam(':comp_id', $this->competencia_comp_id);
+        $stmt->bindParam(':asig_id', $this->asig_id);
+        return $stmt->execute();
+    }
+
+    public function delete()
+    {
+        $query = "DELETE FROM ASIGNACION WHERE ASIG_ID = :asig_id";
+        $stmt = $this->db->prepare($query);
         $stmt->bindParam(':asig_id', $this->asig_id);
         return $stmt->execute();
     }

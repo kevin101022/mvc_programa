@@ -90,7 +90,7 @@ class FichaModel
     // CRUD
     public function getNextId()
     {
-        $query = "SELECT COALESCE(MAX(fich_id), 0) + 1 FROM ficha";
+        $query = "SELECT COALESCE(MAX(fich_id), 0) + 1 FROM FICHA";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchColumn();
@@ -103,7 +103,7 @@ class FichaModel
             if (!$this->fich_id) {
                 throw new Exception("El número de ficha es obligatorio.");
             }
-            $query = "INSERT INTO ficha (fich_id, programa_prog_id, instructor_inst_id_lider, fich_jornada, coordinacion_coord_id, fich_fecha_ini_lectiva, fich_fecha_fin_lectiva) 
+            $query = "INSERT INTO FICHA (fich_id, PROGRAMA_prog_id, INSTRUCTOR_inst_id_lider, fich_jornada, COORDINACION_coord_id, fich_fecha_ini_lectiva, fich_fecha_fin_lectiva) 
                       VALUES (:fich_id, :prog_id, :inst_id, :jornada, :coord_id, :fecha_ini, :fecha_fin)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':fich_id', $this->fich_id);
@@ -127,22 +127,29 @@ class FichaModel
 
     public function read()
     {
-        $sql = "SELECT DISTINCT ON (f.fich_id) 
-                       f.*, 
+        $sql = "SELECT f.fich_id, f.PROGRAMA_prog_id as programa_prog_id, 
+                       f.INSTRUCTOR_inst_id_lider as instructor_inst_id_lider, 
+                       f.fich_jornada, f.COORDINACION_coord_id as coordinacion_coord_id,
+                       f.fich_fecha_ini_lectiva, f.fich_fecha_fin_lectiva,
                        p.prog_denominacion, 
                        tp.titpro_nombre,
                        i.inst_nombres, 
                        i.inst_apellidos, 
                        c.coord_descripcion as coord_nombre,
                        s.sede_nombre
-                FROM ficha f
-                INNER JOIN programa p ON f.programa_prog_id = p.prog_codigo
-                INNER JOIN titulo_programa tp ON p.tit_programa_titpro_id = tp.titpro_id
-                INNER JOIN instructor i ON f.instructor_inst_id_lider = i.inst_id
-                LEFT JOIN coordinacion c ON f.coordinacion_coord_id = c.coord_id
-                LEFT JOIN asignacion a ON f.fich_id = a.ficha_fich_id
-                LEFT JOIN ambiente amb ON a.ambiente_amb_id = amb.amb_id
-                LEFT JOIN sede s ON amb.sede_sede_id = s.sede_id
+                FROM FICHA f
+                INNER JOIN PROGRAMA p ON f.PROGRAMA_prog_id = p.prog_codigo
+                INNER JOIN TITULO_PROGRAMA tp ON p.TIT_PROGRAMA_titpro_id = tp.titpro_id
+                INNER JOIN INSTRUCTOR i ON f.INSTRUCTOR_inst_id_lider = i.inst_id
+                LEFT JOIN COORDINACION c ON f.COORDINACION_coord_id = c.coord_id
+                LEFT JOIN (
+                    SELECT FICHA_fich_id, MAX(ASIG_ID) as asig_id_max 
+                    FROM ASIGNACION 
+                    GROUP BY FICHA_fich_id
+                ) a_max ON f.fich_id = a_max.FICHA_fich_id
+                LEFT JOIN ASIGNACION a ON a_max.asig_id_max = a.ASIG_ID
+                LEFT JOIN AMBIENTE amb ON a.AMBIENTE_amb_id = amb.amb_id
+                LEFT JOIN SEDE s ON amb.SEDE_sede_id = s.sede_id
                 WHERE f.fich_id = :fich_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':fich_id' => $this->fich_id]);
@@ -151,22 +158,29 @@ class FichaModel
 
     public function readAll()
     {
-        $sql = "SELECT DISTINCT ON (f.fich_id) 
-                       f.*, 
+        $sql = "SELECT f.fich_id, f.PROGRAMA_prog_id as programa_prog_id, 
+                       f.INSTRUCTOR_inst_id_lider as instructor_inst_id_lider, 
+                       f.fich_jornada, f.COORDINACION_coord_id as coordinacion_coord_id,
+                       f.fich_fecha_ini_lectiva, f.fich_fecha_fin_lectiva,
                        p.prog_denominacion, 
                        tp.titpro_nombre,
                        i.inst_nombres, 
                        i.inst_apellidos, 
                        c.coord_descripcion as coord_nombre,
                        s.sede_nombre
-                FROM ficha f
-                INNER JOIN programa p ON f.programa_prog_id = p.prog_codigo
-                INNER JOIN titulo_programa tp ON p.tit_programa_titpro_id = tp.titpro_id
-                INNER JOIN instructor i ON f.instructor_inst_id_lider = i.inst_id
-                LEFT JOIN coordinacion c ON f.coordinacion_coord_id = c.coord_id
-                LEFT JOIN asignacion a ON f.fich_id = a.ficha_fich_id
-                LEFT JOIN ambiente amb ON a.ambiente_amb_id = amb.amb_id
-                LEFT JOIN sede s ON amb.sede_sede_id = s.sede_id
+                FROM FICHA f
+                INNER JOIN PROGRAMA p ON f.PROGRAMA_prog_id = p.prog_codigo
+                INNER JOIN TITULO_PROGRAMA tp ON p.TIT_PROGRAMA_titpro_id = tp.titpro_id
+                INNER JOIN INSTRUCTOR i ON f.INSTRUCTOR_inst_id_lider = i.inst_id
+                LEFT JOIN COORDINACION c ON f.COORDINACION_coord_id = c.coord_id
+                LEFT JOIN (
+                    SELECT FICHA_fich_id, MAX(ASIG_ID) as asig_id_max 
+                    FROM ASIGNACION 
+                    GROUP BY FICHA_fich_id
+                ) a_max ON f.fich_id = a_max.FICHA_fich_id
+                LEFT JOIN ASIGNACION a ON a_max.asig_id_max = a.ASIG_ID
+                LEFT JOIN AMBIENTE amb ON a.AMBIENTE_amb_id = amb.amb_id
+                LEFT JOIN SEDE s ON amb.SEDE_sede_id = s.sede_id
                 ORDER BY f.fich_id DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -176,11 +190,11 @@ class FichaModel
     public function update()
     {
         try {
-            $query = "UPDATE ficha 
-                      SET programa_prog_id = :prog_id, 
-                          instructor_inst_id_lider = :inst_id, 
+            $query = "UPDATE FICHA 
+                      SET PROGRAMA_prog_id = :prog_id, 
+                          INSTRUCTOR_inst_id_lider = :inst_id, 
                           fich_jornada = :jornada, 
-                          coordinacion_coord_id = :coord_id,
+                          COORDINACION_coord_id = :coord_id,
                           fich_fecha_ini_lectiva = :fecha_ini,
                           fich_fecha_fin_lectiva = :fecha_fin
                       WHERE fich_id = :fich_id";
@@ -201,7 +215,7 @@ class FichaModel
 
     public function delete()
     {
-        $query = "DELETE FROM ficha WHERE fich_id = :fich_id";
+        $query = "DELETE FROM FICHA WHERE fich_id = :fich_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':fich_id', $this->fich_id);
         return $stmt->execute();

@@ -1,0 +1,357 @@
+[2026-02-18 16:20:08] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:08] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\ProgramaModel.php(21): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\programaController.php(11): ProgramaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(88): programaController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:08] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\fichaController.php(8): FichaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): fichaController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:08] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\InstructorModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\instructorController.php(9): InstructorModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): instructorController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:08] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AsignacionModel.php(23): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\asignacionController.php(8): AsignacionModel->__construct(NULL, NULL, NULL, NULL, NULL, NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): AsignacionController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:16] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:16] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\ProgramaModel.php(21): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\programaController.php(11): ProgramaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(88): programaController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:16] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\fichaController.php(8): FichaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): fichaController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:16] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\InstructorModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\instructorController.php(9): InstructorModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): instructorController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:16] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AsignacionModel.php(23): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\asignacionController.php(8): AsignacionModel->__construct(NULL, NULL, NULL, NULL, NULL, NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): AsignacionController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:30] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:34] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:34] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\ProgramaModel.php(21): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\programaController.php(11): ProgramaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(88): programaController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:34] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\fichaController.php(8): FichaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): fichaController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:34] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\InstructorModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\instructorController.php(9): InstructorModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): instructorController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:34] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AsignacionModel.php(23): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\asignacionController.php(8): AsignacionModel->__construct(NULL, NULL, NULL, NULL, NULL, NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): AsignacionController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:35] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:35] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\ambienteController.php(11): AmbienteModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(83): AmbienteController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:37] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:42] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:42] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\ProgramaModel.php(21): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\programaController.php(11): ProgramaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(88): programaController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:20:42] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\fichaController.php(8): FichaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): fichaController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:42] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\InstructorModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\instructorController.php(9): InstructorModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): instructorController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:42] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AsignacionModel.php(23): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\asignacionController.php(8): AsignacionModel->__construct(NULL, NULL, NULL, NULL, NULL, NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): AsignacionController->index()\n#3 {main}"
+}
+[2026-02-18 16:20:43] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:21:09] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:21:09] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\ProgramaModel.php(21): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\programaController.php(11): ProgramaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(88): programaController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:21:09] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\fichaController.php(8): FichaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): fichaController->index()\n#3 {main}"
+}
+[2026-02-18 16:21:09] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\InstructorModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\instructorController.php(9): InstructorModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): instructorController->index()\n#3 {main}"
+}
+[2026-02-18 16:21:09] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AsignacionModel.php(23): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\asignacionController.php(8): AsignacionModel->__construct(NULL, NULL, NULL, NULL, NULL, NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): AsignacionController->index()\n#3 {main}"
+}
+[2026-02-18 16:24:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:24:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\ProgramaModel.php(21): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\programaController.php(11): ProgramaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(88): programaController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:24:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\fichaController.php(8): FichaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): fichaController->index()\n#3 {main}"
+}
+[2026-02-18 16:24:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\InstructorModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\instructorController.php(9): InstructorModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): instructorController->index()\n#3 {main}"
+}
+[2026-02-18 16:24:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AsignacionModel.php(23): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\asignacionController.php(8): AsignacionModel->__construct(NULL, NULL, NULL, NULL, NULL, NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): AsignacionController->index()\n#3 {main}"
+}
+[2026-02-18 16:24:53] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:25:34] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:25:34] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\ambienteController.php(11): AmbienteModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(83): AmbienteController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:25:37] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:26:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:26:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\ProgramaModel.php(21): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\programaController.php(11): ProgramaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(88): programaController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:26:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\fichaController.php(8): FichaModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): fichaController->index()\n#3 {main}"
+}
+[2026-02-18 16:26:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\InstructorModel.php(27): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\instructorController.php(9): InstructorModel->__construct()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): instructorController->index()\n#3 {main}"
+}
+[2026-02-18 16:26:38] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AsignacionModel.php(23): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\asignacionController.php(8): AsignacionModel->__construct(NULL, NULL, NULL, NULL, NULL, NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): AsignacionController->index()\n#3 {main}"
+}
+[2026-02-18 16:26:39] {
+    "error": "Error interno en el servidor",
+    "details": "El driver 'pdo_pgsql' no est\u00e1 habilitado.",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\Conexion.php",
+    "line": 25,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\SedeModel.php(19): Conexion::getConnect()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php(17): SedeModel->__construct(NULL, NULL)\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(66): SedeController->__construct()\n#3 {main}"
+}
+[2026-02-18 16:43:18] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON (f.fich_id) \r\n                       f.*, \r\n                       p.prog_...' at line 1",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php",
+    "line": 172,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php(172): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\fichaController.php(9): FichaModel->readAll()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): fichaController->index()\n#3 {main}"
+}
+[2026-02-18 16:43:31] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'ON (f.fich_id) \r\n                       f.*, \r\n                       p.prog_...' at line 1",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php",
+    "line": 172,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\FichaModel.php(172): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\fichaController.php(9): FichaModel->readAll()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): fichaController->index()\n#3 {main}"
+}
+[2026-02-18 16:43:58] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '~ '^[0-9]+$' THEN CAST(amb_id AS INTEGER) ELSE 0 END), 0) + 1 FROM ambiente' at line 1",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php",
+    "line": 55,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php(55): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php(63): AmbienteModel->getNextId()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php(74): AmbienteModel->{closure}()\n#3 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\ambienteController.php(52): AmbienteModel->create()\n#4 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): AmbienteController->store()\n#5 {main}"
+}
+[2026-02-18 16:44:01] {
+    "error": "Error interno en el servidor",
+    "details": "SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '~ '^[0-9]+$' THEN CAST(amb_id AS INTEGER) ELSE 0 END), 0) + 1 FROM ambiente' at line 1",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php",
+    "line": 55,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php(55): PDOStatement->execute()\n#1 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php(63): AmbienteModel->getNextId()\n#2 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\model\\AmbienteModel.php(74): AmbienteModel->{closure}()\n#3 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\ambienteController.php(52): AmbienteModel->create()\n#4 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): AmbienteController->store()\n#5 {main}"
+}
+[2026-02-18 17:53:42] {
+    "error": "Error interno en el servidor",
+    "details": "Call to undefined method SedeModel::getProgramasBySede()",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php",
+    "line": 175,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): SedeController->getProgramas('1')\n#1 {main}"
+}
+[2026-02-18 17:54:14] {
+    "error": "Error interno en el servidor",
+    "details": "Call to undefined method SedeModel::getProgramasBySede()",
+    "file": "C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\controller\\sedeController.php",
+    "line": 175,
+    "trace": "#0 C:\\xampp\\htdocs\\MVCMVC\\mvc_programa\\routing.php(150): SedeController->getProgramas('1')\n#1 {main}"
+}

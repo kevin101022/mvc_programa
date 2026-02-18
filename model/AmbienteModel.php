@@ -50,7 +50,12 @@ class AmbienteModel
     // CRUD
     public function getNextId()
     {
-        $query = "SELECT COALESCE(MAX(CASE WHEN amb_id ~ '^[0-9]+$' THEN CAST(amb_id AS INTEGER) ELSE 0 END), 0) + 1 FROM ambiente";
+        $driver = Conexion::getDriver();
+        if ($driver === 'pgsql') {
+            $query = "SELECT COALESCE(MAX(CASE WHEN amb_id ~ '^[0-9]+$' THEN CAST(amb_id AS INTEGER) ELSE 0 END), 0) + 1 FROM AMBIENTE";
+        } else {
+            $query = "SELECT COALESCE(MAX(CASE WHEN amb_id REGEXP '^[0-9]+$' THEN CAST(amb_id AS UNSIGNED) ELSE 0 END), 0) + 1 FROM AMBIENTE";
+        }
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return (string)$stmt->fetchColumn();
@@ -62,7 +67,7 @@ class AmbienteModel
             if (!$this->amb_id) {
                 $this->amb_id = $this->getNextId();
             }
-            $query = "INSERT INTO ambiente (amb_id, amb_nombre, sede_sede_id) VALUES (:id, :amb_nombre, :sede)";
+            $query = "INSERT INTO AMBIENTE (amb_id, amb_nombre, SEDE_sede_id) VALUES (:id, :amb_nombre, :sede)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $this->amb_id);
             $stmt->bindParam(':amb_nombre', $this->amb_nombre);
@@ -73,7 +78,7 @@ class AmbienteModel
         try {
             return $retryLogic();
         } catch (PDOException $e) {
-            return $this->handleTruncation($e, 'ambiente', [
+            return $this->handleTruncation($e, 'AMBIENTE', [
                 'amb_nombre' => $this->amb_nombre
             ], $retryLogic);
         }
@@ -81,10 +86,10 @@ class AmbienteModel
 
     public function read()
     {
-        $sql = "SELECT a.*, s.sede_nombre 
-                FROM ambiente a 
-                INNER JOIN sede s ON a.sede_sede_id = s.sede_id 
-                WHERE a.sede_sede_id = :sede";
+        $sql = "SELECT a.amb_id, a.amb_nombre, a.SEDE_sede_id as sede_sede_id, s.sede_nombre 
+                FROM AMBIENTE a 
+                INNER JOIN SEDE s ON a.SEDE_sede_id = s.sede_id 
+                WHERE a.SEDE_sede_id = :sede";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':sede' => $this->sede_sede_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -92,9 +97,9 @@ class AmbienteModel
 
     public function readAll()
     {
-        $sql = "SELECT a.*, s.sede_nombre 
-                FROM ambiente a 
-                INNER JOIN sede s ON a.sede_sede_id = s.sede_id";
+        $sql = "SELECT a.amb_id, a.amb_nombre, a.SEDE_sede_id as sede_sede_id, s.sede_nombre 
+                FROM AMBIENTE a 
+                INNER JOIN SEDE s ON a.SEDE_sede_id = s.sede_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -102,9 +107,9 @@ class AmbienteModel
 
     public function readById($id)
     {
-        $sql = "SELECT a.*, s.sede_nombre 
-                FROM ambiente a 
-                INNER JOIN sede s ON a.sede_sede_id = s.sede_id 
+        $sql = "SELECT a.amb_id, a.amb_nombre, a.SEDE_sede_id as sede_sede_id, s.sede_nombre 
+                FROM AMBIENTE a 
+                INNER JOIN SEDE s ON a.SEDE_sede_id = s.sede_id 
                 WHERE a.amb_id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':id' => $id]);
@@ -113,7 +118,7 @@ class AmbienteModel
 
     public function update()
     {
-        $query = "UPDATE ambiente SET amb_nombre = :amb_nombre, sede_sede_id = :sede WHERE amb_id = :id";
+        $query = "UPDATE AMBIENTE SET amb_nombre = :amb_nombre, SEDE_sede_id = :sede WHERE amb_id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':amb_nombre', $this->amb_nombre);
         $stmt->bindParam(':sede', $this->sede_sede_id);
@@ -123,7 +128,7 @@ class AmbienteModel
 
     public function delete()
     {
-        $query = "DELETE FROM ambiente WHERE amb_id = :id";
+        $query = "DELETE FROM AMBIENTE WHERE amb_id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $this->amb_id);
         return $stmt->execute();

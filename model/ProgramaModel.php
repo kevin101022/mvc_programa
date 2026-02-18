@@ -60,7 +60,7 @@ class ProgramaModel
     // CRUD helpers
     public function getNextId()
     {
-        $query = "SELECT COALESCE(MAX(prog_codigo), 0) + 1 FROM programa";
+        $query = "SELECT COALESCE(MAX(prog_codigo), 0) + 1 FROM PROGRAMA";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchColumn();
@@ -73,7 +73,7 @@ class ProgramaModel
             if (!$this->prog_codigo) {
                 throw new Exception("El código del programa es obligatorio.");
             }
-            $query = "INSERT INTO programa (prog_codigo, prog_denominacion, tit_programa_titpro_id, prog_tipo) 
+            $query = "INSERT INTO PROGRAMA (prog_codigo, prog_denominacion, TIT_PROGRAMA_titpro_id, prog_tipo) 
                       VALUES (:prog_codigo, :prog_denominacion, :tit_programa_titpro_id, :prog_tipo)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':prog_codigo', $this->prog_codigo);
@@ -95,9 +95,9 @@ class ProgramaModel
 
     public function read()
     {
-        $sql = "SELECT p.*, t.titpro_nombre 
-                FROM programa p
-                INNER JOIN titulo_programa t ON p.tit_programa_titpro_id = t.titpro_id
+        $sql = "SELECT p.prog_codigo, p.prog_denominacion, p.TIT_PROGRAMA_titpro_id as titpro_id, p.prog_tipo, t.titpro_nombre 
+                FROM PROGRAMA p
+                INNER JOIN TITULO_PROGRAMA t ON p.TIT_PROGRAMA_titpro_id = t.titpro_id
                 WHERE p.prog_codigo = :prog_codigo";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':prog_codigo' => $this->prog_codigo]);
@@ -106,9 +106,9 @@ class ProgramaModel
 
     public function readAll()
     {
-        $sql = "SELECT p.*, t.titpro_nombre 
-                FROM programa p
-                INNER JOIN titulo_programa t ON p.tit_programa_titpro_id = t.titpro_id
+        $sql = "SELECT p.prog_codigo, p.prog_denominacion, p.TIT_PROGRAMA_titpro_id as titpro_id, p.prog_tipo, t.titpro_nombre 
+                FROM PROGRAMA p
+                INNER JOIN TITULO_PROGRAMA t ON p.TIT_PROGRAMA_titpro_id = t.titpro_id
                 ORDER BY p.prog_codigo DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -117,9 +117,9 @@ class ProgramaModel
 
     public function update()
     {
-        $query = "UPDATE programa 
+        $query = "UPDATE PROGRAMA 
                   SET prog_denominacion = :prog_denominacion, 
-                      tit_programa_titpro_id = :tit_programa_titpro_id, 
+                      TIT_PROGRAMA_titpro_id = :tit_programa_titpro_id, 
                       prog_tipo = :prog_tipo
                   WHERE prog_codigo = :prog_codigo";
         $stmt = $this->db->prepare($query);
@@ -132,7 +132,7 @@ class ProgramaModel
 
     public function delete()
     {
-        $query = "DELETE FROM programa WHERE prog_codigo = :prog_codigo";
+        $query = "DELETE FROM PROGRAMA WHERE prog_codigo = :prog_codigo";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':prog_codigo', $this->prog_codigo);
         return $stmt->execute();

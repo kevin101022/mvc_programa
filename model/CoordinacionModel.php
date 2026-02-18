@@ -55,7 +55,7 @@ class CoordinacionModel
 
     public function getNextId()
     {
-        $query = "SELECT COALESCE(MAX(coord_id), 0) + 1 FROM coordinacion";
+        $query = "SELECT COALESCE(MAX(coord_id), 0) + 1 FROM COORDINACION";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchColumn();
@@ -67,7 +67,7 @@ class CoordinacionModel
             if (!$this->coord_id) {
                 $this->coord_id = $this->getNextId();
             }
-            $query = "INSERT INTO coordinacion (coord_id, coord_descripcion, centro_formacion_cent_id, coord_nombre_coordinador, coord_correo, coord_password) 
+            $query = "INSERT INTO COORDINACION (coord_id, coord_descripcion, CENTRO_FORMACION_cent_id, coord_nombre_coordinador, coord_correo, coord_password) 
                       VALUES (:id, :descripcion, :cent_id, :coordinador, :correo, :password)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $this->coord_id);
@@ -92,9 +92,11 @@ class CoordinacionModel
 
     public function read()
     {
-        $query = "SELECT c.*, cf.cent_nombre 
-                  FROM coordinacion c 
-                  INNER JOIN centro_formacion cf ON c.centro_formacion_cent_id = cf.cent_id 
+        $query = "SELECT c.coord_id, c.coord_descripcion, c.CENTRO_FORMACION_cent_id as cent_id, 
+                         c.coord_nombre_coordinador, c.coord_correo, c.coord_password,
+                         cf.cent_nombre 
+                  FROM COORDINACION c 
+                  INNER JOIN CENTRO_FORMACION cf ON c.CENTRO_FORMACION_cent_id = cf.cent_id 
                   WHERE c.coord_id = :coord_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':coord_id' => $this->coord_id]);
@@ -103,9 +105,11 @@ class CoordinacionModel
 
     public function getAll()
     {
-        $query = "SELECT c.*, cf.cent_nombre 
-                  FROM coordinacion c 
-                  INNER JOIN centro_formacion cf ON c.centro_formacion_cent_id = cf.cent_id 
+        $query = "SELECT c.coord_id, c.coord_descripcion, c.CENTRO_FORMACION_cent_id as cent_id, 
+                         c.coord_nombre_coordinador, c.coord_correo, c.coord_password,
+                         cf.cent_nombre 
+                  FROM COORDINACION c 
+                  INNER JOIN CENTRO_FORMACION cf ON c.CENTRO_FORMACION_cent_id = cf.cent_id 
                   ORDER BY c.coord_descripcion ASC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -115,9 +119,9 @@ class CoordinacionModel
     public function update()
     {
         try {
-            $query = "UPDATE coordinacion 
+            $query = "UPDATE COORDINACION 
                       SET coord_descripcion = :descripcion, 
-                          centro_formacion_cent_id = :cent_id,
+                          CENTRO_FORMACION_cent_id = :cent_id,
                           coord_nombre_coordinador = :coordinador,
                           coord_correo = :correo,
                           coord_password = :password
@@ -138,7 +142,7 @@ class CoordinacionModel
 
     public function delete()
     {
-        $query = "DELETE FROM coordinacion WHERE coord_id = :coord_id";
+        $query = "DELETE FROM COORDINACION WHERE coord_id = :coord_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':coord_id', $this->coord_id);
         return $stmt->execute();

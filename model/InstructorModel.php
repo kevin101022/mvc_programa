@@ -90,7 +90,7 @@ class InstructorModel
     // CRUD
     public function getNextId()
     {
-        $query = "SELECT COALESCE(MAX(inst_id), 0) + 1 FROM instructor";
+        $query = "SELECT COALESCE(MAX(inst_id), 0) + 1 FROM INSTRUCTOR";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchColumn();
@@ -102,7 +102,7 @@ class InstructorModel
             if (!$this->inst_id) {
                 $this->inst_id = $this->getNextId();
             }
-            $query = "INSERT INTO instructor (inst_id, inst_nombres, inst_apellidos, inst_correo, inst_telefono, inst_password, centro_formacion_cent_id) 
+            $query = "INSERT INTO INSTRUCTOR (inst_id, inst_nombres, inst_apellidos, inst_correo, inst_telefono, inst_password, CENTRO_FORMACION_cent_id) 
             VALUES (:inst_id, :inst_nombres, :inst_apellidos, :inst_correo, :inst_telefono, :inst_password, :cent_id)";
 
             $stmt = $this->db->prepare($query);
@@ -137,9 +137,11 @@ class InstructorModel
 
     public function read()
     {
-        $sql = "SELECT i.*, c.cent_nombre 
-                FROM instructor i 
-                LEFT JOIN centro_formacion c ON i.centro_formacion_cent_id = c.cent_id 
+        $sql = "SELECT i.inst_id, i.inst_nombres, i.inst_apellidos, i.inst_correo, i.inst_telefono, 
+                       i.CENTRO_FORMACION_cent_id as cent_id, i.inst_password,
+                       c.cent_nombre 
+                FROM INSTRUCTOR i 
+                LEFT JOIN CENTRO_FORMACION c ON i.CENTRO_FORMACION_cent_id = c.cent_id 
                 WHERE i.inst_id = :inst_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':inst_id' => $this->inst_id]);
@@ -148,9 +150,11 @@ class InstructorModel
 
     public function readAll()
     {
-        $sql = "SELECT i.*, c.cent_nombre 
-                FROM instructor i 
-                LEFT JOIN centro_formacion c ON i.centro_formacion_cent_id = c.cent_id 
+        $sql = "SELECT i.inst_id, i.inst_nombres, i.inst_apellidos, i.inst_correo, i.inst_telefono, 
+                       i.CENTRO_FORMACION_cent_id as cent_id, i.inst_password,
+                       c.cent_nombre 
+                FROM INSTRUCTOR i 
+                LEFT JOIN CENTRO_FORMACION c ON i.CENTRO_FORMACION_cent_id = c.cent_id 
                 ORDER BY i.inst_id DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -160,13 +164,13 @@ class InstructorModel
     public function update()
     {
         try {
-            $query = "UPDATE instructor 
+            $query = "UPDATE INSTRUCTOR 
                       SET inst_nombres = :inst_nombres, 
                           inst_apellidos = :inst_apellidos, 
                           inst_correo = :inst_correo, 
                           inst_telefono = :inst_telefono, 
                           inst_password = :inst_password,
-                          centro_formacion_cent_id = :cent_id 
+                          CENTRO_FORMACION_cent_id = :cent_id 
                       WHERE inst_id = :inst_id";
 
             $stmt = $this->db->prepare($query);
@@ -191,7 +195,7 @@ class InstructorModel
 
     public function delete()
     {
-        $query = "DELETE FROM instructor WHERE inst_id = :inst_id";
+        $query = "DELETE FROM INSTRUCTOR WHERE inst_id = :inst_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':inst_id', $this->inst_id);
         $stmt->execute();

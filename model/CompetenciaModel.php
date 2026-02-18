@@ -60,7 +60,7 @@ class CompetenciaModel
     // CRUD
     public function getNextId()
     {
-        $query = "SELECT COALESCE(MAX(comp_id), 0) + 1 FROM competencia";
+        $query = "SELECT COALESCE(MAX(comp_id), 0) + 1 FROM COMPETENCIA";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchColumn();
@@ -72,7 +72,7 @@ class CompetenciaModel
             if (!$this->comp_id) {
                 $this->comp_id = $this->getNextId();
             }
-            $query = "INSERT INTO competencia (comp_id, comp_nombre_corto, comp_horas, comp_nombre_unidad_competencia) 
+            $query = "INSERT INTO COMPETENCIA (comp_id, comp_nombre_corto, comp_horas, comp_nombre_unidad_competencia) 
                       VALUES (:id, :corto, :horas, :unidad)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $this->comp_id);
@@ -97,7 +97,7 @@ class CompetenciaModel
 
     public function read()
     {
-        $sql = "SELECT * FROM competencia WHERE comp_id = :comp_id";
+        $sql = "SELECT * FROM COMPETENCIA WHERE comp_id = :comp_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':comp_id' => $this->comp_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -105,7 +105,7 @@ class CompetenciaModel
 
     public function readAll()
     {
-        $sql = "SELECT * FROM competencia ORDER BY comp_id DESC";
+        $sql = "SELECT * FROM COMPETENCIA ORDER BY comp_id DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -113,7 +113,7 @@ class CompetenciaModel
 
     public function update()
     {
-        $query = "UPDATE competencia 
+        $query = "UPDATE COMPETENCIA 
                   SET comp_nombre_corto = :comp_nombre_corto, 
                       comp_horas = :comp_horas, 
                       comp_nombre_unidad_competencia = :comp_nombre_unidad_competencia
@@ -137,7 +137,7 @@ class CompetenciaModel
             $assocModel->deleteAllByCompetencia($this->comp_id);
 
             // 2. Eliminar la competencia
-            $queryComp = "DELETE FROM competencia WHERE comp_id = :comp_id";
+            $queryComp = "DELETE FROM COMPETENCIA WHERE comp_id = :comp_id";
             $stmtComp = $this->db->prepare($queryComp);
             $stmtComp->bindParam(':comp_id', $this->comp_id);
             $stmtComp->execute();

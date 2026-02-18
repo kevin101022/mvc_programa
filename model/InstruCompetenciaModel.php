@@ -68,7 +68,7 @@ class InstruCompetenciaModel
     public function create()
     {
         try {
-            $query = "INSERT INTO instru_competencia (instructor_inst_id, competxprograma_programa_prog_id, competxprograma_competencia_comp_id, inscomp_vigencia) 
+            $query = "INSERT INTO INSTRU_COMPETENCIA (INSTRUCTOR_inst_id, COMPETxPROGRAMA_PROGRAMA_prog_id, COMPETxPROGRAMA_COMPETENCIA_comp_id, inscomp_vigencia) 
                       VALUES (:inst_id, :prog_id, :comp_id, :vigencia)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':inst_id', $this->instructor_inst_id);
@@ -85,11 +85,15 @@ class InstruCompetenciaModel
 
     public function read()
     {
-        $sql = "SELECT ic.*, i.inst_nombres, i.inst_apellidos, p.prog_denominacion, c.comp_nombre_corto 
-                FROM instru_competencia ic
-                INNER JOIN instructor i ON ic.instructor_inst_id = i.inst_id
-                INNER JOIN programa p ON ic.competxprograma_programa_prog_id = p.prog_codigo
-                INNER JOIN competencia c ON ic.competxprograma_competencia_comp_id = c.comp_id
+        $sql = "SELECT ic.inscomp_id, ic.INSTRUCTOR_inst_id as instructor_inst_id, 
+                       ic.COMPETxPROGRAMA_PROGRAMA_prog_id as competxprograma_programa_prog_id, 
+                       ic.COMPETxPROGRAMA_COMPETENCIA_comp_id as competxprograma_competencia_comp_id, 
+                       ic.inscomp_vigencia, 
+                       i.inst_nombres, i.inst_apellidos, p.prog_denominacion, c.comp_nombre_corto 
+                FROM INSTRU_COMPETENCIA ic
+                INNER JOIN INSTRUCTOR i ON ic.INSTRUCTOR_inst_id = i.inst_id
+                INNER JOIN PROGRAMA p ON ic.COMPETxPROGRAMA_PROGRAMA_prog_id = p.prog_codigo
+                INNER JOIN COMPETENCIA c ON ic.COMPETxPROGRAMA_COMPETENCIA_comp_id = c.comp_id
                 WHERE ic.inscomp_id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':id' => $this->inscomp_id]);
@@ -98,11 +102,15 @@ class InstruCompetenciaModel
 
     public function readAll()
     {
-        $sql = "SELECT ic.*, i.inst_nombres, i.inst_apellidos, p.prog_denominacion, c.comp_nombre_corto 
-                FROM instru_competencia ic
-                INNER JOIN instructor i ON ic.instructor_inst_id = i.inst_id
-                INNER JOIN programa p ON ic.competxprograma_programa_prog_id = p.prog_codigo
-                INNER JOIN competencia c ON ic.competxprograma_competencia_comp_id = c.comp_id
+        $sql = "SELECT ic.inscomp_id, ic.INSTRUCTOR_inst_id as instructor_inst_id, 
+                       ic.COMPETxPROGRAMA_PROGRAMA_prog_id as competxprograma_programa_prog_id, 
+                       ic.COMPETxPROGRAMA_COMPETENCIA_comp_id as competxprograma_competencia_comp_id, 
+                       ic.inscomp_vigencia, 
+                       i.inst_nombres, i.inst_apellidos, p.prog_denominacion, c.comp_nombre_corto 
+                FROM INSTRU_COMPETENCIA ic
+                INNER JOIN INSTRUCTOR i ON ic.INSTRUCTOR_inst_id = i.inst_id
+                INNER JOIN PROGRAMA p ON ic.COMPETxPROGRAMA_PROGRAMA_prog_id = p.prog_codigo
+                INNER JOIN COMPETENCIA c ON ic.COMPETxPROGRAMA_COMPETENCIA_comp_id = c.comp_id
                 ORDER BY ic.inscomp_id DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -112,10 +120,10 @@ class InstruCompetenciaModel
     public function update()
     {
         try {
-            $query = "UPDATE instru_competencia 
-                      SET instructor_inst_id = :inst_id, 
-                          competxprograma_programa_prog_id = :prog_id, 
-                          competxprograma_competencia_comp_id = :comp_id, 
+            $query = "UPDATE INSTRU_COMPETENCIA 
+                      SET INSTRUCTOR_inst_id = :inst_id, 
+                          COMPETxPROGRAMA_PROGRAMA_prog_id = :prog_id, 
+                          COMPETxPROGRAMA_COMPETENCIA_comp_id = :comp_id, 
                           inscomp_vigencia = :vigencia 
                       WHERE inscomp_id = :id";
             $stmt = $this->db->prepare($query);
@@ -133,7 +141,7 @@ class InstruCompetenciaModel
 
     public function delete()
     {
-        $query = "DELETE FROM instru_competencia WHERE inscomp_id = :id";
+        $query = "DELETE FROM INSTRU_COMPETENCIA WHERE inscomp_id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $this->inscomp_id);
         return $stmt->execute();

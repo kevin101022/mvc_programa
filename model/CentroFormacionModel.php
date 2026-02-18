@@ -39,7 +39,7 @@ class CentroFormacionModel
 
     public function getNextId()
     {
-        $query = "SELECT COALESCE(MAX(cent_id), 0) + 1 FROM centro_formacion";
+        $query = "SELECT COALESCE(MAX(cent_id), 0) + 1 FROM CENTRO_FORMACION";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchColumn();
@@ -51,7 +51,7 @@ class CentroFormacionModel
             if (!$this->cent_id) {
                 $this->cent_id = $this->getNextId();
             }
-            $query = "INSERT INTO centro_formacion (cent_id, cent_nombre) VALUES (:cent_id, :cent_nombre)";
+            $query = "INSERT INTO CENTRO_FORMACION (cent_id, cent_nombre) VALUES (:cent_id, :cent_nombre)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':cent_id', $this->cent_id);
             $stmt->bindParam(':cent_nombre', $this->cent_nombre);
@@ -69,7 +69,7 @@ class CentroFormacionModel
 
     public function read()
     {
-        $query = "SELECT * FROM centro_formacion WHERE cent_id = :cent_id";
+        $query = "SELECT * FROM CENTRO_FORMACION WHERE cent_id = :cent_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':cent_id' => $this->cent_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -77,7 +77,7 @@ class CentroFormacionModel
 
     public function getAll()
     {
-        $query = "SELECT * FROM centro_formacion ORDER BY cent_nombre ASC";
+        $query = "SELECT * FROM CENTRO_FORMACION ORDER BY cent_nombre ASC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -85,7 +85,7 @@ class CentroFormacionModel
 
     public function update()
     {
-        $query = "UPDATE centro_formacion SET cent_nombre = :cent_nombre WHERE cent_id = :cent_id";
+        $query = "UPDATE CENTRO_FORMACION SET cent_nombre = :cent_nombre WHERE cent_id = :cent_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':cent_nombre', $this->cent_nombre);
         $stmt->bindParam(':cent_id', $this->cent_id);
@@ -94,7 +94,7 @@ class CentroFormacionModel
 
     public function delete()
     {
-        $query = "DELETE FROM centro_formacion WHERE cent_id = :cent_id";
+        $query = "DELETE FROM CENTRO_FORMACION WHERE cent_id = :cent_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':cent_id', $this->cent_id);
         return $stmt->execute();

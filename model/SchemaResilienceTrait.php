@@ -28,8 +28,17 @@ trait SchemaResilienceTrait
                         // Determinar un tamaño nuevo (por defecto 255 si es pequeño, o +50% del actual)
                         $newSize = max(255, strlen($value) + 100);
 
-                        // Ejecutar el ALTER TABLE
-                        $this->db->exec("ALTER TABLE $tableName ALTER COLUMN $cleanColumn TYPE VARCHAR($newSize)");
+                        // Detectar driver para usar la sintaxis correcta
+                        $driver = Conexion::getDriver();
+
+                        if ($driver === 'pgsql') {
+                            $sql = "ALTER TABLE $tableName ALTER COLUMN $cleanColumn TYPE VARCHAR($newSize)";
+                        } else {
+                            $sql = "ALTER TABLE $tableName MODIFY COLUMN $cleanColumn VARCHAR($newSize)";
+                        }
+
+                        // Ejecutar el ALTER/MODIFY
+                        $this->db->exec($sql);
 
                         // Loggear la reparación
                         $logMsg = "[SchemaFix] Columna '$cleanColumn' en tabla '$tableName' ampliada a $newSize por truncamiento.\n";

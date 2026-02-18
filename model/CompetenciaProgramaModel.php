@@ -26,7 +26,8 @@ class CompetenciaProgramaModel
 
     public function getCompetenciasByPrograma($progId)
     {
-        $sql = "SELECT c.* 
+        $sql = "SELECT c.comp_id, c.comp_nombre_corto, c.comp_nombre_unidad_competencia, c.comp_horas,
+                       cp.PROGRAMA_prog_id as programa_prog_id
                 FROM COMPETENCIA c
                 INNER JOIN COMPETxPROGRAMA cp ON c.comp_id = cp.COMPETENCIA_comp_id
                 WHERE cp.PROGRAMA_prog_id = :prog_id";
@@ -65,10 +66,12 @@ class CompetenciaProgramaModel
 
     public function getProgramasByCompetencia($compId)
     {
-        $sql = "SELECT p.*, t.titpro_nombre 
-                FROM programa p
+        $sql = "SELECT p.prog_codigo, p.prog_denominacion, p.prog_tipo, p.TIT_PROGRAMA_titpro_id as titpro_id,
+                       cp.COMPETENCIA_comp_id as competencia_comp_id,
+                       t.titpro_nombre 
+                FROM PROGRAMA p
                 INNER JOIN COMPETxPROGRAMA cp ON p.prog_codigo = cp.PROGRAMA_prog_id
-                LEFT JOIN titulo_programa t ON p.tit_programa_titpro_id = t.titpro_id
+                LEFT JOIN TITULO_PROGRAMA t ON p.TIT_PROGRAMA_titpro_id = t.titpro_id
                 WHERE cp.COMPETENCIA_comp_id = :comp_id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':comp_id' => $compId]);
