@@ -12,7 +12,7 @@
             <div class="modal-body p-6 space-y-4">
                 <div class="form-group">
                     <label class="form-label">Número de Ficha <span class="text-red-500">*</span></label>
-                    <input type="number" id="fich_id" name="fich_id" required class="search-input" style="padding-left: 12px !important;" placeholder="Ej: 2615418">
+                    <input type="number" id="fich_id" name="fich_id" required class="search-input" style="padding-left: 12px !important;" placeholder="Ej: 2670687">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Programa <span class="text-red-500">*</span></label>
@@ -41,6 +41,14 @@
                         <option value="Noche">Noche</option>
                         <option value="Mixta">Mixta</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fecha Inicio Lectiva <span class="text-red-500">*</span></label>
+                    <input type="date" id="fich_fecha_ini_lectiva" name="fich_fecha_ini_lectiva" required class="search-input" style="padding-left: 12px !important;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fecha Fin Lectiva <span class="text-red-500">*</span></label>
+                    <input type="date" id="fich_fecha_fin_lectiva" name="fich_fecha_fin_lectiva" required class="search-input" style="padding-left: 12px !important;">
                 </div>
             </div>
             <div class="modal-footer">

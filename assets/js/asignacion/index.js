@@ -1,173 +1,321 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.getElementById('asignacionTableBody');
-    const searchInput = document.getElementById('searchInput');
-    const totalLabel = document.getElementById('totalAsignaciones');
+    // ── DOM Elements ──────────────────────────────────────────
+    const fichaSelector = document.getElementById('fichaSelector');
     const addBtn = document.getElementById('addBtn');
+    const calendarEl = document.getElementById('calendar');
+    const placeholder = document.getElementById('calendarPlaceholder');
+    const totalLabel = document.getElementById('totalAsignaciones');
     const modal = document.getElementById('asignacionModal');
     const form = document.getElementById('asignacionForm');
     const closeBtn = document.getElementById('closeModal');
     const cancelBtn = document.getElementById('cancelBtn');
+    const competenciaSelect = document.getElementById('competencia_id');
+    const instructorSelect = document.getElementById('instructor_id');
+    const ambienteSelect = document.getElementById('ambiente_id');
 
-    let asignaciones = [];
+    let calendar = null;
+    let fichas = [];
+    let selectedFicha = null;
+    let allAsignaciones = [];
+    let allCompetenciasPrograma = []; // competencias del programa de la ficha
+    let allHabilitaciones = []; // instru_competencia
 
-    const loadSelects = async () => {
+    // ── Color palette for events ──────────────────────────────
+    const COLORS = [
+        '#39a900', '#3b82f6', '#8b5cf6', '#ef4444',
+        '#f59e0b', '#06b6d4', '#ec4899', '#14b8a6'
+    ];
+    const getColor = (index) => COLORS[index % COLORS.length];
+
+    // ── Load fichas ───────────────────────────────────────────
+    const loadFichas = async () => {
         try {
-            const headers = { 'Accept': 'application/json' };
-            const [instRes, fichRes, ambRes, compRes] = await Promise.all([
-                fetch('../../routing.php?controller=instructor&action=index', { headers }),
-                fetch('../../routing.php?controller=ficha&action=index', { headers }),
-                fetch('../../routing.php?controller=ambiente&action=index', { headers }),
-                fetch('../../routing.php?controller=competencia&action=index', { headers })
-            ]);
-
-            const [instructores, fichas, ambientes, competencias] = await Promise.all([
-                instRes.json(), fichRes.json(), ambRes.json(), compRes.json()
-            ]);
-
-            fillSelect('instructor_id', instructores, i => `${i.inst_nombres} ${i.inst_apellidos}`, 'inst_id');
-            fillSelect('ficha_id', fichas, f => `Ficha: ${f.fich_id}`, 'fich_id');
-            fillSelect('ambiente_id', ambientes, a => a.amb_nombre, 'amb_id');
-            fillSelect('competencia_id', competencias, c => c.comp_nombre_corto || c.comp_nombre, 'comp_id');
-
-        } catch (error) {
-            console.error('Error al cargar opciones:', error);
-        }
-    };
-
-    const fillSelect = (id, data, labelFn, valueKey) => {
-        const select = document.getElementById(id);
-        if (!select) return;
-        select.innerHTML = '<option value="">Seleccione...</option>';
-        if (Array.isArray(data)) {
-            data.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item[valueKey];
-                opt.textContent = labelFn(item);
-                select.appendChild(opt);
-            });
-        }
-    };
-
-    const loadAsignaciones = async () => {
-        try {
-            const response = await fetch('../../routing.php?controller=asignacion&action=index', {
+            const res = await fetch('../../routing.php?controller=ficha&action=index', {
                 headers: { 'Accept': 'application/json' }
             });
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.details || data.error || 'Error al cargar asignaciones');
+            fichas = await res.json();
+            if (fichaSelector) {
+                fichaSelector.innerHTML = '<option value="">Seleccione una ficha...</option>';
+                fichas.forEach(f => {
+                    const opt = document.createElement('option');
+                    opt.value = f.fich_id;
+                    opt.textContent = `Ficha ${f.fich_id} — ${f.prog_denominacion || f.titpro_nombre || 'Programa'}`;
+                    fichaSelector.appendChild(opt);
+                });
             }
-
-            asignaciones = Array.isArray(data) ? data : [];
-            renderAsignaciones(asignaciones);
-            if (totalLabel) totalLabel.textContent = asignaciones.length;
-        } catch (error) {
-            console.error('Error:', error);
-            if (tableBody) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-red-500">Error: ${error.message}</td></tr>`;
-            }
-        }
+        } catch (e) { console.error('Error cargando fichas:', e); }
     };
 
-    const renderAsignaciones = (data) => {
-        if (!tableBody) return;
-        tableBody.innerHTML = '';
-        if (!Array.isArray(data) || data.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No se encontraron asignaciones</td></tr>';
+    // ── Load ambientes ────────────────────────────────────────
+    const loadAmbientes = async () => {
+        try {
+            const res = await fetch('../../routing.php?controller=ambiente&action=index', {
+                headers: { 'Accept': 'application/json' }
+            });
+            const ambientes = await res.json();
+            if (ambienteSelect) {
+                ambienteSelect.innerHTML = '<option value="">Seleccione ambiente...</option>';
+                ambientes.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a.amb_id;
+                    opt.textContent = `${a.amb_id} - ${a.amb_nombre || 'Sin nombre'}`;
+                    ambienteSelect.appendChild(opt);
+                });
+            }
+        } catch (e) { console.error('Error cargando ambientes:', e); }
+    };
+
+    // ── When ficha is selected ────────────────────────────────
+    fichaSelector.addEventListener('change', async () => {
+        const fichId = fichaSelector.value;
+        if (!fichId) {
+            selectedFicha = null;
+            if (addBtn) addBtn.disabled = true;
+            if (calendarEl) calendarEl.style.display = 'none';
+            if (placeholder) placeholder.style.display = '';
             return;
         }
 
-        data.forEach(asig => {
-            const row = document.createElement('tr');
-            row.className = 'hover:bg-green-50/50 transition-colors cursor-pointer group';
-            row.onclick = () => window.location.href = `ver.php?id=${asig.asig_id}`;
+        selectedFicha = fichas.find(f => f.fich_id == fichId);
+        if (addBtn) addBtn.disabled = false;
+        if (placeholder) placeholder.style.display = 'none';
+        if (calendarEl) calendarEl.style.display = '';
 
-            row.innerHTML = `
-                <td class="px-6 py-4 font-semibold text-sena-green">${String(asig.asig_id).padStart(3, '0')}</td>
-                <td class="px-6 py-4 font-bold text-gray-900">${asig.inst_nombres || ''} ${asig.inst_apellidos || ''}</td>
-                <td class="px-6 py-4 text-gray-600">Ficha: ${asig.fich_id || asig.ficha_fich_id}</td>
-                <td class="px-6 py-4">
-                    <div class="text-sm font-semibold">${asig.amb_nombre || 'N/A'}</div>
-                    <div class="text-xs text-gray-500">${asig.comp_nombre_corto || asig.comp_nombre || 'Sin nombre'}</div>
-                </td>
-                <td class="px-6 py-4 text-sm">
-                    <div>Del: ${asig.asig_fecha_ini || ''}</div>
-                    <div>Al: ${asig.asig_fecha_fin || ''}</div>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
+        // Load assignments for this ficha
+        await loadAsignacionesFicha(fichId);
 
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.onclick = (e) => {
-                e.stopPropagation();
-                const id = btn.dataset.id;
-                const asig = asignaciones.find(a => a.asig_id == id);
-                if (asig) openModal(asig);
-            };
-        });
+        // Load competencias del programa de la ficha
+        const progId = selectedFicha.programa_prog_codigo || selectedFicha.programa_prog_id;
+        if (progId) {
+            await loadCompetenciasPrograma(progId);
+        }
+
+        // Load habilitaciones for filtering instructors
+        await loadHabilitaciones();
+
+        initCalendar();
+    });
+
+    // ── Load assignments for a specific ficha ─────────────────
+    const loadAsignacionesFicha = async (fichId) => {
+        try {
+            const res = await fetch('../../routing.php?controller=asignacion&action=index', {
+                headers: { 'Accept': 'application/json' }
+            });
+            const data = await res.json();
+            // Filter by ficha
+            allAsignaciones = (Array.isArray(data) ? data : []).filter(
+                a => a.ficha_fich_id == fichId || a.fich_id == fichId
+            );
+            if (totalLabel) totalLabel.textContent = allAsignaciones.length;
+        } catch (e) {
+            console.error('Error cargando asignaciones:', e);
+            allAsignaciones = [];
+        }
     };
 
-    const openModal = (asig = null) => {
-        if (!form) return;
+    // ── Load competencias del programa ────────────────────────
+    const loadCompetenciasPrograma = async (progId) => {
+        try {
+            const res = await fetch(`../../routing.php?controller=competencia_programa&action=getByPrograma&prog_id=${progId}`, {
+                headers: { 'Accept': 'application/json' }
+            });
+            allCompetenciasPrograma = await res.json();
+        } catch (e) {
+            console.error('Error cargando competencias:', e);
+            allCompetenciasPrograma = [];
+        }
+    };
+
+    // ── Load habilitaciones ───────────────────────────────────
+    const loadHabilitaciones = async () => {
+        try {
+            const res = await fetch('../../routing.php?controller=instru_competencia&action=index', {
+                headers: { 'Accept': 'application/json' }
+            });
+            allHabilitaciones = await res.json();
+        } catch (e) {
+            console.error('Error cargando habilitaciones:', e);
+            allHabilitaciones = [];
+        }
+    };
+
+    // ── Initialize FullCalendar ───────────────────────────────
+    const initCalendar = () => {
+        if (calendar) calendar.destroy();
+
+        const events = allAsignaciones.map((a, i) => ({
+            id: a.asig_id,
+            title: `${a.comp_nombre_corto || 'Comp.'} — ${a.inst_nombres || ''} ${a.inst_apellidos || ''}`,
+            start: a.asig_fecha_ini,
+            end: a.asig_fecha_fin,
+            backgroundColor: getColor(i),
+            extendedProps: a
+        }));
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'es',
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listWeek'
+            },
+            events: events,
+            selectable: true,
+            select: (info) => {
+                // When clicking a date range, prefill the dates in the modal
+                openModal(null, info.startStr, info.endStr);
+            },
+            eventClick: (info) => {
+                // Navigate to detail view
+                window.location.href = `ver.php?id=${info.event.id}`;
+            },
+            height: 'auto',
+            buttonText: {
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                list: 'Lista'
+            }
+        });
+
+        calendar.render();
+    };
+
+    // ── Open modal with smart filtering ───────────────────────
+    const openModal = (asig = null, startDate = null, endDate = null) => {
+        if (!form || !selectedFicha) return;
         form.reset();
 
         const modalTitle = document.getElementById('modalTitle');
         const asigIdInput = document.getElementById('asig_id');
+        const fichaInput = document.getElementById('modal_ficha_id');
+        const fichaDisplay = document.getElementById('fichaDisplay');
+        const fechaIni = document.getElementById('asig_fecha_ini');
+        const fechaFin = document.getElementById('asig_fecha_fin');
+
+        // Pre-fill ficha
+        if (fichaInput) fichaInput.value = selectedFicha.fich_id;
+        if (fichaDisplay) fichaDisplay.value = `Ficha ${selectedFicha.fich_id} — ${selectedFicha.prog_denominacion || selectedFicha.titpro_nombre || ''}`;
+
+        // Pre-fill dates from calendar selection
+        if (startDate && fechaIni) fechaIni.value = startDate;
+        if (endDate && fechaFin) fechaFin.value = endDate;
+
+        // Filter competencias: only those NOT already assigned to this ficha
+        const assignedCompIds = allAsignaciones.map(a => a.competencia_comp_id);
+        const availableComps = allCompetenciasPrograma.filter(c => !assignedCompIds.includes(c.comp_id));
+
+        if (competenciaSelect) {
+            competenciaSelect.innerHTML = '<option value="">Seleccione competencia...</option>';
+            if (availableComps.length === 0) {
+                competenciaSelect.innerHTML = '<option value="">Todas las competencias ya están asignadas</option>';
+            } else {
+                availableComps.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.comp_id;
+                    opt.textContent = c.comp_nombre_corto || c.comp_nombre_unidad_competencia;
+                    competenciaSelect.appendChild(opt);
+                });
+            }
+        }
+
+        // Reset instructor select
+        if (instructorSelect) {
+            instructorSelect.innerHTML = '<option value="">Primero seleccione competencia...</option>';
+            instructorSelect.disabled = true;
+        }
 
         if (asig) {
             if (modalTitle) modalTitle.textContent = 'Editar Asignación';
             if (asigIdInput) asigIdInput.value = asig.asig_id;
-
-            // Set selects using standard database names or specific mappings
-            document.getElementById('instructor_id').value = asig.instructor_inst_id || '';
-            document.getElementById('ficha_id').value = asig.ficha_fich_id || asig.fich_id || '';
-            document.getElementById('ambiente_id').value = asig.ambiente_amb_id || '';
-            document.getElementById('competencia_id').value = asig.competencia_comp_id || '';
-            document.getElementById('asig_fecha_ini').value = asig.asig_fecha_ini ? asig.asig_fecha_ini.replace(' ', 'T') : '';
-            document.getElementById('asig_fecha_fin').value = asig.asig_fecha_fin ? asig.asig_fecha_fin.replace(' ', 'T') : '';
         } else {
             if (modalTitle) modalTitle.textContent = 'Nueva Asignación';
             if (asigIdInput) asigIdInput.value = '';
         }
+
         if (modal) modal.classList.add('show');
     };
 
-    const closeModal = () => {
-        if (modal) modal.classList.remove('show');
-    };
+    // ── Cascade: Competencia → Instructores habilitados ───────
+    if (competenciaSelect) {
+        competenciaSelect.addEventListener('change', () => {
+            const compId = competenciaSelect.value;
+            if (!instructorSelect) return;
 
+            if (!compId) {
+                instructorSelect.innerHTML = '<option value="">Primero seleccione competencia...</option>';
+                instructorSelect.disabled = true;
+                return;
+            }
+
+            const progId = selectedFicha.programa_prog_codigo || selectedFicha.programa_prog_id;
+
+            // Filter habilitaciones: instructors who are habilitated for this competencia+programa
+            const habilitados = allHabilitaciones.filter(h =>
+                h.competxprograma_competencia_comp_id == compId &&
+                h.competxprograma_programa_prog_id == progId
+            );
+
+            instructorSelect.innerHTML = '<option value="">Seleccione instructor...</option>';
+            if (habilitados.length === 0) {
+                instructorSelect.innerHTML = '<option value="">No hay instructores habilitados para esta competencia</option>';
+                instructorSelect.disabled = true;
+            } else {
+                // Remove duplicates (same instructor could have multiple habilitaciones)
+                const seen = new Set();
+                habilitados.forEach(h => {
+                    if (!seen.has(h.instructor_inst_id)) {
+                        seen.add(h.instructor_inst_id);
+                        const opt = document.createElement('option');
+                        opt.value = h.instructor_inst_id;
+                        opt.textContent = `${h.inst_nombres || ''} ${h.inst_apellidos || ''}`;
+                        instructorSelect.appendChild(opt);
+                    }
+                });
+                instructorSelect.disabled = false;
+            }
+        });
+    }
+
+    // ── Modal controls ────────────────────────────────────────
+    const closeModal = () => { if (modal) modal.classList.remove('show'); };
     if (addBtn) addBtn.onclick = () => openModal();
     if (closeBtn) closeBtn.onclick = closeModal;
     if (cancelBtn) cancelBtn.onclick = closeModal;
 
+    // ── Form submit ───────────────────────────────────────────
     if (form) {
         form.onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('asig_id').value;
             const action = id ? 'update' : 'store';
 
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((v, k) => data[k] = v);
+            const data = {
+                ficha_fich_id: document.getElementById('modal_ficha_id').value,
+                competencia_comp_id: competenciaSelect.value,
+                instructor_inst_id: instructorSelect.value,
+                ambiente_amb_id: ambienteSelect.value,
+                asig_fecha_ini: document.getElementById('asig_fecha_ini').value,
+                asig_fecha_fin: document.getElementById('asig_fecha_fin').value
+            };
+            if (id) data.asig_id = id;
 
             try {
-                const response = await fetch(`../../routing.php?controller=asignacion&action=${action}`, {
+                const res = await fetch(`../../routing.php?controller=asignacion&action=${action}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify(data)
                 });
+                const result = await res.json();
 
-                const result = await response.json();
-
-                if (response.ok) {
+                if (res.ok) {
                     NotificationService.showSuccess(id ? 'Asignación actualizada' : 'Asignación creada');
                     closeModal();
-                    loadAsignaciones();
+                    // Reload ficha data
+                    await loadAsignacionesFicha(selectedFicha.fich_id);
+                    initCalendar();
                 } else {
                     NotificationService.showError(result.details || result.error || 'Error al guardar');
                 }
@@ -178,38 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    window.deleteAsignacion = async (id) => {
-        if (!confirm('¿Está seguro de eliminar esta asignación?')) return;
-        try {
-            const response = await fetch(`../../routing.php?controller=asignacion&action=destroy&id=${id}`, {
-                headers: { 'Accept': 'application/json' }
-            });
-            const result = await response.json();
-
-            if (response.ok) {
-                NotificationService.showSuccess('Asignación eliminada');
-                loadAsignaciones();
-            } else {
-                NotificationService.showError(result.details || result.error || 'Error al eliminar');
-            }
-        } catch (error) {
-            NotificationService.showError('Error de conexión');
-        }
-    };
-
-    if (searchInput) {
-        searchInput.oninput = () => {
-            const term = searchInput.value.toLowerCase();
-            const filtered = asignaciones.filter(asig =>
-                (asig.inst_nombres || '').toLowerCase().includes(term) ||
-                (asig.inst_apellidos || '').toLowerCase().includes(term) ||
-                (asig.amb_nombre || '').toLowerCase().includes(term) ||
-                String(asig.fich_id || asig.ficha_fich_id || '').includes(term)
-            );
-            renderAsignaciones(filtered);
-        };
-    }
-
-    loadSelects();
-    loadAsignaciones();
+    // ── Init ──────────────────────────────────────────────────
+    loadFichas();
+    loadAmbientes();
 });

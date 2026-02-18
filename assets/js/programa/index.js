@@ -112,12 +112,12 @@ class ProgramaView {
             const row = document.createElement('tr');
             row.className = 'hover:bg-green-50/50 dark:hover:bg-emerald-900/10 transition-colors cursor-pointer group';
             row.onclick = () => {
-                window.location.href = `ver.php?id=${p.prog_id}`;
+                window.location.href = `ver.php?id=${p.prog_codigo}`;
             };
 
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-sena-green">
-                    ${String(p.prog_id).padStart(3, '0')}
+                    ${String(p.prog_codigo).padStart(3, '0')}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-sena-green/10 text-sena-green border border-sena-green/20">

@@ -13,6 +13,11 @@ class SedeView {
         this.ambienteFilters = {
             search: ''
         };
+        this.fichas = [];
+        this.filteredFichas = [];
+        this.fichaFilters = {
+            search: ''
+        };
         this.init();
     }
 
@@ -23,6 +28,33 @@ class SedeView {
     }
 
     bindEvents() {
+        // ... (existing program and ambiente events) ...
+
+        // Fichas toggle functionality
+        const verTodosFichasBtn = document.getElementById('verTodosFichas');
+        const volverFichasBtn = document.getElementById('volverFichasPreview');
+
+        if (verTodosFichasBtn) {
+            verTodosFichasBtn.addEventListener('click', () => {
+                this.showFullFichasList();
+            });
+        }
+
+        if (volverFichasBtn) {
+            volverFichasBtn.addEventListener('click', () => {
+                this.showFichasPreview();
+            });
+        }
+
+        // Ficha filter events
+        const searchFicha = document.getElementById('searchFichaSede');
+        if (searchFicha) {
+            searchFicha.addEventListener('input', (e) => {
+                this.fichaFilters.search = e.target.value;
+                this.applyFichaFilters();
+            });
+        }
+
         // Programas toggle functionality
         const verTodosProgramasBtn = document.getElementById('verTodosProgramas');
         const volverProgramasBtn = document.getElementById('volverProgramasPreview');
@@ -246,9 +278,10 @@ class SedeView {
 
     async loadRelatedData() {
         try {
-            const [programas, ambientes] = await Promise.all([
+            const [programas, ambientes, fichas] = await Promise.all([
                 this.fetchProgramas(this.sedeId),
-                this.fetchAmbientes(this.sedeId)
+                this.fetchAmbientes(this.sedeId),
+                this.fetchFichas(this.sedeId)
             ]);
 
             this.sedeData.programas = programas;
@@ -256,11 +289,26 @@ class SedeView {
             this.filteredProgramas = [...programas];
             this.ambientes = ambientes;
             this.filteredAmbientes = [...ambientes];
+            this.fichas = fichas;
+            this.filteredFichas = [...fichas];
         } catch (error) {
             console.error('Error loading related data:', error);
             this.sedeData.programas = [];
             this.ambientes = [];
-            this.filteredAmbientes = [];
+            this.fichas = [];
+        }
+    }
+
+    async fetchFichas(sedeId) {
+        try {
+            const response = await fetch(`../../routing.php?controller=sede&action=getFichas&sede_id=${sedeId}`, {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) return [];
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching fichas:', error);
+            return [];
         }
     }
 
@@ -337,10 +385,157 @@ class SedeView {
             editLink.href = `editar.php?id=${this.sedeData.sede_id}`;
         }
 
-        // Populate programs and environments
+        // Populate programs, environments and fichas
         this.populateProgramas();
         this.populateAmbientes();
+        this.populateFichas();
         this.setupNivelFilter();
+    }
+
+    populateFichas() {
+        const fichasList = document.getElementById('fichasList');
+        const noFichas = document.getElementById('noFichas');
+
+        if (!this.fichas || this.fichas.length === 0) {
+            if (fichasList) fichasList.style.display = 'none';
+            if (noFichas) noFichas.style.display = 'block';
+            return;
+        }
+
+        if (noFichas) noFichas.style.display = 'none';
+        if (fichasList) {
+            fichasList.style.display = 'block';
+            fichasList.innerHTML = '';
+
+            // Show first 3 fichas in preview mode
+            const fichasToShow = this.fichas.slice(0, 3);
+
+            fichasToShow.forEach(ficha => {
+                const fichaItem = document.createElement('div');
+                fichaItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
+
+                fichaItem.onclick = () => {
+                    window.location.href = `../ficha/ver.php?id=${ficha.fich_id}`;
+                };
+
+                fichaItem.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded bg-white dark:bg-slate-700 flex items-center justify-center text-slate-400 shadow-sm group-hover:text-sena-orange transition-colors">
+                            <ion-icon src="../../assets/ionicons/layers-outline.svg"></ion-icon>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white">Ficha ${ficha.fich_id}</p>
+                            <p class="text-xs text-slate-500">${ficha.prog_denominacion || 'N/A'}</p>
+                        </div>
+                    </div>
+                    <ion-icon src="../../assets/ionicons/chevron-forward-outline.svg" class="text-slate-400 group-hover:translate-x-1 transition-transform"></ion-icon>
+                `;
+                fichasList.appendChild(fichaItem);
+            });
+
+            if (this.fichas.length > 3) {
+                const additionalDiv = document.createElement('div');
+                additionalDiv.className = 'mt-4 text-center';
+                additionalDiv.innerHTML = `
+                    <div class="inline-flex items-center justify-center px-4 py-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-500 dark:text-slate-400 w-full bg-slate-50/50 dark:bg-slate-800/30">
+                        + ${this.fichas.length - 3} fichas registradas en esta sede
+                    </div>
+                `;
+                fichasList.appendChild(additionalDiv);
+            }
+        }
+
+        this.renderFichasCompleteList();
+    }
+
+    renderFichasCompleteList() {
+        const fichasListComplete = document.getElementById('fichasListComplete');
+        const totalFichasCount = document.getElementById('totalFichasCount');
+        const noFichaFilterResults = document.getElementById('noFichaFilterResults');
+
+        if (!fichasListComplete) return;
+
+        if (totalFichasCount) {
+            totalFichasCount.textContent = this.fichas.length;
+        }
+
+        this.updateFilteredFichasCount();
+
+        if (this.filteredFichas.length === 0 && this.fichaFilters.search) {
+            fichasListComplete.style.display = 'none';
+            if (noFichaFilterResults) noFichaFilterResults.style.display = 'block';
+            return;
+        } else {
+            fichasListComplete.style.display = 'block';
+            if (noFichaFilterResults) noFichaFilterResults.style.display = 'none';
+        }
+
+        fichasListComplete.innerHTML = '';
+        this.filteredFichas.forEach(ficha => {
+            const fichaItem = document.createElement('div');
+            fichaItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
+
+            fichaItem.onclick = () => {
+                window.location.href = `../ficha/ver.php?id=${ficha.fich_id}`;
+            };
+
+            fichaItem.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-white dark:bg-slate-700 flex items-center justify-center text-slate-400 shadow-sm group-hover:text-sena-orange transition-colors">
+                        <ion-icon src="../../assets/ionicons/layers-outline.svg"></ion-icon>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-slate-900 dark:text-white">Ficha ${ficha.fich_id}</p>
+                        <p class="text-xs text-slate-500">${ficha.prog_denominacion || 'N/A'}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="text-slate-400 hover:text-sena-green transition-colors" title="Ver detalles">
+                        <ion-icon src="../../assets/ionicons/eye-outline.svg" class="text-sm"></ion-icon>
+                    </button>
+                </div>
+            `;
+            fichasListComplete.appendChild(fichaItem);
+        });
+    }
+
+    showFullFichasList() {
+        const preview = document.getElementById('fichasPreview');
+        const fullList = document.getElementById('fichasFullList');
+        if (preview) preview.style.display = 'none';
+        if (fullList) fullList.style.display = 'block';
+        this.filteredFichas = [...this.fichas];
+        this.renderFichasCompleteList();
+    }
+
+    showFichasPreview() {
+        const preview = document.getElementById('fichasPreview');
+        const fullList = document.getElementById('fichasFullList');
+        if (preview) preview.style.display = 'block';
+        if (fullList) fullList.style.display = 'none';
+        this.clearAllFichaFilters();
+    }
+
+    applyFichaFilters() {
+        const searchTerm = this.fichaFilters.search.toLowerCase();
+        this.filteredFichas = this.fichas.filter(ficha => {
+            return !searchTerm ||
+                String(ficha.fich_id).includes(searchTerm) ||
+                (ficha.prog_denominacion || '').toLowerCase().includes(searchTerm);
+        });
+        this.renderFichasCompleteList();
+    }
+
+    updateFilteredFichasCount() {
+        const filteredCount = document.getElementById('filteredFichasCount');
+        if (filteredCount) filteredCount.textContent = this.filteredFichas.length;
+    }
+
+    clearAllFichaFilters() {
+        this.fichaFilters = { search: '' };
+        const searchInput = document.getElementById('searchFichaSede');
+        if (searchInput) searchInput.value = '';
+        this.applyFichaFilters();
     }
 
     getStatusBadgeClass(estado) {
@@ -371,7 +566,7 @@ class SedeView {
                 programaItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
 
                 programaItem.onclick = () => {
-                    window.location.href = `../programa/ver.php?id=${programa.prog_id}`;
+                    window.location.href = `../programa/ver.php?id=${programa.prog_codigo}`;
                 };
 
                 const iconType = this.getProgramIcon(programa.prog_denominacion);
@@ -598,7 +793,7 @@ class SedeView {
             programaItem.className = 'flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group';
 
             programaItem.onclick = () => {
-                window.location.href = `../programa/ver.php?id=${programa.prog_id}`;
+                window.location.href = `../programa/ver.php?id=${programa.prog_codigo}`;
             };
 
             const iconType = this.getProgramIcon(programa.prog_denominacion);

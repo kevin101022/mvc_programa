@@ -88,6 +88,24 @@ require_once '../layouts/sidebar.php';
     </div>
 </main>
 
+
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header success">
+            <ion-icon src="../../assets/ionicons/checkmark-circle-outline.svg"></ion-icon>
+            <h3>Título Registrado</h3>
+        </div>
+        <div class="modal-body">
+            <p>El título académico ha sido registrado correctamente.</p>
+        </div>
+        <div class="modal-footer">
+            <a href="index.php" class="btn-primary">Ver Todos</a>
+            <button class="btn-secondary" onclick="closeSuccessModal()">Registrar Otro</button>
+        </div>
+    </div>
+</div>
+
 <script src="../../assets/js/titulo_programa/crear.js?v=<?php echo time(); ?>"></script>
 </body>
 

@@ -1,29 +1,33 @@
 <?php
 require_once dirname(__DIR__) . '/Conexion.php';
+require_once __DIR__ . '/SchemaResilienceTrait.php';
+
 class InstructorModel
 {
+    use SchemaResilienceTrait;
+
     private $inst_id;
     private $inst_nombres;
     private $inst_apellidos;
     private $inst_correo;
     private $inst_telefono;
-    private $inst_especialidad;
     private $cent_id;
+    private $inst_password;
     private $db;
 
-    public function __construct($inst_id = null, $inst_nombres = null, $inst_apellidos = null, $inst_correo = null, $inst_telefono = null, $cent_id = null, $inst_especialidad = null)
+    public function __construct($inst_id = null, $inst_nombres = null, $inst_apellidos = null, $inst_correo = null, $inst_telefono = null, $cent_id = null, $inst_password = null)
     {
         $this->inst_id = $inst_id;
         $this->inst_nombres = $inst_nombres;
         $this->inst_apellidos = $inst_apellidos;
         $this->inst_correo = $inst_correo;
         $this->inst_telefono = $inst_telefono;
-        $this->inst_especialidad = $inst_especialidad;
+        $this->inst_password = $inst_password;
         $this->cent_id = $cent_id;
         $this->db = Conexion::getConnect();
     }
-    //getters 
 
+    // Getters
     public function getInstId()
     {
         return $this->inst_id;
@@ -44,18 +48,16 @@ class InstructorModel
     {
         return $this->inst_telefono;
     }
-
-    public function getInstEspecialidad()
+    public function getInstPassword()
     {
-        return $this->inst_especialidad;
+        return $this->inst_password;
     }
-
     public function getCentId()
     {
         return $this->cent_id;
     }
 
-    //setters 
+    // Setters
     public function setInstId($inst_id)
     {
         $this->inst_id = $inst_id;
@@ -76,29 +78,41 @@ class InstructorModel
     {
         $this->inst_telefono = $inst_telefono;
     }
-    public function setInstEspecialidad($inst_especialidad)
+    public function setInstPassword($inst_password)
     {
-        $this->inst_especialidad = $inst_especialidad;
+        $this->inst_password = $inst_password;
     }
     public function setCentId($cent_id)
     {
         $this->cent_id = $cent_id;
     }
-    //crud
+
+    // CRUD
+    public function getNextId()
+    {
+        $query = "SELECT COALESCE(MAX(inst_id), 0) + 1 FROM instructor";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function create()
     {
-        try {
-            $query = "INSERT INTO instructor (inst_nombres, inst_apellidos, inst_correo, inst_telefono, especialidad, centro_formacion_cent_id) 
-            VALUES (:inst_nombres, :inst_apellidos, :inst_correo, :inst_telefono, :especialidad, :cent_id)";
+        $retryLogic = function () {
+            if (!$this->inst_id) {
+                $this->inst_id = $this->getNextId();
+            }
+            $query = "INSERT INTO instructor (inst_id, inst_nombres, inst_apellidos, inst_correo, inst_telefono, inst_password, centro_formacion_cent_id) 
+            VALUES (:inst_id, :inst_nombres, :inst_apellidos, :inst_correo, :inst_telefono, :inst_password, :cent_id)";
 
             $stmt = $this->db->prepare($query);
 
+            $stmt->bindParam(':inst_id', $this->inst_id);
             $stmt->bindParam(':inst_nombres', $this->inst_nombres);
             $stmt->bindParam(':inst_apellidos', $this->inst_apellidos);
             $stmt->bindParam(':inst_correo', $this->inst_correo);
-            $stmt->bindParam(':especialidad', $this->inst_especialidad);
+            $stmt->bindParam(':inst_password', $this->inst_password);
 
-            // Set null if empty string for numbers to avoid PG errors
             $telefono = !empty($this->inst_telefono) ? $this->inst_telefono : null;
             $stmt->bindParam(':inst_telefono', $telefono);
 
@@ -106,12 +120,21 @@ class InstructorModel
             $stmt->bindParam(':cent_id', $centId);
 
             $stmt->execute();
-            return $this->db->lastInsertId();
+            return $this->inst_id;
+        };
+
+        try {
+            return $retryLogic();
         } catch (PDOException $e) {
-            error_log("Error en InstructorModel::create: " . $e->getMessage());
-            throw $e;
+            return $this->handleTruncation($e, 'instructor', [
+                'inst_nombres' => $this->inst_nombres,
+                'inst_apellidos' => $this->inst_apellidos,
+                'inst_correo' => $this->inst_correo,
+                'inst_password' => $this->inst_password
+            ], $retryLogic);
         }
     }
+
     public function read()
     {
         $sql = "SELECT i.*, c.cent_nombre 
@@ -133,6 +156,7 @@ class InstructorModel
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     public function update()
     {
         try {
@@ -141,7 +165,7 @@ class InstructorModel
                           inst_apellidos = :inst_apellidos, 
                           inst_correo = :inst_correo, 
                           inst_telefono = :inst_telefono, 
-                          especialidad = :especialidad,
+                          inst_password = :inst_password,
                           centro_formacion_cent_id = :cent_id 
                       WHERE inst_id = :inst_id";
 
@@ -149,7 +173,7 @@ class InstructorModel
             $stmt->bindParam(':inst_nombres', $this->inst_nombres);
             $stmt->bindParam(':inst_apellidos', $this->inst_apellidos);
             $stmt->bindParam(':inst_correo', $this->inst_correo);
-            $stmt->bindParam(':especialidad', $this->inst_especialidad);
+            $stmt->bindParam(':inst_password', $this->inst_password);
 
             $telefono = !empty($this->inst_telefono) ? $this->inst_telefono : null;
             $stmt->bindParam(':inst_telefono', $telefono);
@@ -164,6 +188,7 @@ class InstructorModel
             throw $e;
         }
     }
+
     public function delete()
     {
         $query = "DELETE FROM instructor WHERE inst_id = :inst_id";

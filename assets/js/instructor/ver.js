@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('instCorreo').textContent = inst.inst_correo || 'Sin correo';
         document.getElementById('instTelefono').textContent = inst.inst_telefono || 'Sin teléfono';
         document.getElementById('instCentro').textContent = inst.cent_nombre || 'Sin centro asignado';
-        document.getElementById('instEspecialidad').textContent = inst.especialidad || 'Sin especialidad';
 
         document.getElementById('editBtn').href = `editar.php?id=${inst.inst_id}`;
 

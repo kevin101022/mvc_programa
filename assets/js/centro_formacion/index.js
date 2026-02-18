@@ -64,13 +64,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const openModal = (centro = null) => {
         form.reset();
+        const centIdInput = document.getElementById('cent_id');
         if (centro) {
             document.getElementById('modalTitle').textContent = 'Editar Centro de Formación';
-            document.getElementById('cent_id').value = centro.cent_id;
+            centIdInput.value = centro.cent_id;
+            centIdInput.readOnly = true; // No permitir editar ID en actualización
+            centIdInput.style.backgroundColor = '#f3f4f6';
             document.getElementById('cent_nombre').value = centro.cent_nombre;
         } else {
             document.getElementById('modalTitle').textContent = 'Nuevo Centro de Formación';
-            document.getElementById('cent_id').value = '';
+            centIdInput.value = '';
+            centIdInput.readOnly = false;
+            centIdInput.style.backgroundColor = 'white';
         }
         modal.classList.add('show');
     };
@@ -84,11 +89,13 @@ document.addEventListener('DOMContentLoaded', () => {
     form.onsubmit = async (e) => {
         e.preventDefault();
         const id = document.getElementById('cent_id').value;
-        const action = id ? 'update' : 'store';
+        const isEdit = document.getElementById('modalTitle').textContent.includes('Editar');
+        const action = isEdit ? 'update' : 'store';
+
         const data = {
             cent_nombre: document.getElementById('cent_nombre').value
         };
-        if (id) data.cent_id = id;
+        if (isEdit) data.cent_id = id;
 
         try {
             const response = await fetch(`../../routing.php?controller=centro_formacion&action=${action}`, {

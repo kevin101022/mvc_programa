@@ -9,23 +9,30 @@
         </div>
         <form id="asignacionForm">
             <input type="hidden" id="asig_id" name="asig_id">
+            <input type="hidden" id="modal_ficha_id" name="ficha_fich_id">
             <div class="modal-body p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-group">
-                        <label class="form-label">Instructor <span class="text-red-500">*</span></label>
-                        <select id="instructor_id" name="instructor_inst_id" required class="search-input" style="padding-left: 12px !important;"></select>
+                    <div class="form-group md:col-span-2">
+                        <label class="form-label">Ficha seleccionada</label>
+                        <input type="text" id="fichaDisplay" class="search-input" style="padding-left: 12px !important;" readonly>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Ficha <span class="text-red-500">*</span></label>
-                        <select id="ficha_id" name="ficha_fich_id" required class="search-input" style="padding-left: 12px !important;"></select>
+                        <label class="form-label">Competencia <span class="text-red-500">*</span></label>
+                        <select id="competencia_id" name="competencia_comp_id" required class="search-input" style="padding-left: 12px !important;">
+                            <option value="">Cargando competencias...</option>
+                        </select>
+                        <p class="text-xs text-gray-400 mt-1">Solo competencias no asignadas a esta ficha</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Instructor <span class="text-red-500">*</span></label>
+                        <select id="instructor_id" name="instructor_inst_id" required class="search-input" style="padding-left: 12px !important;" disabled>
+                            <option value="">Primero seleccione competencia...</option>
+                        </select>
+                        <p class="text-xs text-gray-400 mt-1">Solo instructores habilitados</p>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Ambiente <span class="text-red-500">*</span></label>
                         <select id="ambiente_id" name="ambiente_amb_id" required class="search-input" style="padding-left: 12px !important;"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Competencia <span class="text-red-500">*</span></label>
-                        <select id="competencia_id" name="competencia_comp_id" required class="search-input" style="padding-left: 12px !important;"></select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Fecha Inicio <span class="text-red-500">*</span></label>

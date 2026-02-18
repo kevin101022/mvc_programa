@@ -19,9 +19,9 @@ class CentroFormacionController
         }
 
         $model = new CentroFormacionModel(null, $data['cent_nombre']);
-        $id = $model->create();
-        if ($id) {
-            $this->sendResponse(['message' => 'Centro creado', 'id' => $id]);
+        $newId = $model->create();
+        if ($newId) {
+            $this->sendResponse(['message' => 'Centro creado', 'id' => $newId]);
         } else {
             $this->sendResponse(['error' => 'Error al crear'], 500);
         }

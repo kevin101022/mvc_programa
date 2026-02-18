@@ -20,9 +20,11 @@ class CrearTitulo {
         e.preventDefault();
 
         const formData = new FormData(this.form);
+        formData.append('controller', 'titulo_programa');
+        formData.append('action', 'store');
 
         try {
-            const response = await fetch('../../routing.php?controller=titulo_programa&action=store', {
+            const response = await fetch('../../routing.php', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json'
@@ -30,32 +32,38 @@ class CrearTitulo {
                 body: formData
             });
 
-            const responseText = await response.text();
-            let result;
-            try {
-                result = JSON.parse(responseText);
-            } catch (e) {
-                console.error('Invalid JSON response:', responseText);
-                throw new Error(`Respuesta no válida del servidor: ${responseText.substring(0, 50)}...`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Error en el servidor');
             }
+
+            const result = await response.json();
 
             if (result.message) {
                 if (window.NotificationService) {
-                    NotificationService.show(result.message, 'success');
+                    NotificationService.showSuccess('Título creado correctamente', () => {
+                        document.getElementById('successModal').classList.add('show');
+                    });
+                } else {
+                    document.getElementById('successModal').classList.add('show');
                 }
-                setTimeout(() => {
-                    window.location.href = 'index.php';
-                }, 1500);
             } else {
                 throw new Error(result.error || 'Error al crear el título');
             }
         } catch (error) {
             console.error('Error creating titulo:', error);
             if (window.NotificationService) {
-                NotificationService.show(error.message, 'error');
+                NotificationService.showError('Error al guardar: ' + error.message);
+            } else {
+                alert('Error al guardar: ' + error.message);
             }
         }
     }
+}
+
+function closeSuccessModal() {
+    document.getElementById('successModal').classList.remove('show');
+    document.getElementById('crearTituloForm').reset();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

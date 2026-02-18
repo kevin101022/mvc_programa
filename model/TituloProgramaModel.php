@@ -1,7 +1,11 @@
 <?php
 require_once dirname(__DIR__) . '/Conexion.php';
+require_once __DIR__ . '/SchemaResilienceTrait.php';
+
 class TituloProgramaModel
 {
+    use SchemaResilienceTrait;
+
     private $titpro_id;
     private $titpro_nombre;
     private $db;
@@ -34,13 +38,36 @@ class TituloProgramaModel
     }
 
     // CRUD
+    public function getNextId()
+    {
+        $query = "SELECT COALESCE(MAX(titpro_id), 0) + 1 FROM titulo_programa";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function create()
     {
-        $query = "INSERT INTO titulo_programa (titpro_nombre) VALUES (:titpro_nombre)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':titpro_nombre', $this->titpro_nombre);
-        $stmt->execute();
-        return $this->db->lastInsertId();
+        $retryLogic = function () {
+            if (!$this->titpro_id) {
+                $this->titpro_id = $this->getNextId();
+            }
+            $query = "INSERT INTO titulo_programa (titpro_id, titpro_nombre) VALUES (:titpro_id, :titpro_nombre)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':titpro_id', $this->titpro_id);
+            $stmt->bindParam(':titpro_nombre', $this->titpro_nombre);
+
+            if ($stmt->execute()) {
+                return $this->titpro_id;
+            }
+            return null;
+        };
+
+        try {
+            return $retryLogic();
+        } catch (PDOException $e) {
+            return $this->handleTruncation($e, 'titulo_programa', ['titpro_nombre' => $this->titpro_nombre], $retryLogic);
+        }
     }
 
     public function read()

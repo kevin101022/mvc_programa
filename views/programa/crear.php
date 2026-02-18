@@ -46,7 +46,7 @@ require_once '../layouts/sidebar.php';
                     <div class="form-group">
                         <label for="prog_codigo" class="form-label required">Código de Programa</label>
                         <input type="number" id="prog_codigo" name="prog_codigo" class="form-input" placeholder="Ej: 228106" required>
-                        <div class="form-help">Ingrese el código SofíaPlus de 6-7 dígitos.</div>
+                        <div class="form-help">Código nacional único del programa.</div>
                     </div>
 
                     <div class="form-group">

@@ -63,10 +63,10 @@ class SedeController
 
             $this->model->setSedeNombre($nombre);
             $this->model->setSedeFoto($foto);
-            $id = $this->model->create();
+            $createdId = $this->model->create();
 
-            if ($id) {
-                $this->sendResponse(['message' => 'Sede creada correctamente', 'id' => $id], 201);
+            if ($createdId) {
+                $this->sendResponse(['message' => 'Sede creada correctamente', 'id' => $createdId], 201);
             } else {
                 $this->sendResponse(['error' => 'No se pudo crear la sede'], 500);
             }
@@ -174,6 +174,18 @@ class SedeController
         $this->model->setSedeId($sede_id);
         $programas = $this->model->getProgramasBySede();
         $this->sendResponse($programas);
+    }
+
+    public function getFichas($sede_id = null)
+    {
+        if (!$sede_id) {
+            $this->sendResponse(['error' => 'ID de sede requerido'], 400);
+            return;
+        }
+
+        $this->model->setSedeId($sede_id);
+        $fichas = $this->model->getFichasBySede();
+        $this->sendResponse($fichas);
     }
 
     /**

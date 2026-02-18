@@ -165,7 +165,7 @@ class DetalleCompetencia {
         programas.forEach(p => {
             const item = document.createElement('div');
             item.className = 'p-6 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-center justify-between cursor-pointer';
-            item.onclick = () => window.location.href = `../programa/ver.php?id=${p.prog_id}`;
+            item.onclick = () => window.location.href = `../programa/ver.php?id=${p.prog_codigo}`;
 
             item.innerHTML = `
                 <div class="flex items-center gap-4">

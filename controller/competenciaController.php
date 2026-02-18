@@ -41,10 +41,10 @@ class CompetenciaController
             $nombre_corto = $_POST['comp_nombre_corto'] ?? null;
             $horas = $_POST['comp_horas'] ?? null;
             $unidad = $_POST['comp_nombre_unidad_competencia'] ?? null;
-            $programas = $_POST['programas'] ?? []; // Array of program IDs
+            $programas = $_POST['programas'] ?? []; // Array of program codes
 
             if (!$nombre_corto || !$horas) {
-                $this->sendResponse(['error' => 'Faltan campos obligatorios'], 400);
+                $this->sendResponse(['error' => 'El nombre corto y las horas son campos obligatorios'], 400);
                 return;
             }
 

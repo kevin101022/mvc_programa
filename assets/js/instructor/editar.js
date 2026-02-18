@@ -8,9 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadData = async () => {
         try {
-            const [centrosRes, competenciasRes, instructorRes] = await Promise.all([
+            const [centrosRes, instructorRes] = await Promise.all([
                 fetch('../../routing.php?controller=instructor&action=getCentros'),
-                fetch('../../routing.php?controller=competencia&action=index'),
                 fetch(`../../routing.php?controller=instructor&action=show&id=${instId}`)
             ]);
 
@@ -22,17 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 centroSelect.appendChild(option);
             });
 
-            const competencias = await competenciasRes.json();
-            if (especialidadSelect) {
-                especialidadSelect.innerHTML = '<option value="">Seleccione competencia...</option>';
-                competencias.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.comp_nombre_corto;
-                    opt.textContent = c.comp_nombre_corto;
-                    especialidadSelect.appendChild(opt);
-                });
-            }
-
             if (!instructorRes.ok) throw new Error('Error al cargar datos del instructor');
             const instructor = await instructorRes.json();
 
@@ -40,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('inst_apellidos').value = instructor.inst_apellidos;
             document.getElementById('inst_correo').value = instructor.inst_correo;
             document.getElementById('inst_telefono').value = instructor.inst_telefono || '';
+            document.getElementById('inst_password').value = instructor.inst_password || '';
             centroSelect.value = instructor.centro_formacion_cent_id;
-            if (especialidadSelect) especialidadSelect.value = instructor.especialidad || '';
         } catch (error) {
             console.error('Error:', error);
             NotificationService.showError('Error al cargar datos del instructor');
@@ -53,15 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         submitBtn.disabled = true;
         const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => data[key] = value);
 
         try {
             const response = await fetch('../../routing.php?controller=instructor&action=update', {
                 method: 'POST',
-                body: JSON.stringify(data),
+                body: formData,
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Accept': 'application/json'
                 }
             });
 

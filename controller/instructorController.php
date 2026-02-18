@@ -20,19 +20,25 @@ class instructorController
 
     public function store()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (!$data) {
-            return $this->sendResponse(['error' => 'No se recibieron datos'], 400);
+        $nombres = $_POST['inst_nombres'] ?? null;
+        $apellidos = $_POST['inst_apellidos'] ?? null;
+        $correo = $_POST['inst_correo'] ?? null;
+        $telefono = $_POST['inst_telefono'] ?? null;
+        $cent_id = $_POST['centro_formacion_cent_id'] ?? null;
+        $password = $_POST['inst_password'] ?? 'Sena123*'; // Default password
+
+        if (!$nombres || !$apellidos || !$correo || !$cent_id) {
+            return $this->sendResponse(['error' => 'Datos obligatorios faltantes'], 400);
         }
 
         $model = new InstructorModel(
             null,
-            $data['inst_nombres'],
-            $data['inst_apellidos'],
-            $data['inst_correo'],
-            $data['inst_telefono'],
-            $data['centro_formacion_cent_id'],
-            $data['especialidad'] ?? null
+            $nombres,
+            $apellidos,
+            $correo,
+            $telefono,
+            $cent_id,
+            $password
         );
 
         $id = $model->create();
@@ -60,19 +66,26 @@ class instructorController
 
     public function update()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (!$data || !isset($data['inst_id'])) {
+        $id = $_POST['inst_id'] ?? null;
+        $nombres = $_POST['inst_nombres'] ?? null;
+        $apellidos = $_POST['inst_apellidos'] ?? null;
+        $correo = $_POST['inst_correo'] ?? null;
+        $telefono = $_POST['inst_telefono'] ?? null;
+        $cent_id = $_POST['centro_formacion_cent_id'] ?? null;
+        $password = $_POST['inst_password'] ?? null;
+
+        if (!$id || !$nombres || !$apellidos || !$correo || !$cent_id) {
             return $this->sendResponse(['error' => 'Datos incompletos'], 400);
         }
 
         $model = new InstructorModel(
-            $data['inst_id'],
-            $data['inst_nombres'],
-            $data['inst_apellidos'],
-            $data['inst_correo'],
-            $data['inst_telefono'],
-            $data['centro_formacion_cent_id'],
-            $data['especialidad'] ?? null
+            $id,
+            $nombres,
+            $apellidos,
+            $correo,
+            $telefono,
+            $cent_id,
+            $password
         );
 
         if ($model->update()) {

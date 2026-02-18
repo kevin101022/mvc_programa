@@ -58,10 +58,8 @@ require_once '../layouts/sidebar.php';
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Especialidad (Competencia)</label>
-                            <select id="especialidad_id" name="especialidad" class="search-input" style="padding-left: 12px !important;">
-                                <option value="">Seleccione competencia...</option>
-                            </select>
+                            <label class="form-label">Contraseña <span class="text-red-500">*</span></label>
+                            <input type="text" id="inst_password" name="inst_password" required class="search-input" style="padding-left: 12px !important;" placeholder="Ej: Sena123*">
                         </div>
 
                         <div class="form-group">

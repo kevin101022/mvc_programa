@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const populateUI = (c) => {
-        document.getElementById('detCoordNombre').textContent = c.coord_nombre;
+        document.getElementById('detCoordNombre').textContent = c.coord_descripcion;
         document.getElementById('detCentroPertenece').textContent = c.cent_nombre || 'Centro no asignado';
 
         document.getElementById('editBtn').onclick = () => openEditModal(c);
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const openEditModal = (c) => {
         document.getElementById('modalTitle').textContent = 'Editar Coordinación';
         document.getElementById('coord_id').value = c.coord_id;
-        document.getElementById('coord_nombre').value = c.coord_nombre;
+        document.getElementById('coord_nombre').value = c.coord_descripcion;
         document.getElementById('centro_id').value = c.centro_formacion_cent_id || '';
         modal.classList.add('show');
     };
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const data = {
             coord_id: document.getElementById('coord_id').value,
-            coord_nombre: document.getElementById('coord_nombre').value,
+            coord_descripcion: document.getElementById('coord_nombre').value,
             centro_formacion_cent_id: document.getElementById('centro_id').value
         };
 

@@ -1,8 +1,11 @@
 <?php
 require_once dirname(__DIR__) . '/Conexion.php';
+require_once __DIR__ . '/SchemaResilienceTrait.php';
 
 class CentroFormacionModel
 {
+    use SchemaResilienceTrait;
+
     private $cent_id;
     private $cent_nombre;
     private $db;
@@ -34,13 +37,34 @@ class CentroFormacionModel
         $this->cent_nombre = $cent_nombre;
     }
 
+    public function getNextId()
+    {
+        $query = "SELECT COALESCE(MAX(cent_id), 0) + 1 FROM centro_formacion";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function create()
     {
-        $query = "INSERT INTO centro_formacion (cent_nombre) VALUES (:cent_nombre)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':cent_nombre', $this->cent_nombre);
-        $stmt->execute();
-        return $this->db->lastInsertId();
+        $retryLogic = function () {
+            if (!$this->cent_id) {
+                $this->cent_id = $this->getNextId();
+            }
+            $query = "INSERT INTO centro_formacion (cent_id, cent_nombre) VALUES (:cent_id, :cent_nombre)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':cent_id', $this->cent_id);
+            $stmt->bindParam(':cent_nombre', $this->cent_nombre);
+            return $stmt->execute();
+        };
+
+        try {
+            return $retryLogic();
+        } catch (PDOException $e) {
+            return $this->handleTruncation($e, 'centro_formacion', [
+                'cent_nombre' => $this->cent_nombre
+            ], $retryLogic);
+        }
     }
 
     public function read()

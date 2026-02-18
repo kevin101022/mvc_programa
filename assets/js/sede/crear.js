@@ -97,14 +97,7 @@ class SedeForm {
     }
 
     validateForm() {
-        let isValid = true;
-
-        // Validate sede_nombre
-        if (!this.validateSedeNombre()) {
-            isValid = false;
-        }
-
-        return isValid;
+        return this.validateSedeNombre();
     }
 
     validateSedeNombre() {

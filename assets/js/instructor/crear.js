@@ -36,25 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const loadCompetencias = async () => {
-        if (!especialidadSelect) return;
-        try {
-            const response = await fetch('../../routing.php?controller=competencia&action=index', {
-                headers: { 'Accept': 'application/json' }
-            });
-            if (!response.ok) throw new Error('Error al obtener competencias');
-            const competencias = await response.json();
-            especialidadSelect.innerHTML = '<option value="">Seleccione competencia...</option>';
-            competencias.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.comp_nombre_corto;
-                opt.textContent = c.comp_nombre_corto;
-                especialidadSelect.appendChild(opt);
-            });
-        } catch (error) {
-            console.error('Error al cargar competencias:', error);
-        }
-    };
+
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -66,15 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         submitBtn.disabled = true;
         const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => data[key] = value);
 
         try {
             const response = await fetch('../../routing.php?controller=instructor&action=store', {
                 method: 'POST',
-                body: JSON.stringify(data),
+                body: formData,
                 headers: {
-                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
             });
@@ -96,5 +75,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     loadCentros();
-    loadCompetencias();
 });

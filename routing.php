@@ -31,10 +31,12 @@ $controllers = array(
     'programa' => ['index', 'show', 'store', 'update', 'destroy', 'getTitulos'],
     'ficha' => ['index', 'show', 'store', 'update', 'destroy'],
     'competencia' => ['index', 'show', 'store', 'update', 'destroy'],
-    'competencia_programa' => ['index', 'sync'],
+    'competencia_programa' => ['index', 'sync', 'getByPrograma'],
     'titulo_programa' => ['index', 'show', 'store', 'update', 'destroy'],
     'centro_formacion' => ['index', 'show', 'store', 'update', 'destroy'],
     'instructor' => ['index', 'show', 'showByCentro', 'store', 'update', 'destroy', 'getCentros'],
+    'instru_competencia' => ['index', 'show', 'store', 'update', 'destroy'],
+    'reporte' => ['instructoresPorCentro', 'fichasActivasPorPrograma', 'asignacionesPorInstructor', 'competenciasPorPrograma'],
     // Agrega más controladores y acciones aquí si lo necesitas
 );
 
@@ -109,6 +111,13 @@ try {
             require_once('model/InstructorModel.php');
             require_once('model/CentroFormacionModel.php');
             $controllerObj = new InstructorController();
+            break;
+        case 'instru_competencia':
+            require_once('model/InstruCompetenciaModel.php');
+            $controllerObj = new instru_competenciaController();
+            break;
+        case 'reporte':
+            $controllerObj = new ReporteController();
             break;
         default:
             throw new Exception("Controlador no soportado: $controller");

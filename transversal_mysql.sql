@@ -1,172 +1,164 @@
--- Database: transversal (MySQL)
--- Generated: 2026-02-17
+CREATE DATABASE IF NOT EXISTS transversal;
+USE transversal;
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+CREATE TABLE TITULO_PROGRAMA (
+  titpro_id INT NOT NULL,
+  titpro_nombre VARCHAR(45) NOT NULL,
+  PRIMARY KEY (titpro_id)
+) ENGINE=InnoDB;
 
--- --------------------------------------------------------
+CREATE TABLE PROGRAMA (
+  prog_codigo INT NOT NULL,
+  prog_denominacion VARCHAR(100) NOT NULL,
+  TIT_PROGRAMA_titpro_id INT NOT NULL,
+  prog_tipo VARCHAR(30) NOT NULL,
+  PRIMARY KEY (prog_codigo),
+  CONSTRAINT fk_PROGRAMA_TIPO_PROGRAMA
+    FOREIGN KEY (TIT_PROGRAMA_titpro_id)
+    REFERENCES TITULO_PROGRAMA (titpro_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `sede` (
-  `sede_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sede_nombre` varchar(45) NOT NULL,
-  `foto` varchar(150) NOT NULL,
-  PRIMARY KEY (`sede_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE COMPETENCIA (
+  comp_id INT NOT NULL,
+  comp_nombre_corto VARCHAR(30) NOT NULL,
+  comp_horas INT NOT NULL,
+  comp_nombre_unidad_competencia VARCHAR(150) NOT NULL,
+  PRIMARY KEY (comp_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `titulo_programa` (
-  `titpro_id` int(11) NOT NULL AUTO_INCREMENT,
-  `titpro_nombre` varchar(150) NOT NULL,
-  PRIMARY KEY (`titpro_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE CENTRO_FORMACION (
+  cent_id INT NOT NULL,
+  cent_nombre VARCHAR(100) NOT NULL,
+  PRIMARY KEY (cent_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `centro_formacion` (
-  `cent_id` int(11) NOT NULL AUTO_INCREMENT,
-  `cent_nombre` varchar(100) NOT NULL,
-  PRIMARY KEY (`cent_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE INSTRUCTOR (
+  inst_id INT NOT NULL,
+  inst_nombres VARCHAR(45) NOT NULL,
+  inst_apellidos VARCHAR(45) NOT NULL,
+  inst_correo VARCHAR(45) NOT NULL,
+  inst_telefono BIGINT NOT NULL,
+  CENTRO_FORMACION_cent_id INT NOT NULL,
+  inst_password VARCHAR(45) NOT NULL,
+  PRIMARY KEY (inst_id),
+  CONSTRAINT fk_INSTRUCTOR_CENTRO_FORMACION1
+    FOREIGN KEY (CENTRO_FORMACION_cent_id)
+    REFERENCES CENTRO_FORMACION (cent_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `programa` (
-  `prog_id` int(11) NOT NULL AUTO_INCREMENT,
-  `prog_codigo` int(11) NOT NULL,
-  `prog_denominacion` varchar(150) DEFAULT NULL,
-  `tit_programa_titpro_id` int(11) NOT NULL,
-  `prog_tipo` varchar(30) DEFAULT NULL,
-  `sede_sede_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`prog_id`),
-  CONSTRAINT `fk_programa_titulo` FOREIGN KEY (`tit_programa_titpro_id`) REFERENCES `titulo_programa` (`titpro_id`),
-  CONSTRAINT `fk_programa_sede` FOREIGN KEY (`sede_sede_id`) REFERENCES `sede` (`sede_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE COMPETxPROGRAMA (
+  PROGRAMA_prog_id INT NOT NULL,
+  COMPETENCIA_comp_id INT NOT NULL,
+  PRIMARY KEY (PROGRAMA_prog_id, COMPETENCIA_comp_id),
+  CONSTRAINT fk_COMPETxPROGRAMA_PROGRAMA1
+    FOREIGN KEY (PROGRAMA_prog_id)
+    REFERENCES PROGRAMA (prog_codigo),
+  CONSTRAINT fk_COMPETxPROGRAMA_COMPETENCIA1
+    FOREIGN KEY (COMPETENCIA_comp_id)
+    REFERENCES COMPETENCIA (comp_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `competencia` (
-  `comp_id` int(11) NOT NULL AUTO_INCREMENT,
-  `comp_nombre_corto` varchar(30) NOT NULL,
-  `comp_horas` int(11) NOT NULL,
-  `comp_nombre_unidad_competencia` varchar(150) DEFAULT NULL,
-  PRIMARY KEY (`comp_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE COORDINACION (
+  coord_id INT NOT NULL,
+  coord_descripcion VARCHAR(45) NOT NULL,
+  CENTRO_FORMACION_cent_id INT NOT NULL,
+  coord_nombre_coordinador VARCHAR(45) NOT NULL,
+  coord_correo VARCHAR(45) NOT NULL,
+  coord_password VARCHAR(45) NOT NULL,
+  PRIMARY KEY (coord_id),
+  CONSTRAINT fk_COORDINACION_CENTRO_FORMACION1
+    FOREIGN KEY (CENTRO_FORMACION_cent_id)
+    REFERENCES CENTRO_FORMACION (cent_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `competxprograma` (
-  `programa_prog_id` int(11) NOT NULL,
-  `competencia_comp_id` int(11) NOT NULL,
-  PRIMARY KEY (`programa_prog_id`,`competencia_comp_id`),
-  CONSTRAINT `fk_cp_programa` FOREIGN KEY (`programa_prog_id`) REFERENCES `programa` (`prog_id`),
-  CONSTRAINT `fk_cp_competencia` FOREIGN KEY (`competencia_comp_id`) REFERENCES `competencia` (`comp_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE FICHA (
+  fich_id INT NOT NULL,
+  PROGRAMA_prog_id INT NOT NULL,
+  INSTRUCTOR_inst_id_lider INT NOT NULL,
+  fich_jornada VARCHAR(20) NOT NULL,
+  COORDINACION_coord_id INT NOT NULL,
+  fich_fecha_ini_lectiva DATE NOT NULL,
+  fich_fecha_fin_lectiva DATE NOT NULL,
+  PRIMARY KEY (fich_id),
+  CONSTRAINT fk_FICHA_PROGRAMA1
+    FOREIGN KEY (PROGRAMA_prog_id)
+    REFERENCES PROGRAMA (prog_codigo),
+  CONSTRAINT fk_FICHA_INSTRUCTOR1
+    FOREIGN KEY (INSTRUCTOR_inst_id_lider)
+    REFERENCES INSTRUCTOR (inst_id),
+  CONSTRAINT fk_FICHA_COORDINACION1
+    FOREIGN KEY (COORDINACION_coord_id)
+    REFERENCES COORDINACION (coord_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `coordinacion` (
-  `coord_id` int(11) NOT NULL AUTO_INCREMENT,
-  `coord_nombre` varchar(45) NOT NULL,
-  `centro_formacion_cent_id` int(11) NOT NULL,
-  PRIMARY KEY (`coord_id`),
-  CONSTRAINT `fk_coord_centro` FOREIGN KEY (`centro_formacion_cent_id`) REFERENCES `centro_formacion` (`cent_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE SEDE (
+  sede_id INT NOT NULL,
+  sede_nombre VARCHAR(45) NOT NULL,
+  foto VARCHAR(150),
+  PRIMARY KEY (sede_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `instructor` (
-  `inst_id` int(11) NOT NULL AUTO_INCREMENT,
-  `inst_nombres` varchar(45) NOT NULL,
-  `inst_apellidos` varchar(45) NOT NULL,
-  `inst_correo` varchar(100) DEFAULT NULL,
-  `inst_telefono` bigint(20) DEFAULT NULL,
-  `especialidad` varchar(100) NOT NULL,
-  `centro_formacion_cent_id` int(11) NOT NULL,
-  PRIMARY KEY (`inst_id`),
-  CONSTRAINT `fk_inst_centro` FOREIGN KEY (`centro_formacion_cent_id`) REFERENCES `centro_formacion` (`cent_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE AMBIENTE (
+  amb_id VARCHAR(5) NOT NULL,
+  amb_nombre VARCHAR(45),
+  SEDE_sede_id INT NOT NULL,
+  PRIMARY KEY (amb_id),
+  CONSTRAINT fk_AMBIENTE_SEDE1
+    FOREIGN KEY (SEDE_sede_id)
+    REFERENCES SEDE (sede_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `ficha` (
-  `fich_id` int(11) NOT NULL AUTO_INCREMENT,
-  `programa_prog_id` int(11) NOT NULL,
-  `instructor_inst_id` int(11) NOT NULL,
-  `fich_jornada` varchar(20) DEFAULT NULL,
-  `coordinacion_coord_id` int(11) NOT NULL,
-  PRIMARY KEY (`fich_id`),
-  CONSTRAINT `fk_ficha_programa` FOREIGN KEY (`programa_prog_id`) REFERENCES `programa` (`prog_id`),
-  CONSTRAINT `fk_ficha_instructor` FOREIGN KEY (`instructor_inst_id`) REFERENCES `instructor` (`inst_id`),
-  CONSTRAINT `fk_ficha_coord` FOREIGN KEY (`coordinacion_coord_id`) REFERENCES `coordinacion` (`coord_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE ASIGNACION (
+  INSTRUCTOR_inst_id INT NOT NULL,
+  asig_fecha_ini DATETIME NOT NULL,
+  asig_fecha_fin DATETIME NOT NULL,
+  FICHA_fich_id INT NOT NULL,
+  AMBIENTE_amb_id VARCHAR(5) NOT NULL,
+  COMPETENCIA_comp_id INT NOT NULL,
+  ASIG_ID INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (ASIG_ID),
+  CONSTRAINT fk_ASIGNACION_INSTRUCTOR1
+    FOREIGN KEY (INSTRUCTOR_inst_id)
+    REFERENCES INSTRUCTOR (inst_id),
+  CONSTRAINT fk_ASIGNACION_FICHA1
+    FOREIGN KEY (FICHA_fich_id)
+    REFERENCES FICHA (fich_id),
+  CONSTRAINT fk_ASIGNACION_AMBIENTE1
+    FOREIGN KEY (AMBIENTE_amb_id)
+    REFERENCES AMBIENTE (amb_id),
+  CONSTRAINT fk_ASIGNACION_COMPETENCIA1
+    FOREIGN KEY (COMPETENCIA_comp_id)
+    REFERENCES COMPETENCIA (comp_id)
+) ENGINE=InnoDB;
 
-CREATE TABLE `ambiente` (
-  `amb_id` int(11) NOT NULL AUTO_INCREMENT,
-  `amb_nombre` varchar(45) NOT NULL,
-  `sede_sede_id` int(11) NOT NULL,
-  PRIMARY KEY (`amb_id`),
-  CONSTRAINT `fk_amb_sede` FOREIGN KEY (`sede_sede_id`) REFERENCES `sede` (`sede_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE DETALLExASIGNACION (
+  ASIGNACION_ASIG_ID INT NOT NULL,
+  detasig_hora_ini DATETIME NOT NULL,
+  detasig_hora_fin DATETIME NOT NULL,
+  detasig_id INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (detasig_id),
+  CONSTRAINT fk_DETALLExASIGNACION_ASIGNACION1
+    FOREIGN KEY (ASIGNACION_ASIG_ID)
+    REFERENCES ASIGNACION (ASIG_ID)
+) ENGINE=InnoDB;
 
-CREATE TABLE `asignacion` (
-  `asig_id` int(11) NOT NULL AUTO_INCREMENT,
-  `instructor_inst_id` int(11) NOT NULL,
-  `asig_fecha_ini` datetime NOT NULL,
-  `asig_fecha_fin` datetime NOT NULL,
-  `ficha_fich_id` int(11) NOT NULL,
-  `ambiente_amb_id` int(11) NOT NULL,
-  `competencia_comp_id` int(11) NOT NULL,
-  PRIMARY KEY (`asig_id`),
-  CONSTRAINT `fk_asig_inst` FOREIGN KEY (`instructor_inst_id`) REFERENCES `instructor` (`inst_id`),
-  CONSTRAINT `fk_asig_ficha` FOREIGN KEY (`ficha_fich_id`) REFERENCES `ficha` (`fich_id`),
-  CONSTRAINT `fk_asig_amb` FOREIGN KEY (`ambiente_amb_id`) REFERENCES `ambiente` (`amb_id`),
-  CONSTRAINT `fk_asig_comp` FOREIGN KEY (`competencia_comp_id`) REFERENCES `competencia` (`comp_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE `detalle_asignacion` (
-  `detasig_id` int(11) NOT NULL AUTO_INCREMENT,
-  `asignacion_asig_id` int(11) NOT NULL,
-  `detasig_hora_ini` datetime NOT NULL,
-  `detasig_hora_fin` datetime NOT NULL,
-  PRIMARY KEY (`detasig_id`),
-  CONSTRAINT `fk_det_asig` FOREIGN KEY (`asignacion_asig_id`) REFERENCES `asignacion` (`asig_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
--- VOLCADO DE DATOS (DATA DUMP)
--- --------------------------------------------------------
-
-INSERT INTO `sede` (`sede_id`, `sede_nombre`, `foto`) VALUES
-(2, 'CIES', '../../assets/imagenes/sede_699457fce7e5a.jpg'),
-(3, 'CEDRUM', '../../assets/imagenes/sede_6994584595a30.jpg'),
-(4, 'Calzado', '../../assets/imagenes/sede_69945934760fc.jpg'),
-(5, 'Tecno Parque', '../../assets/imagenes/sede_699459ea1b329.jpg');
-
-INSERT INTO `titulo_programa` (`titpro_id`, `titpro_nombre`) VALUES
-(1, 'Tecnólogo en Análisis y Desarrollo de Software'),
-(2, 'Tecnólogo en Negociación Internacional');
-
-INSERT INTO `centro_formacion` (`cent_id`, `cent_nombre`) VALUES
-(1, 'Industria'),
-(2, 'Biblioteca');
-
-INSERT INTO `programa` (`prog_id`, `prog_codigo`, `prog_denominacion`, `tit_programa_titpro_id`, `prog_tipo`, `sede_sede_id`) VALUES
-(1, 223308, 'ADSO', 1, 'Tecnólogo', 2);
-
-INSERT INTO `competencia` (`comp_id`, `comp_nombre_corto`, `comp_horas`, `comp_nombre_unidad_competencia`) VALUES
-(1, 'Etica', 48, 'tguirdñjgrigjñtrutrklbmsfgklbfgd');
-
-INSERT INTO `competxprograma` (`programa_prog_id`, `competencia_comp_id`) VALUES
-(1, 1);
-
-INSERT INTO `coordinacion` (`coord_id`, `coord_nombre`, `centro_formacion_cent_id`) VALUES
-(1, 'TIC', 2),
-(2, 'Zapateria', 1);
-
-INSERT INTO `instructor` (`inst_id`, `inst_nombres`, `inst_apellidos`, `inst_correo`, `inst_telefono`, `especialidad`, `centro_formacion_cent_id`) VALUES
-(1, 'Mauricio', 'Puentes', 'ejemplo@gmail.com', 8974372385, 'Etica', 2);
-
-INSERT INTO `ficha` (`fich_id`, `programa_prog_id`, `instructor_inst_id`, `fich_jornada`, `coordinacion_coord_id`) VALUES
-(3115418, 1, 1, 'Mañana', 1);
-
-INSERT INTO `ambiente` (`amb_id`, `amb_nombre`, `sede_sede_id`) VALUES
-(1, '201 Biblioteca', 2),
-(2, '202 Bilbioteca', 2),
-(3, '404 laboratorio', 3),
-(4, '101 investigación', 3),
-(5, '300 Costura', 4),
-(6, '305 plantillas', 4),
-(7, '204 auditorio', 5);
-
-INSERT INTO `asignacion` (`asig_id`, `instructor_inst_id`, `asig_fecha_ini`, `asig_fecha_fin`, `ficha_fich_id`, `ambiente_amb_id`, `competencia_comp_id`) VALUES
-(1, 1, '2026-02-17 00:00:00', '2026-02-25 00:00:00', 3115418, 7, 1);
-
--- Corregir AUTO_INCREMENT para ficha
-ALTER TABLE `ficha` AUTO_INCREMENT = 3115419;
-
-COMMIT;
+CREATE TABLE INSTRU_COMPETENCIA (
+  INSTRUCTOR_inst_id INT NOT NULL,
+  COMPETxPROGRAMA_PROGRAMA_prog_id INT NOT NULL,
+  COMPETxPROGRAMA_COMPETENCIA_comp_id INT NOT NULL,
+  inscomp_vigencia DATE NOT NULL,
+  inscomp_id INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (inscomp_id),
+  CONSTRAINT fk_INSTRU_COMPETENCIA_INSTRUCTOR1
+    FOREIGN KEY (INSTRUCTOR_inst_id)
+    REFERENCES INSTRUCTOR (inst_id),
+  CONSTRAINT fk_INSTRU_COMPETENCIA_COMPETxPROGRAMA1
+    FOREIGN KEY (
+      COMPETxPROGRAMA_PROGRAMA_prog_id,
+      COMPETxPROGRAMA_COMPETENCIA_comp_id
+    )
+    REFERENCES COMPETxPROGRAMA (
+      PROGRAMA_prog_id,
+      COMPETENCIA_comp_id
+    )
+) ENGINE=InnoDB;

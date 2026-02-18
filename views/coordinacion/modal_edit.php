@@ -8,8 +8,8 @@
             </button>
         </div>
         <form id="coordinacionForm">
-            <input type="hidden" id="coord_id" name="coord_id">
             <div class="modal-body p-6 space-y-4">
+                <input type="hidden" id="coord_id" name="coord_id">
                 <div class="form-group">
                     <label class="form-label">Nombre de la Coordinación <span class="text-red-500">*</span></label>
                     <input type="text" id="coord_nombre" name="coord_nombre" required class="search-input" style="padding-left: 12px !important;" placeholder="Ej: Coordinación de Teleinformática">

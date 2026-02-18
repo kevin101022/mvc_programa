@@ -284,6 +284,70 @@ require_once '../layouts/sidebar.php';
                             </div>
                         </div>
                     </div>
+
+                    <!-- Fichas Card -->
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <ion-icon src="../../assets/ionicons/layers-outline.svg" class="text-slate-400"></ion-icon>
+                                Fichas de la Sede
+                            </h3>
+                            <button id="verTodosFichas" class="text-sm text-sena-green hover:text-green-700 font-medium transition-colors">Ver todos</button>
+                        </div>
+                        <div class="p-6">
+                            <!-- Preview Mode -->
+                            <div id="fichasPreview">
+                                <div id="fichasList" class="space-y-4">
+                                    <!-- Fichas will be loaded here -->
+                                </div>
+                            </div>
+
+                            <!-- Full List Mode -->
+                            <div id="fichasFullList" class="space-y-3" style="display: none;">
+                                <div class="flex justify-between items-center mb-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Total:</span>
+                                        <span id="totalFichasCount" class="text-sm font-bold text-sena-green">0</span>
+                                        <span class="text-slate-400">|</span>
+                                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Filtrados:</span>
+                                        <span id="filteredFichasCount" class="text-sm font-bold text-sena-orange">0</span>
+                                    </div>
+                                    <button id="volverFichasPreview" class="text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+                                        <ion-icon src="../../assets/ionicons/close-outline.svg" class="text-sm"></ion-icon>
+                                    </button>
+                                </div>
+
+                                <!-- Filters -->
+                                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 mb-4">
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <ion-icon src="../../assets/ionicons/search-outline.svg" class="text-slate-400 text-sm"></ion-icon>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            id="searchFichaSede"
+                                            placeholder="Buscar por número o programa..."
+                                            class="block w-full pl-14 pr-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sena-green focus:border-sena-green transition duration-150 ease-in-out">
+                                    </div>
+                                </div>
+
+                                <div id="fichasListComplete" class="space-y-2 max-h-64 overflow-y-auto">
+                                    <!-- Full fichas list will be loaded here -->
+                                </div>
+
+                                <!-- No Results State -->
+                                <div id="noFichaFilterResults" class="text-center py-8" style="display: none;">
+                                    <ion-icon src="../../assets/ionicons/filter-outline.svg" class="text-gray-400 text-3xl mb-2"></ion-icon>
+                                    <p class="text-gray-500 text-sm">No se encontraron fichas con los filtros aplicados</p>
+                                </div>
+                            </div>
+
+                            <div id="noFichas" class="text-center py-8" style="display: none;">
+                                <ion-icon src="../../assets/ionicons/layers-outline.svg" class="text-gray-400 text-4xl mb-2"></ion-icon>
+                                <p class="text-gray-500">No hay fichas registradas en esta sede</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

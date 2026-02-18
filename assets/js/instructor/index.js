@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="text-sm text-gray-600">${inst.inst_correo}</div>
                     <div class="text-xs text-gray-400">${inst.inst_telefono || 'Sin teléfono'}</div>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-600">${inst.especialidad || '--'}</td>
                 <td class="px-6 py-4">
                     <span class="status-badge status-active">
                         ${inst.cent_nombre || 'Sin centro'}

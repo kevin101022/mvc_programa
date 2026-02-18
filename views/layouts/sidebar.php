@@ -58,6 +58,16 @@ $activeNavItem = isset($activeNavItem) ? $activeNavItem : 'sedes';
             <ion-icon src="../../assets/ionicons/people-outline.svg"></ion-icon>
             Instructores
         </a>
+        <a href="../instru_competencia/index.php" class="nav-item <?php echo ($activeNavItem === 'habilitaciones') ? 'active' : ''; ?>">
+            <ion-icon src="../../assets/ionicons/shield-checkmark-outline.svg"></ion-icon>
+            Habilitación Instructores
+        </a>
+
+        <p class="nav-section">Informes</p>
+        <a href="../reportes/index.php" class="nav-item <?php echo ($activeNavItem === 'reportes') ? 'active' : ''; ?>">
+            <ion-icon src="../../assets/ionicons/bar-chart-outline.svg"></ion-icon>
+            Reportes
+        </a>
     </nav>
 
     <div class="sidebar-footer">

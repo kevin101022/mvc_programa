@@ -40,6 +40,8 @@ require_once '../layouts/sidebar.php';
             </div>
 
             <form id="ambienteForm" class="form-content">
+
+
                 <div class="form-group">
                     <label for="amb_nombre" class="form-label required">Nombre del Ambiente</label>
                     <input type="text" id="amb_nombre" name="amb_nombre" class="form-input" placeholder="Ej: Ambiente 101 - Sistemas" required>

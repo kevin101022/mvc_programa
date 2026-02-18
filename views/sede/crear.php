@@ -42,6 +42,8 @@ require_once '../layouts/sidebar.php';
             </div>
 
             <form id="sedeForm" class="form-content">
+
+
                 <div class="form-group">
                     <label for="sede_nombre" class="form-label required">
                         Nombre de la Sede

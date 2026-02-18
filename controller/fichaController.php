@@ -1,79 +1,112 @@
 <?php
 require_once dirname(__DIR__) . '/model/FichaModel.php';
 
-class FichaController
+class fichaController
 {
     public function index()
     {
-        $model = new FichaModel(null, null, null, null, null);
+        $model = new FichaModel();
         $fichas = $model->readAll();
         $this->sendResponse($fichas);
     }
 
     public function store()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (!$data || !isset($data['programa_prog_id']) || !isset($data['instructor_inst_id']) || !isset($data['fich_jornada']) || !isset($data['coordinacion_id'])) {
+        $id = $_POST['fich_id'] ?? null;
+        $prog_id = $_POST['programa_prog_id'] ?? null;
+        $inst_id = $_POST['instructor_inst_id'] ?? null;
+        $jornada = $_POST['fich_jornada'] ?? null;
+        $coord_id = $_POST['coordinacion_id'] ?? null;
+        $fecha_ini = $_POST['fich_fecha_ini_lectiva'] ?? null;
+        $fecha_fin = $_POST['fich_fecha_fin_lectiva'] ?? null;
+
+        if (!$id || !$prog_id) {
             $this->sendResponse(['error' => 'Datos incompletos'], 400);
             return;
         }
 
-        $model = new FichaModel($data['fich_id'], $data['programa_prog_id'], $data['instructor_inst_id'], $data['fich_jornada'], $data['coordinacion_id']);
-        $id = $model->create();
-        if ($id) {
-            $this->sendResponse(['message' => 'Ficha creada', 'id' => $id]);
+        $model = new FichaModel(
+            $id,
+            $prog_id,
+            $inst_id,
+            $jornada,
+            $coord_id,
+            $fecha_ini,
+            $fecha_fin
+        );
+
+        if ($model->create()) {
+            $this->sendResponse(['message' => 'Ficha creada correctamente', 'id' => $id]);
         } else {
-            $this->sendResponse(['error' => 'Error al crear'], 500);
+            $this->sendResponse(['error' => 'Error al crear ficha'], 500);
         }
     }
 
-    public function show()
+    public function show($id = null)
     {
-        $id = $_GET['id'] ?? null;
         if (!$id) {
-            $this->sendResponse(['error' => 'ID requerido'], 400);
-            return;
+            $this->sendResponse(['error' => 'Número de ficha requerido'], 400);
         }
-        $model = new FichaModel($id, null, null, null);
+
+        $model = new FichaModel($id);
         $ficha = $model->read();
-        $this->sendResponse($ficha[0] ?? ['error' => 'No encontrada'], $ficha ? 200 : 404);
+
+        if ($ficha) {
+            $this->sendResponse($ficha[0]);
+        } else {
+            $this->sendResponse(['error' => 'Ficha no encontrada'], 404);
+        }
     }
 
     public function update()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (!$data || !isset($data['fich_id']) || !isset($data['programa_prog_id']) || !isset($data['instructor_inst_id']) || !isset($data['fich_jornada']) || !isset($data['coordinacion_id'])) {
+        $id = $_POST['fich_id'] ?? null;
+        $prog_id = $_POST['programa_prog_id'] ?? null;
+        $inst_id = $_POST['instructor_inst_id'] ?? null;
+        $jornada = $_POST['fich_jornada'] ?? null;
+        $coord_id = $_POST['coordinacion_id'] ?? null;
+        $fecha_ini = $_POST['fich_fecha_ini_lectiva'] ?? null;
+        $fecha_fin = $_POST['fich_fecha_fin_lectiva'] ?? null;
+
+        if (!$id) {
             $this->sendResponse(['error' => 'Datos incompletos'], 400);
-            return;
         }
 
-        $model = new FichaModel($data['fich_id'], $data['programa_prog_id'], $data['instructor_inst_id'], $data['fich_jornada'], $data['coordinacion_id']);
+        $model = new FichaModel(
+            $id,
+            $prog_id,
+            $inst_id,
+            $jornada,
+            $coord_id,
+            $fecha_ini,
+            $fecha_fin
+        );
+
         if ($model->update()) {
-            $this->sendResponse(['message' => 'Ficha actualizada']);
+            $this->sendResponse(['message' => 'Ficha actualizada correctamente']);
         } else {
-            $this->sendResponse(['error' => 'Error al actualizar'], 500);
+            $this->sendResponse(['error' => 'Error al actualizar ficha'], 500);
         }
     }
 
-    public function destroy()
+    public function destroy($id = null)
     {
-        $id = $_GET['id'] ?? null;
         if (!$id) {
-            $this->sendResponse(['error' => 'ID requerido'], 400);
-            return;
+            $this->sendResponse(['error' => 'Número de ficha requerido'], 400);
         }
-        $model = new FichaModel($id, null, null, null, null);
+
+        $model = new FichaModel($id);
         if ($model->delete()) {
-            $this->sendResponse(['message' => 'Ficha eliminada']);
+            $this->sendResponse(['message' => 'Ficha eliminada correctamente']);
         } else {
-            $this->sendResponse(['error' => 'Error al eliminar'], 500);
+            $this->sendResponse(['error' => 'Error al eliminar ficha'], 500);
         }
     }
 
     private function sendResponse($data, $status = 200)
     {
-        http_response_code($status);
         header('Content-Type: application/json');
+        http_response_code($status);
         echo json_encode($data);
         exit;
     }

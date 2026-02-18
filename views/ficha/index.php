@@ -50,14 +50,14 @@ require_once '../layouts/sidebar.php';
                     <tr>
                         <th class="w-32">N° Ficha</th>
                         <th>Programa de Formación</th>
-                        <th>Coordinación</th>
+                        <th>Sede / Coordinación</th>
                         <th>Instructor Líder</th>
                         <th>Jornada</th>
                     </tr>
                 </thead>
                 <tbody id="fichaTableBody">
                     <tr>
-                        <td colspan="5" class="text-center py-8">Cargando fichas...</td>
+                        <td colspan="6" class="text-center py-8">Cargando fichas...</td>
                     </tr>
                 </tbody>
             </table>

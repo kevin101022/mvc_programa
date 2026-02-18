@@ -48,7 +48,7 @@ class EditarCompetencia {
             this.unidadInput.value = compData.comp_nombre_unidad_competencia || '';
 
             // Associated programs
-            this.associatedProgramIds = compData.programas.map(p => p.prog_id);
+            this.associatedProgramIds = compData.programas.map(p => p.prog_codigo);
 
             this.renderProgramas();
         } catch (error) {
@@ -62,14 +62,14 @@ class EditarCompetencia {
     renderProgramas() {
         this.programasList.innerHTML = '';
         this.programas.forEach(p => {
-            const isChecked = this.associatedProgramIds.includes(p.prog_id);
+            const isChecked = this.associatedProgramIds.includes(p.prog_codigo);
             const div = document.createElement('div');
             div.className = 'program-item flex items-center p-3 bg-white rounded-lg border border-gray-100 hover:border-green-200 transition-colors cursor-pointer group';
             div.dataset.name = `${p.prog_denominacion} ${p.titpro_nombre}`.toLowerCase();
 
             div.innerHTML = `
                 <label class="flex items-center gap-3 w-full cursor-pointer">
-                    <input type="checkbox" name="programas[]" value="${p.prog_id}" ${isChecked ? 'checked' : ''} class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500 transition-all">
+                    <input type="checkbox" name="programas[]" value="${p.prog_codigo}" ${isChecked ? 'checked' : ''} class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500 transition-all">
                     <div class="flex-1 min-width-0">
                         <div class="text-sm font-semibold text-gray-800 truncate">${p.prog_denominacion}</div>
                         <div class="text-xs text-gray-500 truncate">${p.titpro_nombre}</div>

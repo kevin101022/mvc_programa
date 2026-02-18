@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             programaSelect.innerHTML = '<option value="">Seleccione programa...</option>';
             programas.forEach(p => {
                 const opt = document.createElement('option');
-                opt.value = p.prog_id;
+                opt.value = p.prog_codigo;
                 opt.textContent = p.prog_nombre || p.prog_denominacion;
                 programaSelect.appendChild(opt);
             });
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             coordinaciones.forEach(c => {
                 const opt = document.createElement('option');
                 opt.value = c.coord_id;
-                opt.textContent = c.coord_nombre;
+                opt.textContent = c.coord_descripcion;
                 coordinacionSelect.appendChild(opt);
             });
         }
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('detPrograma').textContent = f.titpro_nombre || 'N/A';
         document.getElementById('detJornada').textContent = `Jornada ${f.fich_jornada}`;
         document.getElementById('detInstructor').textContent = `${f.inst_nombres} ${f.inst_apellidos}`;
-        document.getElementById('detCoordinacion').textContent = f.coord_nombre || 'No asignada';
+        document.getElementById('detCoordinacion').textContent = f.coord_descripcion || 'No asignada';
 
         const iniciales = `${f.inst_nombres[0]}${f.inst_apellidos[0]}`;
         document.getElementById('detInstInic').textContent = iniciales;

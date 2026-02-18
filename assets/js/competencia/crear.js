@@ -40,7 +40,7 @@ class CrearCompetencia {
 
             div.innerHTML = `
                 <label class="flex items-center gap-3 w-full cursor-pointer">
-                    <input type="checkbox" name="programas[]" value="${p.prog_id}" class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500 transition-all">
+                    <input type="checkbox" name="programas[]" value="${p.prog_codigo}" class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500 transition-all">
                     <div class="flex-1 min-width-0">
                         <div class="text-sm font-semibold text-gray-800 truncate">${p.prog_denominacion}</div>
                         <div class="text-xs text-gray-500 truncate">${p.titpro_nombre}</div>

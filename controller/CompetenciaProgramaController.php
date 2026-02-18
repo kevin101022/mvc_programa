@@ -12,6 +12,7 @@ class CompetenciaProgramaController
 
     /**
      * Obtener programas por competencia (vía GET)
+     */
     public function index($compId = null)
     {
         if (!$compId) {
@@ -20,6 +21,20 @@ class CompetenciaProgramaController
         }
         $programas = $this->model->getProgramasByCompetencia($compId);
         $this->sendResponse($programas);
+    }
+
+    /**
+     * Obtener competencias por programa (vía GET)
+     */
+    public function getByPrograma()
+    {
+        $progId = $_GET['prog_id'] ?? null;
+        if (!$progId) {
+            $this->sendResponse(['error' => 'ID de programa requerido'], 400);
+            return;
+        }
+        $competencias = $this->model->getCompetenciasByPrograma($progId);
+        $this->sendResponse($competencias);
     }
 
     /**

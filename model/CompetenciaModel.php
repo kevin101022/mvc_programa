@@ -1,8 +1,11 @@
 <?php
 require_once dirname(__DIR__) . '/Conexion.php';
+require_once __DIR__ . '/SchemaResilienceTrait.php';
 
 class CompetenciaModel
 {
+    use SchemaResilienceTrait;
+
     private $comp_id;
     private $comp_nombre_corto;
     private $comp_horas;
@@ -55,16 +58,41 @@ class CompetenciaModel
     }
 
     // CRUD
+    public function getNextId()
+    {
+        $query = "SELECT COALESCE(MAX(comp_id), 0) + 1 FROM competencia";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function create()
     {
-        $query = "INSERT INTO competencia (comp_nombre_corto, comp_horas, comp_nombre_unidad_competencia) 
-                  VALUES (:comp_nombre_corto, :comp_horas, :comp_nombre_unidad_competencia)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':comp_nombre_corto', $this->comp_nombre_corto);
-        $stmt->bindParam(':comp_horas', $this->comp_horas);
-        $stmt->bindParam(':comp_nombre_unidad_competencia', $this->comp_nombre_unidad_competencia);
-        $stmt->execute();
-        return $this->db->lastInsertId();
+        $retryLogic = function () {
+            if (!$this->comp_id) {
+                $this->comp_id = $this->getNextId();
+            }
+            $query = "INSERT INTO competencia (comp_id, comp_nombre_corto, comp_horas, comp_nombre_unidad_competencia) 
+                      VALUES (:id, :corto, :horas, :unidad)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':id', $this->comp_id);
+            $stmt->bindParam(':corto', $this->comp_nombre_corto);
+            $stmt->bindParam(':horas', $this->comp_horas);
+            $stmt->bindParam(':unidad', $this->comp_nombre_unidad_competencia);
+            if ($stmt->execute()) {
+                return $this->comp_id;
+            }
+            return false;
+        };
+
+        try {
+            return $retryLogic();
+        } catch (PDOException $e) {
+            return $this->handleTruncation($e, 'competencia', [
+                'comp_nombre_corto' => $this->comp_nombre_corto,
+                'comp_nombre_unidad_competencia' => $this->comp_nombre_unidad_competencia
+            ], $retryLogic);
+        }
     }
 
     public function read()

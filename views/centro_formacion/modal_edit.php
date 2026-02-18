@@ -8,11 +8,11 @@
             </button>
         </div>
         <form id="centroForm">
-            <input type="hidden" id="cent_id" name="cent_id">
-            <div class="modal-body p-6">
+            <div class="modal-body p-6 space-y-4">
+                <input type="hidden" id="cent_id" name="cent_id">
                 <div class="form-group">
                     <label class="form-label">Nombre del Centro <span class="text-red-500">*</span></label>
-                    <input type="text" id="cent_nombre" name="cent_nombre" required class="search-input" style="padding-left: 12px !important;" placeholder="Ej: Centro de Electricidad y Automatización">
+                    <input type="text" id="cent_nombre" name="cent_nombre" required class="search-input" style="padding-left: 12px !important;" placeholder="Ej: Centro de Teleinformática">
                 </div>
             </div>
             <div class="modal-footer">

@@ -13,9 +13,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let fichas = [];
 
+    const sedeSelect = document.getElementById('sede_id');
+    let allCoordinaciones = [];
+
     const loadData = async () => {
         try {
             const headers = { 'Accept': 'application/json' };
+
+            // Load Sedes
+            const sedeRes = await fetch('../../routing.php?controller=sede&action=index', { headers });
+            if (sedeRes.ok) {
+                const sedes = await sedeRes.json();
+                if (sedeSelect) {
+                    sedeSelect.innerHTML = '<option value="">Seleccione sede...</option>';
+                    sedes.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s.sede_id;
+                        opt.textContent = s.sede_nombre;
+                        sedeSelect.appendChild(opt);
+                    });
+                }
+            }
 
             // Load Programas
             const progRes = await fetch('../../routing.php?controller=programa&action=index', { headers });
@@ -25,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     programaSelect.innerHTML = '<option value="">Seleccione programa...</option>';
                     programas.forEach(p => {
                         const opt = document.createElement('option');
-                        opt.value = p.prog_id;
-                        opt.textContent = p.prog_nombre || p.prog_denominacion;
+                        opt.value = p.prog_codigo;
+                        opt.textContent = `${p.prog_codigo} - ${p.prog_denominacion}`;
                         programaSelect.appendChild(opt);
                     });
                 }
@@ -47,19 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Load Coordinaciones
+            // Load Coordinaciones (All for filtering)
             const coordRes = await fetch('../../routing.php?controller=coordinacion&action=index', { headers });
             if (coordRes.ok) {
-                const coordinaciones = await coordRes.json();
-                if (coordinacionSelect) {
-                    coordinacionSelect.innerHTML = '<option value="">Seleccione coordinación...</option>';
-                    coordinaciones.forEach(c => {
-                        const opt = document.createElement('option');
-                        opt.value = c.coord_id;
-                        opt.textContent = c.coord_nombre;
-                        coordinacionSelect.appendChild(opt);
-                    });
-                }
+                allCoordinaciones = await coordRes.json();
             }
 
             // Load Fichas
@@ -76,17 +85,34 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error:', error);
             if (tableBody) {
-                tableBody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-red-500">Error: ${error.message}</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-red-500">Error: ${error.message}</td></tr>`;
             }
         }
     };
+
+    // Filter coordinaciones based on selected sede
+    if (sedeSelect) {
+        sedeSelect.addEventListener('change', () => {
+            const sedeId = sedeSelect.value;
+            if (coordinacionSelect) {
+                coordinacionSelect.innerHTML = '<option value="">Seleccione coordinación...</option>';
+                const filtered = allCoordinaciones.filter(c => !sedeId || c.sede_id == sedeId);
+                filtered.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.coord_id;
+                    opt.textContent = c.coord_descripcion;
+                    coordinacionSelect.appendChild(opt);
+                });
+            }
+        });
+    }
 
     const renderFichas = (data) => {
         if (!tableBody) return;
         tableBody.innerHTML = '';
 
         if (!Array.isArray(data) || data.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">No se encontraron fichas</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">No se encontraron fichas</td></tr>';
             return;
         }
 
@@ -102,9 +128,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
                 <td class="px-6 py-4">
                     <div class="text-gray-900 font-semibold text-sm">${f.titpro_nombre || 'N/A'}</div>
+                    <div class="text-xs text-gray-500">${f.prog_denominacion || ''}</div>
                 </td>
-                <td class="px-6 py-4 text-gray-600 text-sm">
-                    ${f.coord_nombre || 'No asignada'}
+                <td class="px-6 py-4">
+                    <div class="text-sm font-medium text-gray-700">${f.sede_nombre || 'N/A'}</div>
+                    <div class="text-xs text-gray-500">${f.coord_nombre || 'No asignada'}</div>
                 </td>
                 <td class="px-6 py-4 text-gray-600 text-sm">${f.inst_nombres || ''} ${f.inst_apellidos || ''}</td>
                 <td class="px-6 py-4">
@@ -135,14 +163,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (modalTitle) modalTitle.textContent = 'Editar Ficha';
             if (fichIdInput) {
                 fichIdInput.value = ficha.fich_id;
-                fichIdInput.readOnly = true; // No permitir cambiar el ID primario en edición
+                fichIdInput.readOnly = true;
             }
             if (fichIdOldInput) fichIdOldInput.value = ficha.fich_id;
 
-            if (document.getElementById('programa_id')) document.getElementById('programa_id').value = ficha.programa_prog_id || '';
-            if (document.getElementById('instructor_id')) document.getElementById('instructor_id').value = ficha.instructor_inst_id || '';
+            if (document.getElementById('programa_id')) document.getElementById('programa_id').value = ficha.programa_prog_id || ficha.programa_prog_codigo || '';
+            if (document.getElementById('instructor_id')) document.getElementById('instructor_id').value = ficha.instructor_inst_id_lider || ficha.instructor_inst_id || '';
             if (document.getElementById('coordinacion_id')) document.getElementById('coordinacion_id').value = ficha.coordinacion_coord_id || '';
             if (document.getElementById('fich_jornada')) document.getElementById('fich_jornada').value = ficha.fich_jornada || '';
+            if (document.getElementById('fich_fecha_ini_lectiva') && ficha.fich_fecha_ini_lectiva) {
+                document.getElementById('fich_fecha_ini_lectiva').value = ficha.fich_fecha_ini_lectiva.split('T')[0];
+            }
+            if (document.getElementById('fich_fecha_fin_lectiva') && ficha.fich_fecha_fin_lectiva) {
+                document.getElementById('fich_fecha_fin_lectiva').value = ficha.fich_fecha_fin_lectiva.split('T')[0];
+            }
         } else {
             if (modalTitle) modalTitle.textContent = 'Nueva Ficha';
             if (fichIdInput) {
@@ -169,22 +203,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const idOld = document.getElementById('fich_id_old').value;
             const action = idOld ? 'update' : 'store';
 
-            const data = {
-                fich_id: document.getElementById('fich_id').value,
-                programa_prog_id: document.getElementById('programa_id').value,
-                instructor_inst_id: document.getElementById('instructor_id').value,
-                coordinacion_id: document.getElementById('coordinacion_id').value,
-                fich_jornada: document.getElementById('fich_jornada').value
-            };
+            const formData = new FormData(form);
+            // Asegurarse de que los nombres de los campos coincidan con lo que el controlador espera si hay diferencias
+            // En este caso, el controlador espera programa_prog_id, instructor_inst_id, etc.
+            // El formulario ya tiene esos nombres en los atributos 'name'.
 
             try {
                 const response = await fetch(`../../routing.php?controller=ficha&action=${action}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
                 });
 
                 const result = await response.json();

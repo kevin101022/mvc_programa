@@ -64,7 +64,6 @@ require_once '../layouts/sidebar.php';
                         <th class="w-20">N°</th>
                         <th>Instructor</th>
                         <th>Contacto</th>
-                        <th>Especialidad</th>
                         <th>Centro de Formación</th>
                     </tr>
                 </thead>

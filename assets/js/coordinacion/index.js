@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row.onclick = () => window.location.href = `ver.php?id=${c.coord_id}`;
             row.innerHTML = `
                 <td class="px-6 py-4 font-semibold text-sena-green">${String(c.coord_id).padStart(3, '0')}</td>
-                <td class="px-6 py-4 font-bold text-gray-900">${c.coord_nombre}</td>
+                <td class="px-6 py-4 font-bold text-gray-900">${c.coord_descripcion}</td>
                 <td class="px-6 py-4 text-gray-600">${c.cent_nombre || 'N/A'}</td>
             `;
             tableBody.appendChild(row);
@@ -96,12 +96,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (coord) {
             if (modalTitle) modalTitle.textContent = 'Editar Coordinación';
-            if (coordIdInput) coordIdInput.value = coord.coord_id;
-            if (coordNombreInput) coordNombreInput.value = coord.coord_nombre;
+            if (coordIdInput) {
+                coordIdInput.value = coord.coord_id;
+                coordIdInput.readOnly = true;
+                coordIdInput.style.backgroundColor = '#f3f4f6';
+            }
+            if (coordNombreInput) coordNombreInput.value = coord.coord_descripcion;
             if (centroIdInput) centroIdInput.value = coord.centro_formacion_cent_id;
+
+            // Populate extra fields if they exist
+            if (document.getElementById('coord_coordinador')) document.getElementById('coord_coordinador').value = coord.coord_nombre_coordinador;
+            if (document.getElementById('coord_correo')) document.getElementById('coord_correo').value = coord.coord_correo;
+            // Password usually not populated for security
         } else {
             if (modalTitle) modalTitle.textContent = 'Nueva Coordinación';
-            if (coordIdInput) coordIdInput.value = '';
+            if (coordIdInput) {
+                coordIdInput.value = '';
+                coordIdInput.readOnly = false;
+                coordIdInput.style.backgroundColor = 'white';
+            }
         }
         if (modal) modal.classList.add('show');
     };
@@ -118,12 +131,17 @@ document.addEventListener('DOMContentLoaded', () => {
         form.onsubmit = async (e) => {
             e.preventDefault();
             const id = document.getElementById('coord_id').value;
-            const action = id ? 'update' : 'store';
+            const isEdit = document.getElementById('modalTitle').textContent.includes('Editar');
+            const action = isEdit ? 'update' : 'store';
+
             const data = {
-                coord_nombre: document.getElementById('coord_nombre').value,
-                centro_formacion_cent_id: document.getElementById('centro_id').value
+                coord_descripcion: document.getElementById('coord_nombre').value,
+                centro_formacion_cent_id: document.getElementById('centro_id').value,
+                coord_nombre_coordinador: document.getElementById('coord_coordinador')?.value || 'N/A',
+                coord_correo: document.getElementById('coord_correo')?.value || 'N/A',
+                coord_password: document.getElementById('coord_password')?.value || '123456'
             };
-            if (id) data.coord_id = id;
+            if (isEdit) data.coord_id = id;
 
             try {
                 const response = await fetch(`../../routing.php?controller=coordinacion&action=${action}`, {
@@ -173,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.oninput = () => {
             const term = searchInput.value.toLowerCase();
             const filtered = coordinaciones.filter(c =>
-                c.coord_nombre.toLowerCase().includes(term) ||
+                c.coord_descripcion.toLowerCase().includes(term) ||
                 (c.cent_nombre || '').toLowerCase().includes(term)
             );
             renderCoordinaciones(filtered);

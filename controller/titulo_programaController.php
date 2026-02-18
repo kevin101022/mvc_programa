@@ -59,10 +59,10 @@ class TituloProgramaController
             }
 
             $this->model->setTitproNombre($nombre);
-            $id = $this->model->create();
+            $newId = $this->model->create();
 
-            if ($id) {
-                $this->sendResponse(['message' => 'Título creado correctamente', 'id' => $id], 201);
+            if ($newId) {
+                $this->sendResponse(['message' => 'Título creado correctamente', 'id' => $newId], 201);
             } else {
                 $this->sendResponse(['error' => 'No se pudo crear el título', 'details' => 'El modelo no devolvió un ID válido'], 500);
             }

@@ -1,9 +1,76 @@
 <?php
-$pageTitle = "Gestión de Asignaciones - SENA";
+$pageTitle = "Asignaciones Académicas - SENA";
 $activeNavItem = 'asignaciones';
 require_once '../layouts/head.php';
-require_once '../layouts/sidebar.php';
 ?>
+<!-- FullCalendar CDN -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
+<style>
+    .fc {
+        font-family: 'Public Sans', sans-serif;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+
+    .fc .fc-button {
+        background: #39a900;
+        border-color: #39a900;
+        font-size: 0.8rem;
+        text-transform: capitalize;
+    }
+
+    .fc .fc-button:hover {
+        background: #2d8a00;
+        border-color: #2d8a00;
+    }
+
+    .fc .fc-button-active {
+        background: #1e6b00 !important;
+        border-color: #1e6b00 !important;
+    }
+
+    .fc .fc-daygrid-day-number {
+        font-weight: 600;
+        color: #4a5568;
+    }
+
+    .fc .fc-event {
+        border-radius: 6px;
+        padding: 2px 6px;
+        font-size: 0.75rem;
+        border: none;
+    }
+
+    .fc .fc-daygrid-day.fc-day-today {
+        background: #f0fdf4;
+    }
+
+    .ficha-selector {
+        max-width: 400px;
+    }
+
+    .calendar-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+        color: #9ca3af;
+    }
+
+    .calendar-placeholder ion-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #d1d5db;
+    }
+</style>
+
+<?php require_once '../layouts/sidebar.php'; ?>
 
 <main class="main-content">
     <header class="main-header">
@@ -28,39 +95,32 @@ require_once '../layouts/sidebar.php';
                 </div>
                 <div class="stat-card-body">
                     <span class="stat-card-number" id="totalAsignaciones">0</span>
-                    <span class="stat-card-desc">periodos asignados</span>
+                    <span class="stat-card-desc">asignaciones de la ficha</span>
                 </div>
             </div>
         </div>
 
+        <!-- Ficha selector -->
         <div class="action-bar">
-            <div class="search-container flex-1">
-                <ion-icon src="../../assets/ionicons/search-outline.svg" class="search-icon"></ion-icon>
-                <input type="text" id="searchInput" placeholder="Buscar por instructor, ficha o ambiente..." class="search-input">
+            <div class="ficha-selector">
+                <select id="fichaSelector" class="search-input" style="padding-left: 12px !important;">
+                    <option value="">Seleccione una ficha para ver su calendario...</option>
+                </select>
             </div>
-            <button id="addBtn" class="btn-primary">
+            <button id="addBtn" class="btn-primary" disabled>
                 <ion-icon src="../../assets/ionicons/add-outline.svg"></ion-icon>
                 Nueva Asignación
             </button>
         </div>
 
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th class="w-20">Asig. N°</th>
-                        <th>Instructor</th>
-                        <th>Ficha</th>
-                        <th>Ambiente / Competencia</th>
-                        <th>Periodo</th>
-                    </tr>
-                </thead>
-                <tbody id="asignacionTableBody">
-                    <tr>
-                        <td colspan="5" class="text-center py-8">Cargando asignaciones...</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Calendar area -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-4">
+            <div id="calendarPlaceholder" class="calendar-placeholder">
+                <ion-icon src="../../assets/ionicons/calendar-outline.svg"></ion-icon>
+                <p class="text-lg font-semibold">Seleccione una ficha</p>
+                <p class="text-sm">El calendario se cargará con las asignaciones de la ficha seleccionada</p>
+            </div>
+            <div id="calendar" style="display: none;"></div>
         </div>
     </div>
 </main>
